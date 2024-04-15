@@ -18,13 +18,18 @@ def create_member():
         # 새로운 멤버 생성
         new_member = Member(name=name, email=email)
 
+        # 데이터베이스에 멤버 추가하기 전 로그 추가
+        logger.info("About to add new member to the database")
+
         # 데이터베이스에 멤버 추가
         db.session.add(new_member)
         db.session.commit()
 
+        # 데이터베이스에 멤버 추가한 후 로그 추가
         logger.info("New member created with ID: %s", new_member.id)
 
         return make_response(jsonify({"message": "Member created successfully!"}), 201)
+
 
 @member_bp.route("/<int:member_id>", methods=["GET"])
 def get_member(member_id):

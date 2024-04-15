@@ -11,10 +11,10 @@ recommend = Blueprint("recommend", __name__)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-with open('dataset\knn_model.pkl', 'rb') as file:
+with open('dataset/knn_model.pkl', 'rb') as file:
     loaded_model = pickle.load(file)
 
-with open('dataset\ss.pkl', 'rb') as file:
+with open('dataset/ss.pkl', 'rb') as file:
     standart_scaler = pickle.load(file)
 
 def get_nearest_3_famous_place(test_data):

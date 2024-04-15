@@ -8,6 +8,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import static flaskspring.demo.utils.Constant.BASE_FLASK_REDIRECT_URL;
 import static flaskspring.demo.utils.Constant.BASE_FLASK_URL;
 
 
@@ -17,26 +18,27 @@ import static flaskspring.demo.utils.Constant.BASE_FLASK_URL;
 @Slf4j
 public class ToPythonController {
 
-
+    String url = BASE_FLASK_REDIRECT_URL + "members/";
 
     @GetMapping("/to-python/{id}")
     public ResponseEntity<Void> toPythonGet(@PathVariable Long id) {
 
         System.out.println("python Get");
 
-        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
-                .header(HttpHeaders.LOCATION, BASE_FLASK_URL + id)
 
+        //요청을 리다이렉트 GET으로만 보낼 수 있다
+        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
+                .header(HttpHeaders.LOCATION, url + id)
                 .build();
     }
 
     @PostMapping("/to-python")
-    public ResponseEntity<Void> toPythonPost(@RequestBody MemberDto memberDto) {
+    public ResponseEntity<String> toPythonPost(@RequestBody MemberDto memberDto) {
         System.out.println("python POST");
 
         return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
-                .header(HttpHeaders.LOCATION, BASE_FLASK_URL)
-                .build();
+                .header(HttpHeaders.LOCATION, url)
+                .body("asdasd");
     }
 
     @PutMapping("/to-python/{id}")
@@ -44,8 +46,7 @@ public class ToPythonController {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        // 요청 URL 생성
-        String url = BASE_FLASK_URL + id;
+
 
         // 요청 헤더 설정
         HttpHeaders headers = new HttpHeaders();
@@ -57,7 +58,7 @@ public class ToPythonController {
         // PUT 요청 보내기
         // PUT 요청 보내기
         ResponseEntity<ApiResponse> responseEntity = restTemplate.exchange(
-                url,
+                url + id,
                 HttpMethod.PUT,
                 requestEntity,
                 ApiResponse.class
@@ -78,7 +79,7 @@ public class ToPythonController {
         }
 
         return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
-                .header(HttpHeaders.LOCATION, BASE_FLASK_URL + id)
+                .header(HttpHeaders.LOCATION, url + id)
                 .build();
     }
 

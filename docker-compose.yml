@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+
+  spring:
+    build:
+      context: ./demo
+      dockerfile: Dockerfile
+    container_name: spring
+    ports:
+      - "9090:9090"
+    # networks:
+    #   - network
+
+
+  flask:
+    build:
+      context: ./flask-sqlAlchemy
+      dockerfile: Dockerfile
+    container_name: flask
+    ports:
+      - "5000:5000"
+    depends_on:
+      - spring  
+    # networks:
+    #   - network
+
+
+# networks:
+#   network:
+

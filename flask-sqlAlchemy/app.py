@@ -6,13 +6,20 @@ from extensions import db
 
 
 app = Flask(__name__)
+# 로컬 환경
+# app.config["SQLALCHEMY_DATABASE_URI"] = (
+#     "mysql+pymysql://root:1234@127.0.0.1:3306/flaskexample"
+# )
+
+# 배포 환경
 app.config["SQLALCHEMY_DATABASE_URI"] = (
-    "mysql+pymysql://root:1234@127.0.0.1:3306/flaskexample"
+    "mysql+pymysql://root:root1234@remoa-db.c7smw8oye3a4.ap-northeast-2.rds.amazonaws.com:3306/hyanghae"
 )
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-app.register_blueprint(member_bp, url_prefix="/api/members")
-app.register_blueprint(recommend, url_prefix="/api/recommends")
+app.register_blueprint(member_bp, url_prefix="/ml/api/members")
+app.register_blueprint(recommend, url_prefix="/ml/api/recommends")
 
 db.init_app(app)
 
