@@ -30,6 +30,5 @@ with app.app_context():
 
 # 사용자 블루프린트 등록
 
-
 if __name__ == "__main__":
     app.run(debug=True)

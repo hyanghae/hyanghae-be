@@ -18,8 +18,8 @@ public class ResNotFamousPlace {
 
     // 생성자, getter, setter 등 필요한 메서드 추가
     public ResNotFamousPlace(NotFamousPlace notFamousPlace) {
-        this.mapx = notFamousPlace.getMapx();
-        this.mapy = notFamousPlace.getMapy();
+        this.mapx = notFamousPlace.getLocation().getMapX();
+        this.mapy = notFamousPlace.getLocation().getMapY();
         this.searchCount = notFamousPlace.getSearchCount();
         this.city = notFamousPlace.getCity();
         this.majorCategory = notFamousPlace.getMajorCategory();

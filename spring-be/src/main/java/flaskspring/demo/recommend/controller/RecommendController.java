@@ -1,12 +1,11 @@
-package flaskspring.demo.travel.controller;
+package flaskspring.demo.recommend.controller;
 
-import flaskspring.demo.travel.dto.res.ImgRecommendationDto;
-import flaskspring.demo.travel.service.TravelService;
+import flaskspring.demo.recommend.dto.res.ImgRecommendationDto;
+import flaskspring.demo.recommend.service.recommendService;
 import flaskspring.demo.travel.domain.NotFamousPlace;
-import flaskspring.demo.travel.dto.req.FeatureScoreDto;
-import flaskspring.demo.travel.dto.res.RecommendationDto;
-import flaskspring.demo.travel.dto.res.ResRecommend;
-import io.swagger.v3.oas.annotations.Operation;
+import flaskspring.demo.recommend.dto.req.FeatureScoreDto;
+import flaskspring.demo.recommend.dto.res.RecommendationDto;
+import flaskspring.demo.recommend.dto.res.ResRecommend;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -18,10 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static flaskspring.demo.utils.Constant.BASE_FLASK_URL;
 
@@ -31,7 +28,7 @@ import static flaskspring.demo.utils.Constant.BASE_FLASK_URL;
 @Slf4j
 public class RecommendController {
     RestTemplate restTemplate = new RestTemplate();
-    private final TravelService travelService;
+    private final recommendService travelService;
 
     @GetMapping("")
     public ResponseEntity<ResRecommend> toPythonPost(@ModelAttribute FeatureScoreDto featureScoreDto) {

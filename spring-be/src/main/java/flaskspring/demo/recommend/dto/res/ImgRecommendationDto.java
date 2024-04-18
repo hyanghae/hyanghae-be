@@ -1,4 +1,4 @@
-package flaskspring.demo.travel.dto.res;
+package flaskspring.demo.recommend.dto.res;
 
 import lombok.Data;
 

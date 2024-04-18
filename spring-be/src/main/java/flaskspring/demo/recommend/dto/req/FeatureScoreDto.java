@@ -1,4 +1,4 @@
-package flaskspring.demo.travel.dto.req;
+package flaskspring.demo.recommend.dto.req;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
