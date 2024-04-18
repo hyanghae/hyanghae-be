@@ -29,6 +29,42 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	//SQL파라미터
+	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
+
+	//jwt
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+
+	//swagger
+//	implementation 'io.springfox:springfox-boot-starter:3.0.0' 스프링 3 자바 17과 맞지 않음
+//	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+
+	//java-jwt
+	implementation 'com.auth0:java-jwt:4.4.0'
+
+	// S3
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	//modelmapper
+	implementation 'org.modelmapper:modelmapper:3.1.0'
+
+
+
+	implementation group: 'com.twelvemonkeys.imageio', name: 'imageio-core', version: '3.8.2'
+
+	//json simple
+	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 }
 
 tasks.named('test') {

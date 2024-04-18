@@ -11,7 +11,7 @@ recommend = Blueprint("recommend", __name__)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-with open('dataset/knn_model.pkl', 'rb') as file:
+with open('dataset/knn_model.pkl', 'rb') as file: # with open 의 상대경로는 아마 app.py가 기준인가?
     loaded_model = pickle.load(file)
 
 with open('dataset/ss.pkl', 'rb') as file:
