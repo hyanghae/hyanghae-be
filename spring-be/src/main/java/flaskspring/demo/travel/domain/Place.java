@@ -5,11 +5,11 @@ import lombok.Getter;
 
 @Entity
 @Getter
-public class NotFamousPlace {
+public class Place {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "not_famous_place_id")
+    @Column(name = "place_id")
     private Long id;
 
     @Embedded

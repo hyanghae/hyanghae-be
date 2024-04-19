@@ -1,8 +1,8 @@
 package flaskspring.demo.recommend.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import flaskspring.demo.travel.domain.NotFamousPlace;
-import flaskspring.demo.travel.repository.NotFamousPlaceRepository;
+import flaskspring.demo.travel.domain.Place;
+import flaskspring.demo.travel.repository.PlaceRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,14 +18,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class recommendService {
 
-    private final NotFamousPlaceRepository notFamousPlaceRepository;
+    private final PlaceRepository PlaceRepository;
 
-    public List<NotFamousPlace> getNotFamousPlace(List<Long> ids) {
-        return notFamousPlaceRepository.findByIdIn(ids);
+    public List<Place> getPlace(List<Long> ids) {
+        return PlaceRepository.findByIdIn(ids);
     }
 
-    public NotFamousPlace getNotFamousPlace(Long id) {
-        return notFamousPlaceRepository.findById(id).orElseThrow();
+    public Place getPlace(Long id) {
+        return PlaceRepository.findById(id).orElseThrow();
     }
 
 

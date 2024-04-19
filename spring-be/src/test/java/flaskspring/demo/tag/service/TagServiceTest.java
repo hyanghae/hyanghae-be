@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -29,7 +30,18 @@ class TagServiceTest {
 
     @Test
     void getRegisteredTag() {
-        
+
+    }
+
+    @Test
+    void printSql(){
+        // SQL 문장 출력
+        for (int placeId = 1; placeId <= 740; placeId++) {
+            for (int i = 0; i < 4; i++) {
+                int randomTagId = ThreadLocalRandom.current().nextInt(1, 25);
+                System.out.println("INSERT INTO place_tag_log (place_id, tag_id) VALUES (" + placeId + ", " + randomTagId + ");");
+            }
+        }
     }
 
     @Test

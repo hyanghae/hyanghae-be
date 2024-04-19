@@ -2,7 +2,7 @@ package flaskspring.demo.recommend.controller;
 
 import flaskspring.demo.recommend.dto.res.ImgRecommendationDto;
 import flaskspring.demo.recommend.service.recommendService;
-import flaskspring.demo.travel.domain.NotFamousPlace;
+import flaskspring.demo.travel.domain.Place;
 import flaskspring.demo.recommend.dto.req.FeatureScoreDto;
 import flaskspring.demo.recommend.dto.res.RecommendationDto;
 import flaskspring.demo.recommend.dto.res.ResRecommend;
@@ -55,14 +55,14 @@ public class RecommendController {
 
 
         assert body != null;
-        NotFamousPlace firstPlace = travelService.getNotFamousPlace(body.getFirstPlaceId());
-        NotFamousPlace secondPlace = travelService.getNotFamousPlace(body.getSecondPlaceId());
-        NotFamousPlace thirdPlace = travelService.getNotFamousPlace(body.getThirdPlaceId());
+        Place firstPlace = travelService.getPlace(body.getFirstPlaceId());
+        Place secondPlace = travelService.getPlace(body.getSecondPlaceId());
+        Place thirdPlace = travelService.getPlace(body.getThirdPlaceId());
 
 
-        List<NotFamousPlace> notFamousPlaces = Arrays.asList(firstPlace, secondPlace, thirdPlace);
+        List<Place> Places = Arrays.asList(firstPlace, secondPlace, thirdPlace);
 
-        ResRecommend resRecommend = new ResRecommend(notFamousPlaces);
+        ResRecommend resRecommend = new ResRecommend(Places);
 
         return ResponseEntity.ok(resRecommend);
     }
