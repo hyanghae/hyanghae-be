@@ -22,8 +22,15 @@ spring:
         default_batch_fetch_size: 100
         #show-sql: true
         format_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
+        dialect: org.hibernate.dialect.MySQLDialect   # MySQLDialect H2Dialect
+
 
 logging:
   level:
     org.hibernate.SQL: debug
+
+security:
+  jwt:
+    token:
+      secret-key: "remoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoa"
+      expire-length: "604800000" # 1 week in milliseconds

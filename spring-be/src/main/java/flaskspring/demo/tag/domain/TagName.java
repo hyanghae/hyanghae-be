@@ -29,10 +29,9 @@ public enum TagName {
     ForestView("숲뷰"),
     Observatory("전망대");
 
-    private final String name;
+    private final String value;
 
-    TagName(String name) {
-        this.name = name;
+    TagName(String value) {
+        this.value = value;
     }
-
 }

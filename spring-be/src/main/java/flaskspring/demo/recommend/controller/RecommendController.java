@@ -31,7 +31,7 @@ public class RecommendController {
     private final recommendService travelService;
 
     @GetMapping("")
-    public ResponseEntity<ResRecommend> toPythonPost(@ModelAttribute FeatureScoreDto featureScoreDto) {
+    public ResponseEntity<ResRecommend> recommendByTags(@ModelAttribute FeatureScoreDto featureScoreDto) {
         System.out.println("python GET");
 
         System.out.println("featureScoreDto = " + featureScoreDto);
@@ -68,7 +68,7 @@ public class RecommendController {
     }
 
     @PostMapping("/image")
-    public ResponseEntity<List<ImgRecommendationDto>> share(@RequestParam("photo") MultipartFile placeImage) {
+    public ResponseEntity<List<ImgRecommendationDto>> recommendByImage(@RequestParam("photo") MultipartFile placeImage) {
         try {
             // 이미지 파일을 바이트 배열로 변환
             byte[] imageBytes = placeImage.getBytes();

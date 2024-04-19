@@ -13,7 +13,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {BaseException.class})
     protected ResponseEntity<BaseExceptionResponse> handleBaseException(BaseException e) {
         return ResponseEntity.status(e.baseResponseCode.getCode())
-                .body(new BaseExceptionResponse(e.baseResponseCode.getCode(), e.baseResponseCode.getMessage()));
+                .body(new BaseExceptionResponse(e.baseResponseCode.getCode().value(), e.baseResponseCode.getMessage()));
     }
 
     @ExceptionHandler(value = {HttpClientErrorException.class})
@@ -32,7 +32,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             response = new BaseExceptionResponse(statusCode, "Unknown Error");
         }*/
         //카카오 코드 에러가 났을 경우!
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BaseExceptionResponse(HttpStatus.BAD_REQUEST, "유효하지 않은 코드입니다."));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BaseExceptionResponse(HttpStatus.BAD_REQUEST.value(), "유효하지 않은 코드입니다."));
     }
 
 }

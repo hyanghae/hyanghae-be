@@ -1,7 +1,5 @@
 package flaskspring.demo.member.controller;
 
-import flaskspring.demo.member.dto.ApiResponse;
-import flaskspring.demo.member.dto.MemberDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -9,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import static flaskspring.demo.utils.Constant.BASE_FLASK_REDIRECT_URL;
-import static flaskspring.demo.utils.Constant.BASE_FLASK_URL;
 
 
 @RestController
@@ -32,7 +29,7 @@ public class ToPythonController {
                 .build();
     }
 
-    @PostMapping("/to-python")
+   /* @PostMapping("/to-python")
     public ResponseEntity<String> toPythonPost(@RequestBody MemberDto memberDto) {
         System.out.println("python POST");
 
@@ -68,7 +65,7 @@ public class ToPythonController {
         System.out.println("body = " + body);
 
         return ResponseEntity.ok(body);
-    }
+    }*/
 
     @DeleteMapping("/to-python/{id}")
     public ResponseEntity<Void> toPythonDelete(@PathVariable(required = false) Long id) {
