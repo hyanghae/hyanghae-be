@@ -6,7 +6,9 @@ import lombok.Data;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.List;
 
 @Data
@@ -24,21 +26,33 @@ public class ResPlace {
     @Schema(description = "여행지 태그 목록", example = "[\"액티비티\", \"오션뷰\", \"산뷰\"]")
     private List<String> tags;
 
+    @Schema(description = "좋아요 수", example = "100")
+    private Integer likesCount;
+
+    @Schema(description = "등록 수", example = "50")
+    private Integer registerCount;
+
     @Schema(description = "등록 여부", example = "true")
     private Boolean isRegistered;
 
     @Schema(description = "좋아요 여부", example = "false")
     private Boolean isLiked;
 
+    @Schema(hidden = true)
+    transient private Long sameTagCount;
+
     // 생성자, getter, setter 생략
 
-    public ResPlace(Place place, List<String> placeTags) {
+    public ResPlace(Place place, List<String> placeTags, Long sameTagCount) {
         this.placeId = place.getId();
         this.placeName = place.getTouristSpotName();
         this.placeImgUrl = place.getImagePath();
         this.tags = placeTags;
+        this.likesCount = place.getLikeCount();
+        this.registerCount = place.getRegisterCount();
         this.isRegistered = null;
         this.isLiked = null;
+        this.sameTagCount = sameTagCount;
     }
 }
 

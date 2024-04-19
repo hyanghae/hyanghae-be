@@ -31,7 +31,8 @@ public class PlaceTagLogRepositoryCustomImpl implements PlaceTagLogRepositoryCus
 
         return jpaQueryFactory
                 .select(place,
-                        Expressions.stringTemplate("group_concat({0})", tag.tagName).as("tagNames"))
+                        Expressions.stringTemplate("group_concat({0})", tag.tagName).as("tagNames"),
+                        Expressions.stringTemplate("count({0})", tag.tagName).as("tagCount"))
                 .from(placeTagLog)
                 .join(placeTagLog.tag, tag)
                 .join(placeTagLog.place, place)
@@ -39,6 +40,7 @@ public class PlaceTagLogRepositoryCustomImpl implements PlaceTagLogRepositoryCus
                 .groupBy(place.id)
                 .fetch();
     }
+
 
 
 }

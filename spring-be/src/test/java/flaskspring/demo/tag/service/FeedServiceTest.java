@@ -34,9 +34,8 @@ class FeedServiceTest {
         Long savedMemberId = createMember();
         createMemberTags(savedMemberId, List.of(1L, 3L, 5L, 7L));
 
-        List<ResPlace> recommendFeed = feedService.getRecommendFeed(savedMemberId);
-
-
+        List<ResPlace> recommendFeed = feedService.getRecommendFeed(savedMemberId, "alpha");
+        recommendFeed.forEach(System.out::println);
 
     }
 
