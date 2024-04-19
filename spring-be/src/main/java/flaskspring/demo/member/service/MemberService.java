@@ -20,6 +20,7 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MemberService {
 
     private final Random random = new Random();

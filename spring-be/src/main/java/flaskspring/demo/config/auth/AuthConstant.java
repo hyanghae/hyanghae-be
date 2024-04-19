@@ -24,7 +24,7 @@ public class AuthConstant {
 
     // PUT 메서드에 대한 인증이 필요한 경로
     public static final String[] PUT_AUTH_BLACKLIST
-            = {};
+            = {"/api/tag"};
 
     // DELETE 메서드에 대한 인증이 필요한 경로
     public static final String[] DELETE_AUTH_BLACKLIST

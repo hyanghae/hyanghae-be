@@ -12,12 +12,14 @@ import flaskspring.demo.tag.repository.TagRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class TagService {
 
     private final TagRepository tagRepository;
@@ -38,6 +40,23 @@ public class TagService {
         return resRegisteredTags;
     }
 
+    public void modifyMemberTags(Long memberId, List<Integer> modifyTagIds) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
+
+        // 기존에 등록된 태그 삭제
+        memberTagLogRepository.deleteByMember(member);
+
+        List<Tag> newTags = tagRepository.findByIdIn(modifyTagIds);
+
+        // 새로운 태그 등록
+        for (Tag tag : newTags) {
+            MemberTagLog memberTagLog = MemberTagLog.createMemberTagLog(member, tag);
+            memberTagLogRepository.save(memberTagLog);
+        }
+    }
+
+
     public void saveMemberTags(Long memberId, List<Integer> tagIds) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
@@ -45,7 +64,6 @@ public class TagService {
         List<Tag> tags = tagRepository.findByIdIn(tagIds);
 
         for (Tag tag : tags) {
-
             MemberTagLog memberTagLog = MemberTagLog.createMemberTagLog(member, tag);
             memberTagLogRepository.save(memberTagLog);
         }

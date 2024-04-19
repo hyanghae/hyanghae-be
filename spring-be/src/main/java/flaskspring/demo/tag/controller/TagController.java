@@ -36,7 +36,7 @@ public class TagController {
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED),
     })
     @PostMapping("")
-    public ResponseEntity<BaseResponse<Object>> saveTags(@AuthenticationPrincipal MemberDetails memberDetails, @RequestBody ReqTagIndexes request) {
+    public ResponseEntity<BaseResponse<Object>> TagsCreate(@AuthenticationPrincipal MemberDetails memberDetails, @RequestBody ReqTagIndexes request) {
         Long myMemberId = memberDetails.getMemberId();
         tagService.saveMemberTags(myMemberId, request.getTagIndexes());
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>()));
@@ -55,5 +55,18 @@ public class TagController {
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, registeredTags));
     }
+
+    @Operation(summary = "태그 수정", description = "유저의 태그를 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
+            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED),
+    })
+    @PutMapping("")
+    public ResponseEntity<BaseResponse<Object>> TagsModify(@AuthenticationPrincipal MemberDetails memberDetails, @RequestBody ReqTagIndexes request) {
+        Long myMemberId = memberDetails.getMemberId();
+        tagService.modifyMemberTags(myMemberId, request.getTagIndexes()); // 수정하는 서비스 메서드로 변경
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>())); // 응답 메시지에 따라 변경
+    }
+
 
 }

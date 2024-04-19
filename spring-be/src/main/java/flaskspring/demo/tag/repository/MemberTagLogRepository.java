@@ -9,4 +9,6 @@ import java.util.List;
 public interface MemberTagLogRepository extends JpaRepository<MemberTagLog, Long> {
 
     List<MemberTagLog> findByMember(Member member);
+
+    void deleteByMember(Member member);
 }
