@@ -39,5 +39,31 @@ public class Place {
     @Column(name = "image_path", length = 200) // 이미지 경로의 최대 길이에 맞게 지정
     private String imagePath;
 
+    private int likeCount;
+
+    private int registerCount;
+
     // 생성자, getter, setter 등 필요한 메서드 추가
+
+    // 좋아요 수 증가 메서드
+    public void increaseLikeCount() {
+        this.likeCount++;
+
+    }
+
+    // 좋아요 수 감소 메서드
+    public void decreaseLikeCount() {
+        this.likeCount--;
+
+    }
+
+    // 등록 수 증가 메서드
+    public void increaseRegisterCount() {
+        this.registerCount++;
+    }
+
+    // 등록 수 감소 메서드
+    public void decreaseRegisterCount() {
+        this.registerCount--;
+    }
 }
