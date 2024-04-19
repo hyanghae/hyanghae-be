@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface TagRepository extends JpaRepository<Tag, Long> {
 
-    List<Tag> findByIdIn(List<Integer> indexes);
+    List<Tag> findByIdIn(List<Long> indexes);
 }

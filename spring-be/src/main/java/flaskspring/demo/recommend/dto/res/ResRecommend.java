@@ -1,7 +1,7 @@
 package flaskspring.demo.recommend.dto.res;
 
 import flaskspring.demo.travel.domain.Place;
-import flaskspring.demo.travel.dto.res.ResPlace;
+import flaskspring.demo.travel.dto.res.ResOPlace;
 import lombok.Data;
 
 import java.util.List;
@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 @Data
 public class ResRecommend {
 
-    List<ResPlace> Places;
+    List<ResOPlace> Places;
 
     public ResRecommend(List<Place> Places) {
-        // Place 객체들을 ResPlace DTO 객체로 변환하여 리스트에 추가
+        // Place 객체들을 ResOPlace DTO 객체로 변환하여 리스트에 추가
         this.Places = Places.stream()
-                .map(ResPlace::new)
+                .map(ResOPlace::new)
                 .collect(Collectors.toList());
     }
 }

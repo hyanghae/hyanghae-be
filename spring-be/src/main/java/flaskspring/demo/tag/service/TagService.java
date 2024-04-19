@@ -40,7 +40,7 @@ public class TagService {
         return resRegisteredTags;
     }
 
-    public void modifyMemberTags(Long memberId, List<Integer> modifyTagIds) {
+    public void modifyMemberTags(Long memberId, List<Long> modifyTagIds) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
 
@@ -57,7 +57,7 @@ public class TagService {
     }
 
 
-    public void saveMemberTags(Long memberId, List<Integer> tagIds) {
+    public void saveMemberTags(Long memberId, List<Long> tagIds) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
 

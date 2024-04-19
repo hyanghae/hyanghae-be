@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 
 @Tag(name = "태그 설정 기능", description = "태그 설정 API")
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/tag")

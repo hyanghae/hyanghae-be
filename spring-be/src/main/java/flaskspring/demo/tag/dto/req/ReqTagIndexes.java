@@ -10,5 +10,5 @@ import java.util.List;
 public class ReqTagIndexes {
 
     @Schema(description = "태그 인덱스 목록", example = "[1, 2, 3]")
-    private List<Integer> tagIndexes;
+    private List<Long> tagIndexes;
 }

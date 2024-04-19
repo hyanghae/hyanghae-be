@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,23 @@ class TagServiceTest {
     @Autowired
     MemberService memberService;
 
+    @Test
+    void printSql() {
+        Set<Integer> selectedTags = new HashSet<>();
+
+        // SQL 문장 출력
+        for (int placeId = 1; placeId <= 740; placeId++) {
+            selectedTags.clear(); // 이전에 선택된 태그를 초기화합니다.
+            for (int i = 0; i < 4; i++) {
+                int randomTagId;
+                do {
+                    randomTagId = ThreadLocalRandom.current().nextInt(1, 25);
+                } while (selectedTags.contains(randomTagId)); // 이미 선택된 태그와 겹치지 않을 때까지 다시 뽑습니다.
+                selectedTags.add(randomTagId); // 선택된 태그를 기억합니다.
+                System.out.println("INSERT INTO place_tag_log (place_id, tag_id) VALUES (" + placeId + ", " + randomTagId + ");");
+            }
+        }
+    }
 
     @Test
     void getRegisteredTag() {
@@ -34,22 +53,11 @@ class TagServiceTest {
     }
 
     @Test
-    void printSql(){
-        // SQL 문장 출력
-        for (int placeId = 1; placeId <= 740; placeId++) {
-            for (int i = 0; i < 4; i++) {
-                int randomTagId = ThreadLocalRandom.current().nextInt(1, 25);
-                System.out.println("INSERT INTO place_tag_log (place_id, tag_id) VALUES (" + placeId + ", " + randomTagId + ");");
-            }
-        }
-    }
-
-    @Test
     void modifyMemberTags() {
         Long savedMemberId = createMember();
-        tagService.saveMemberTags(savedMemberId, List.of(1, 2, 3));
+        tagService.saveMemberTags(savedMemberId, List.of(1L, 2L, 3L));
 
-        tagService.modifyMemberTags(savedMemberId, List.of(4,5,6));
+        tagService.modifyMemberTags(savedMemberId, List.of(4L, 5L, 6L));
 
         List<ResRegisteredTag> registeredTag = tagService.getRegisteredTag(savedMemberId);
         List<Long> registeredTagIds = registeredTag.stream().map(ResRegisteredTag::getTagId).collect(Collectors.toList());
@@ -59,7 +67,7 @@ class TagServiceTest {
     @Test
     void saveMemberTags() {
         Long savedMemberId = createMember();
-        tagService.saveMemberTags(savedMemberId, List.of(1, 2, 3));
+        tagService.saveMemberTags(savedMemberId, List.of(1L, 2L, 3L));
         List<ResRegisteredTag> registeredTag = tagService.getRegisteredTag(savedMemberId);
 
         List<Long> registeredTagIds = registeredTag.stream().map(ResRegisteredTag::getTagId).collect(Collectors.toList());
@@ -67,7 +75,7 @@ class TagServiceTest {
     }
 
 
-    private Long createMember(){
+    private Long createMember() {
         GeneralSignUpReq member = GeneralSignUpReq.builder()
                 .account("testAccount")
                 .password("testPassword")

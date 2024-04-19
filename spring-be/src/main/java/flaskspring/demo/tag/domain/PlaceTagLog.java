@@ -18,7 +18,7 @@ public class PlaceTagLog {
 
     @ManyToOne
     @JoinColumn(name = "place_id")
-    private Place Place;
+    private Place place;
 
     @ManyToOne
     @JoinColumn(name = "tag_id")
@@ -26,7 +26,7 @@ public class PlaceTagLog {
 
     public PlaceTagLog createPlaceTagLog(Place Place, Tag tag) {
         return PlaceTagLog.builder()
-                .Place(Place)
+                .place(Place)
                 .tag(tag)
                 .build();
     }
