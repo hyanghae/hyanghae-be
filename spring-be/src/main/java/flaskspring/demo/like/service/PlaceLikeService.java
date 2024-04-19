@@ -36,14 +36,12 @@ public class PlaceLikeService {
             place.increaseLikeCount(); // 좋아요 + 1
             PlaceLike placeLikeObj = PlaceLike.createLike(member, place);
             placeLikeRepository.save(placeLikeObj);
-            isLikeAction = true;
-        } else {
-            place.decreaseLikeCount(); // 좋아요 - 1
-            placeLikeRepository.deleteById(placeLike.get().getId());
-            isLikeAction = false;
+            return true;
         }
+        place.decreaseLikeCount(); // 좋아요 - 1
+        placeLikeRepository.deleteById(placeLike.get().getId());
+        return false;
 
-        return isLikeAction;
     }
 
 }

@@ -1,5 +1,6 @@
-package flaskspring.demo.like.domain;
+package flaskspring.demo.register.domain;
 
+import flaskspring.demo.like.domain.PlaceLike;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.travel.domain.Place;
 import jakarta.persistence.*;
@@ -13,11 +14,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlaceLike {
+public class PlaceRegister {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "place_like_id")
+    @Column(name = "place_register_id")
     private Long id;
 
     @ManyToOne
@@ -28,9 +29,8 @@ public class PlaceLike {
     @JoinColumn(name = "place_id")
     private Place place;
 
-
-    public static PlaceLike createLike(Member member, Place place) {
-        return PlaceLike.builder()
+    public static PlaceRegister createRegister(Member member, Place place) {
+        return PlaceRegister.builder()
                 .member(member)
                 .place(place)
                 .build();

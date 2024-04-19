@@ -14,6 +14,8 @@ public enum BaseResponseCode {
     OK(HttpStatus.OK, "요청 성공하였습니다."),
     OK_LIKE(HttpStatus.CREATED, "좋아요 성공하였습니다"),
     OK_UNLIKE(HttpStatus.OK, "좋아요 취소하였습니다"),
+    OK_REGISTER(HttpStatus.CREATED, "여행지 등록 성공하였습니다"),
+    OK_UNREGISTER(HttpStatus.OK, "여행지 등록 취소하였습니다"),
 
 
     /**
