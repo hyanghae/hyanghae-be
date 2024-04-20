@@ -25,6 +25,7 @@ public enum BaseResponseCode {
     AUTHORIZATION_NOT_VALID(HttpStatus.BAD_REQUEST, "인증정보가 일지하지 않습니다"),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "잘못된 비밀번호입니다. 다시 입력해주세요."),
     NO_ID_EXCEPTION(HttpStatus.BAD_REQUEST, "해당 ID가 존재하지 않습니다."),
+    NO_DEPARTURE_EXCEPTION(HttpStatus.BAD_REQUEST, "등록된 출발지가 없습니다."),
 
     /**
      * 401

@@ -1,5 +1,6 @@
 package flaskspring.demo.travel.dto.res;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import flaskspring.demo.tag.domain.Tag;
 import flaskspring.demo.travel.domain.Place;
 import lombok.Data;
@@ -38,8 +39,8 @@ public class ResPlace {
     @Schema(description = "등록 여부", example = "true")
     private Boolean isRegistered;
 
-
     @Schema(hidden = true)
+    @JsonIgnore
     transient private Long sameTagCount;
 
     // 생성자, getter, setter 생략
