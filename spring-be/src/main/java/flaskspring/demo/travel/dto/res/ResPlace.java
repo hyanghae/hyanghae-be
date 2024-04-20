@@ -32,26 +32,27 @@ public class ResPlace {
     @Schema(description = "등록 수", example = "50")
     private Integer registerCount;
 
+    @Schema(description = "좋아요 여부", example = "false")
+    private Boolean isLiked;
+
     @Schema(description = "등록 여부", example = "true")
     private Boolean isRegistered;
 
-    @Schema(description = "좋아요 여부", example = "false")
-    private Boolean isLiked;
 
     @Schema(hidden = true)
     transient private Long sameTagCount;
 
     // 생성자, getter, setter 생략
 
-    public ResPlace(Place place, List<String> placeTags, Long sameTagCount) {
+    public ResPlace(Place place, List<String> placeTags, Long sameTagCount, boolean isLiked, boolean isRegistered) {
         this.placeId = place.getId();
         this.placeName = place.getTouristSpotName();
         this.placeImgUrl = place.getImagePath();
         this.tags = placeTags;
         this.likesCount = place.getLikeCount();
         this.registerCount = place.getRegisterCount();
-        this.isRegistered = null;
-        this.isLiked = null;
+        this.isLiked = isLiked;
+        this.isRegistered = isRegistered;
         this.sameTagCount = sameTagCount;
     }
 }

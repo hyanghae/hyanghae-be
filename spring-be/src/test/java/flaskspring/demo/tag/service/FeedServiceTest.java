@@ -1,6 +1,7 @@
 package flaskspring.demo.tag.service;
 
 import com.querydsl.core.Tuple;
+import flaskspring.demo.like.service.PlaceLikeService;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpReq;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpRes;
 import flaskspring.demo.member.service.MemberService;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,12 +31,16 @@ class FeedServiceTest {
     @Autowired
     FeedService feedService;
 
+    @Autowired
+    PlaceLikeService placeLikeService;
+
+    Random random = new Random();
+
     @Test
     void getRecommendFeedTest() {
-        Long savedMemberId = createMember();
+       Long savedMemberId = 1L;
         createMemberTags(savedMemberId, List.of(1L, 3L, 5L, 7L));
-
-        List<ResPlace> recommendFeed = feedService.getRecommendFeed(savedMemberId, "alpha");
+        List<ResPlace> recommendFeed = feedService.getRecommendFeed(savedMemberId, "recommend");
         recommendFeed.forEach(System.out::println);
 
     }

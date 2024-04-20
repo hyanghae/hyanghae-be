@@ -11,5 +11,7 @@ public interface PlaceRegisterRepository extends JpaRepository<PlaceRegister, Lo
 
     Optional<PlaceRegister> findByMemberAndPlace(Member member, Place place);
 
+    boolean existsByMemberAndPlace(Member member, Place place);
+
 
 }

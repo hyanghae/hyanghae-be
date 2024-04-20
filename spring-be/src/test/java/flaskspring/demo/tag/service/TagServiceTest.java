@@ -31,20 +31,22 @@ class TagServiceTest {
 
     @Test
     void printSql() {
-        Set<Integer> selectedTags = new HashSet<>();
-
+        Set<Integer> selectedPlace = new HashSet<>();
         // SQL 문장 출력
-        for (int placeId = 1; placeId <= 740; placeId++) {
-            selectedTags.clear(); // 이전에 선택된 태그를 초기화합니다.
-            for (int i = 0; i < 4; i++) {
-                int randomTagId;
+        for (int memberId = 1; memberId <= 3; memberId++) {
+            selectedPlace.clear();
+            for (int j = 0; j < 100; j++) {
+                // 이전에 선택된 태그를 초기화합니다.
+                int randomPlaceId;
                 do {
-                    randomTagId = ThreadLocalRandom.current().nextInt(1, 25);
-                } while (selectedTags.contains(randomTagId)); // 이미 선택된 태그와 겹치지 않을 때까지 다시 뽑습니다.
-                selectedTags.add(randomTagId); // 선택된 태그를 기억합니다.
-                System.out.println("INSERT INTO place_tag_log (place_id, tag_id) VALUES (" + placeId + ", " + randomTagId + ");");
+                    randomPlaceId = ThreadLocalRandom.current().nextInt(1, 741);
+                } while (selectedPlace.contains(randomPlaceId)); // 이미 선택된 태그와 겹치지 않을 때까지 다시 뽑습니다.
+                selectedPlace.add(randomPlaceId); // 선택된 태그를 기억합니다.
+                System.out.println("insert into place_register(member_id, place_id) values(" + memberId + ", "+randomPlaceId+");");
+                // System.out.println("INSERT INTO place_tag_log (place_id, tag_id) VALUES (" + placeId + ", " + randomTagId + ");");
             }
         }
+
     }
 
     @Test
@@ -54,7 +56,7 @@ class TagServiceTest {
 
     @Test
     void modifyMemberTags() {
-        Long savedMemberId = createMember();
+        Long savedMemberId = createMember(1);
         tagService.saveMemberTags(savedMemberId, List.of(1L, 2L, 3L));
 
         tagService.modifyMemberTags(savedMemberId, List.of(4L, 5L, 6L));
@@ -66,7 +68,7 @@ class TagServiceTest {
 
     @Test
     void saveMemberTags() {
-        Long savedMemberId = createMember();
+        Long savedMemberId = createMember(1);
         tagService.saveMemberTags(savedMemberId, List.of(1L, 2L, 3L));
         List<ResRegisteredTag> registeredTag = tagService.getRegisteredTag(savedMemberId);
 
@@ -75,9 +77,9 @@ class TagServiceTest {
     }
 
 
-    private Long createMember() {
+    private Long createMember(int i) {
         GeneralSignUpReq member = GeneralSignUpReq.builder()
-                .account("testAccount")
+                .account("testAccount" + i)
                 .password("testPassword")
                 .name("testName")
                 .build();

@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Schema(description = "일반 테스트 로그인 요청")
 public class GeneralLoginReq {
 
-    @Schema(description = "계정", example = "test1@gmail.com")
+    @Schema(description = "계정", example = "testAccount1")
     String account;
 
-    @Schema(description = "회원 비밀번호", example = "testPassword1")
+    @Schema(description = "회원 비밀번호", example = "testPassword")
     String password;
 }
