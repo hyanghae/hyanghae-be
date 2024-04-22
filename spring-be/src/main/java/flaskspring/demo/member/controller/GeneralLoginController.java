@@ -1,6 +1,7 @@
 package flaskspring.demo.member.controller;
 
 import flaskspring.demo.config.jwt.JwtTokenProvider;
+import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralLoginReq;
@@ -23,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -35,13 +35,12 @@ import org.springframework.web.bind.annotation.*;
 public class GeneralLoginController {
 
     private final MemberService memberService;
-    private final JwtTokenProvider jwtTokenProvider;
     private final AuthService authService;
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
             @ApiResponse(responseCode = "400", description = MessageUtils.BAD_REQUEST,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
     @Operation(summary = "테스트용 일반 회원가입 Test completed", description = "account, password 기반 일반 회원가입입니다. <br>리턴 데이터는 회원번호입니다")
     @PostMapping("/signUp")
@@ -56,7 +55,7 @@ public class GeneralLoginController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
             @ApiResponse(responseCode = "404", description = MessageUtils.NOT_FOUND,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
     })
     @Operation(summary = "테스트용 일반 로그인 Test completed", description = "account, password 기반 일반 로그인입니다. ")
     @PostMapping("/login")
@@ -69,7 +68,7 @@ public class GeneralLoginController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
     })
     @Operation(summary = "로그아웃", description = "로그아웃입니다. ")
     @PutMapping("/logout")

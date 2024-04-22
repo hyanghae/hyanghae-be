@@ -2,12 +2,15 @@ package flaskspring.demo.tag.controller;
 
 import com.querydsl.core.Tuple;
 import flaskspring.demo.config.auth.MemberDetails;
+import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.tag.service.FeedService;
 import flaskspring.demo.travel.dto.res.ResPlace;
 import flaskspring.demo.utils.MessageUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,10 +35,11 @@ public class FeedController {
 
 
     @Operation(summary = "비인기 여행지 피드", description = "비인기 여행지 피드" +
-         "<br> sort : \"register\", \"like\", \"alpha\", \"recommend(default)\"  ")
+         "<br> sort : \"register\"(등록순), \"like\"(좋아요순), \"alpha\"(가나다순), \"recommend(default)(추천순)\"  ")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
-            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED),
+            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
     @GetMapping("")
     public ResponseEntity<BaseResponse<List<ResPlace>>> FeedGet(@AuthenticationPrincipal MemberDetails memberDetails,

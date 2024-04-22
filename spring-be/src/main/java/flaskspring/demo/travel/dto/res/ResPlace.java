@@ -1,14 +1,22 @@
 package flaskspring.demo.travel.dto.res;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.querydsl.core.annotations.QueryProjection;
 import flaskspring.demo.tag.domain.Tag;
 import flaskspring.demo.travel.domain.Place;
 import lombok.Data;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
 import java.util.List;
 
@@ -43,13 +51,12 @@ public class ResPlace {
     @JsonIgnore
     transient private Long sameTagCount;
 
-    // 생성자, getter, setter 생략
 
-    public ResPlace(Place place, List<String> placeTags, Long sameTagCount, boolean isLiked, boolean isRegistered) {
+    public ResPlace(Place place, List<String> tagNames, Long sameTagCount, Boolean isLiked, Boolean isRegistered) {
         this.placeId = place.getId();
         this.placeName = place.getTouristSpotName();
         this.placeImgUrl = place.getImagePath();
-        this.tags = placeTags;
+        this.tags = tagNames;
         this.likesCount = place.getLikeCount();
         this.registerCount = place.getRegisterCount();
         this.isLiked = isLiked;

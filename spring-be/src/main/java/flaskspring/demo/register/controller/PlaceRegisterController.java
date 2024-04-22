@@ -1,11 +1,14 @@
 package flaskspring.demo.register.controller;
 
 import flaskspring.demo.config.auth.MemberDetails;
+import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.register.service.PlaceRegisterService;
 import flaskspring.demo.utils.MessageUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,7 +34,8 @@ public class PlaceRegisterController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "등록 성공"),
             @ApiResponse(responseCode = "200", description = "등록 해제"),
-            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED),
+            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
     @PostMapping("/{placeId}")
     public ResponseEntity<BaseResponse<Object>> register(@AuthenticationPrincipal MemberDetails memberDetails,

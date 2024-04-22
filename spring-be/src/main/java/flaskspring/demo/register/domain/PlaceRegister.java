@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -28,6 +31,10 @@ public class PlaceRegister {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_id")
     private Place place;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    protected LocalDateTime createdTime;
 
     public static PlaceRegister createRegister(Member member, Place place) {
         return PlaceRegister.builder()

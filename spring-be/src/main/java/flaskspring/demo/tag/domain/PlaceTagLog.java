@@ -1,6 +1,5 @@
 package flaskspring.demo.tag.domain;
 
-
 import flaskspring.demo.travel.domain.Place;
 import jakarta.persistence.*;
 import lombok.Builder;

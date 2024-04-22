@@ -35,14 +35,15 @@ class TagServiceTest {
         // SQL 문장 출력
         for (int memberId = 1; memberId <= 3; memberId++) {
             selectedPlace.clear();
-            for (int j = 0; j < 100; j++) {
+            for (int j = 0; j < 10; j++) {
                 // 이전에 선택된 태그를 초기화합니다.
                 int randomPlaceId;
                 do {
                     randomPlaceId = ThreadLocalRandom.current().nextInt(1, 741);
                 } while (selectedPlace.contains(randomPlaceId)); // 이미 선택된 태그와 겹치지 않을 때까지 다시 뽑습니다.
                 selectedPlace.add(randomPlaceId); // 선택된 태그를 기억합니다.
-                System.out.println("insert into place_register(member_id, place_id) values(" + memberId + ", "+randomPlaceId+");");
+                System.out.println("insert into place_register(member_id, place_id, created_time) values(" + memberId + ", "+randomPlaceId+", now());");
+                //System.out.println("insert into place_like(member_id, place_id) values(" + memberId + ", "+randomPlaceId+");");
                 // System.out.println("INSERT INTO place_tag_log (place_id, tag_id) VALUES (" + placeId + ", " + randomTagId + ");");
             }
         }

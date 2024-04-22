@@ -3,7 +3,6 @@ package flaskspring.demo.tag.repository;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import flaskspring.demo.like.domain.QPlaceLike;
@@ -12,9 +11,7 @@ import flaskspring.demo.register.domain.QPlaceRegister;
 import flaskspring.demo.tag.domain.QPlaceTagLog;
 import flaskspring.demo.tag.domain.QTag;
 import flaskspring.demo.tag.domain.Tag;
-import flaskspring.demo.travel.domain.Place;
 import flaskspring.demo.travel.domain.QPlace;
-import flaskspring.demo.utils.SearchCondUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
 
@@ -39,21 +36,25 @@ public class PlaceTagLogRepositoryCustomImpl implements PlaceTagLogRepositoryCus
 
         List<Long> tagIds = tags.stream().map(Tag::getId).collect(Collectors.toList());
 
-        return jpaQueryFactory
-                .select(place,
+        List<Tuple> tuples  = jpaQueryFactory
+                .select(
+                        place,
                         Expressions.stringTemplate("group_concat({0})", tag.tagName).as("tagNames"),
                         Expressions.stringTemplate("count({0})", tag.tagName).as("sameTagCount"),
-                        placeLike.place.isNotNull().as("isLiked"), // 좋아요 여부 추가
-                        placeRegister.place.isNotNull().as("isRegistered"))// 좋아요 여부 추가
+                        placeLike.place.isNotNull().as("isLiked"),
+                        placeRegister.place.isNotNull().as("isRegistered")
+                )
                 .from(placeTagLog)
                 .join(placeTagLog.tag, tag)
                 .join(placeTagLog.place, place)
-                .leftJoin(placeLike).on(placeLike.place.eq(place).and(placeLike.member.eq(member))) // 회원의 좋아요 정보를 확인하기 위한 조인.where(placeTagLog.tag.id.in(tagIds))
-                .leftJoin(placeRegister).on(placeRegister.place.eq(place).and(placeRegister.member.eq(member))) // 회원의 좋아요 정보를 확인하기 위한 조인.where(placeTagLog.tag.id.in(tagIds))
-                .where(placeTagLog.tag.id.in(tagIds))
+                .leftJoin(placeLike).on(placeLike.place.eq(place).and(placeLike.member.eq(member))) // 회원의 좋아요 정보를 확인하기 위한 조인.
+                .leftJoin(placeRegister).on(placeRegister.place.eq(place).and(placeRegister.member.eq(member))) // 여행지 등록 정보를 확인하기 위한 조인.
+                .where(placeTagLog.tag.id.in(tagIds)) //제공된 TagId를 기반으로
                 .groupBy(place.id)
                 .orderBy(placeOrder(place, sort))
                 .fetch();
+
+        return tuples;
     }
 
     public OrderSpecifier[] placeOrder(QPlace place, String sort) {
