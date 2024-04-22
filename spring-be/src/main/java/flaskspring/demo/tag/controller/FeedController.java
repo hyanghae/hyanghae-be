@@ -1,8 +1,8 @@
 package flaskspring.demo.tag.controller;
 
-import com.querydsl.core.Tuple;
 import flaskspring.demo.config.auth.MemberDetails;
 import flaskspring.demo.exception.BaseExceptionResponse;
+import flaskspring.demo.exception.BaseObject;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.tag.service.FeedService;
@@ -42,12 +42,12 @@ public class FeedController {
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
     @GetMapping("")
-    public ResponseEntity<BaseResponse<List<ResPlace>>> FeedGet(@AuthenticationPrincipal MemberDetails memberDetails,
+    public ResponseEntity<BaseResponse<BaseObject<ResPlace>>> FeedGet(@AuthenticationPrincipal MemberDetails memberDetails,
                                                                 @RequestParam(required = false, defaultValue = "recommend") String sort) {
         Long memberId = memberDetails.getMemberId();
         List<ResPlace> places = feedService.getRecommendFeed(memberId, sort);
 
-        BaseResponse<List<ResPlace>> response = new BaseResponse<>(BaseResponseCode.OK, places);
+        BaseResponse<BaseObject<ResPlace>> response = new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(places));
         return ResponseEntity.ok(response);
     }
 

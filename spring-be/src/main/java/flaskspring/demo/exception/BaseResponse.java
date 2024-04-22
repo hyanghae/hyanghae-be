@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public class BaseResponse<T> {
 
-    @Schema(description = "http 상태코드", example = "OK")
+    @Schema(description = "http 상태코드", example = "200")
     private int code;  // 상태 코드 메세지
 
     @Schema(description = "전달 메시지", example = "요청이 성공적으로 처리되었습니다.")
