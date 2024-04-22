@@ -47,8 +47,7 @@ public class FeedController {
         Long memberId = memberDetails.getMemberId();
         List<ResPlace> places = feedService.getRecommendFeed(memberId, sort);
 
-        BaseResponse<BaseObject<ResPlace>> response = new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(places));
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(places)));
     }
 
 }

@@ -15,7 +15,7 @@ public class DBInit {
     private final PlaceTagLogRepository PlaceTagLogRepository;
 
 
-    String[] sqlFiles = {"sql/init_place.sql", "sql/init_tag.sql"};
+    String[] sqlFiles = {"sql/init_place.sql", "sql/init_category_tag.sql"};
 
 
 }

@@ -39,6 +39,7 @@ public class PlaceTagLogRepositoryCustomImpl implements PlaceTagLogRepositoryCus
         List<Tuple> tuples  = jpaQueryFactory
                 .select(
                         place,
+                        Expressions.stringTemplate("group_concat({0})", tag.id).as("tagIds"), // tagId를 모음
                         Expressions.stringTemplate("group_concat({0})", tag.tagName).as("tagNames"),
                         Expressions.stringTemplate("count({0})", tag.tagName).as("sameTagCount"),
                         placeLike.place.isNotNull().as("isLiked"),

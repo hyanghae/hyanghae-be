@@ -2,9 +2,11 @@ package flaskspring.demo.tag.controller;
 
 import flaskspring.demo.config.auth.MemberDetails;
 import flaskspring.demo.exception.BaseExceptionResponse;
+import flaskspring.demo.exception.BaseObject;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.tag.dto.req.ReqTagIndexes;
+import flaskspring.demo.tag.dto.res.ResCategoryTag;
 import flaskspring.demo.tag.dto.res.ResRegisteredTag;
 import flaskspring.demo.tag.service.TagService;
 import flaskspring.demo.utils.MessageUtils;
@@ -46,7 +48,7 @@ public class TagController {
     }
 
 
-    @Operation(summary = "등록된 태그 조회", description = "유저가 등록한 태그를 조회합니다.")
+    @Operation(summary = "등록한 태그 조회", description = "유저가 등록한 태그를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "등록된 태그 조회 성공"),
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
@@ -72,6 +74,22 @@ public class TagController {
         tagService.modifyMemberTags(myMemberId, request.getTagIndexes()); // 수정하는 서비스 메서드로 변경
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>())); // 응답 메시지에 따라 변경
     }
+
+    @Operation(summary = "모든 카테고리, 태그 보기", description = "모든 카테고리 태그 나열합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
+            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
+    })
+    @GetMapping("/all")
+    public ResponseEntity<BaseResponse<Object>> TagAll(@AuthenticationPrincipal MemberDetails memberDetails) {
+        Long myMemberId = memberDetails.getMemberId();
+        List<ResCategoryTag> allCategoryTag = tagService.getAllTag();// 수정하는 서비스 메서드로 변경
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(allCategoryTag))); // 응답 메시지에 따라 변경
+    }
+
+
+
 
 
 }

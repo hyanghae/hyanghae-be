@@ -23,6 +23,7 @@ public class Member {
     private String nickname;
     private String profileImage;
 
+    @Column(columnDefinition = "INT DEFAULT 0")
     private int registrationCount;
 
     @Enumerated(EnumType.STRING)

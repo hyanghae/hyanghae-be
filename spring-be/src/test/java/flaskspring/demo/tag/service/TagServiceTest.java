@@ -3,7 +3,9 @@ package flaskspring.demo.tag.service;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpReq;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpRes;
 import flaskspring.demo.member.service.MemberService;
+import flaskspring.demo.tag.dto.res.ResCategoryTag;
 import flaskspring.demo.tag.dto.res.ResRegisteredTag;
+import flaskspring.demo.tag.dto.res.ResTag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,12 +44,33 @@ class TagServiceTest {
                     randomPlaceId = ThreadLocalRandom.current().nextInt(1, 741);
                 } while (selectedPlace.contains(randomPlaceId)); // 이미 선택된 태그와 겹치지 않을 때까지 다시 뽑습니다.
                 selectedPlace.add(randomPlaceId); // 선택된 태그를 기억합니다.
-                System.out.println("insert into place_register(member_id, place_id, created_time) values(" + memberId + ", "+randomPlaceId+", now());");
+                System.out.println("insert into place_register(member_id, place_id, created_time) values(" + memberId + ", " + randomPlaceId + ", now());");
                 //System.out.println("insert into place_like(member_id, place_id) values(" + memberId + ", "+randomPlaceId+");");
                 // System.out.println("INSERT INTO place_tag_log (place_id, tag_id) VALUES (" + placeId + ", " + randomTagId + ");");
             }
         }
+    }
 
+    @Test
+    void getAllTagTest() {
+        // 테스트에서 getAllTag() 메서드를 호출하여 모든 태그를 가져옵니다.
+        List<ResCategoryTag> allTags = tagService.getAllTag();
+
+        // 가져온 태그가 null이 아닌지 확인합니다.
+        assertThat(allTags).isNotNull();
+
+        // 가져온 태그의 개수가 예상한 개수와 일치하는지 확인합니다.
+        assertThat(allTags.size()).isEqualTo(6);
+
+        // 각 카테고리와 해당 카테고리에 속하는 태그를 확인합니다.
+        for (ResCategoryTag categoryTag : allTags) {
+            System.out.println("Category: " + categoryTag.getCategoryName());
+            List<ResTag> tags = categoryTag.getTags();
+            assertThat(tags.size()).isEqualTo(4);
+            for (ResTag tag : tags) {
+                System.out.println("   Tag ID: " + tag.getTagId() + ", Tag Name: " + tag.getTagName());
+            }
+        }
     }
 
     @Test

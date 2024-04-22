@@ -44,18 +44,10 @@ public class FeedService {
 
         List<ResPlace> resPlaceList = new ArrayList<>();
         for (Tuple tuple : tuples) {
-            Place place = tuple.get(0, Place.class);
-            String tagNamesString = tuple.get(1, String.class); // 두 번째 항목인 String을 가져옵니다.
-            Long sameTagCount = tuple.get(2, Long.class); // 두 번째 항목인 String을 가져옵니다.
-            Boolean isLiked = tuple.get(3, Boolean.class); // Boolean으로 가져옵니다.
-            Boolean isRegistered = tuple.get(4, Boolean.class); // Boolean으로 가져옵니다.
-
-            List<String> tagNames = Arrays.asList(tagNamesString.split(","));
-            ResPlace resPlace = new ResPlace(place, tagNames, sameTagCount, isLiked, isRegistered);
+            ResPlace resPlace = new ResPlace(tuple);
             resPlaceList.add(resPlace);
         }
         return resPlaceList;
-        //  return sortResPlaces(resPlaceList, sort);
     }
 
 }
