@@ -33,6 +33,7 @@ public class PlaceRegisterRepositoryCustomImpl implements PlaceRegisterRepositor
         List<Tuple> tuples = jpaQueryFactory
                 .select(
                         place,
+                        Expressions.stringTemplate("group_concat({0})", tag.id).as("tagIds"), // tagId를 모음
                         Expressions.stringTemplate("group_concat({0})", tag.tagName).as("tagNames"),
                         placeLike.place.isNotNull().as("isLiked"),
                         placeRegister.place.isNotNull().as("isRegistered"),
