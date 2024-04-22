@@ -26,7 +26,6 @@ public class PlaceLikeService {
 
 
     public boolean likePlace(Long memberId, Long placeId) {
-        boolean isLikeAction;
 
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
