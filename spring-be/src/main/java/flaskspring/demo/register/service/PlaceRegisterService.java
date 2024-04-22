@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -22,11 +23,18 @@ public class PlaceRegisterService {
     private final PlaceRepository placeRepository;
     private final MemberRepository memberRepository;
 
+    private static final int MAX_REGISTRATION_COUNT = 20;
+
     public boolean registerPlace(Long memberId, Long placeId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
         Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
+
+        // 여행지 등록 개수를 초과하는지 확인
+        if (member.getRegistrationCount() >= MAX_REGISTRATION_COUNT) {
+            throw new BaseException(BaseResponseCode.REGISTRATION_LIMIT_EXCEEDED);
+        }
 
         Optional<PlaceRegister> register = placeRegisterRepository.findByMemberAndPlace(member, place);
         if (register.isEmpty()) {
@@ -34,10 +42,14 @@ public class PlaceRegisterService {
             PlaceRegister newRegistration = PlaceRegister.createRegister(member, place);
             placeRegisterRepository.save(newRegistration);
             place.increaseRegisterCount();
+            member.increaseRegistrationCount(); // 등록 개수 증가
             return true; // 등록 동작
         }
         placeRegisterRepository.delete(register.get());
         place.decreaseRegisterCount();
+        member.decreaseRegistrationCount(); // 등록 개수 감소
         return false; // 등록 취소 동작
     }
+
+
 }

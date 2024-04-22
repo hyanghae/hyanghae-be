@@ -23,10 +23,22 @@ public class Member {
     private String nickname;
     private String profileImage;
 
+    private int registrationCount;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void increaseRegistrationCount() {
+        this.registrationCount++;
+    }
+
+    public void decreaseRegistrationCount() {
+        if (this.registrationCount > 0) {
+            this.registrationCount--;
+        }
     }
 }

@@ -49,7 +49,8 @@ public class PathService {
         List<Double> distanceFromPrev = new ArrayList<>();
 
         if (departure.isPresent()) {
-            locations.add(0, new ResLocation(departure.get().getLocation())); // 출발지를 리스트의 맨 앞에 추가하여 출발 도시로 설정
+            DeparturePoint departurePoint = departure.get();
+            locations.add(0, new ResLocation(departurePoint.getLocation())); // 출발지를 리스트의 맨 앞에 추가하여 출발 도시로 설정
 
             double[][] distanceMatrix = initDistanceMatrix(locations);
             double[][] DPMatrix = initDPMatrix(locations);
@@ -60,9 +61,9 @@ public class PathService {
             List<ResSchedulePlace> sortedSchedulePlace = getSortedSchedulePlace(schedulePlaces, paths);
             updateDistanceFromPrev(sortedSchedulePlace, distanceFromPrev);
 
-            return new BaseResponse<>(BaseResponseCode.CREATED, new ResSchedule(fullShortestDistance, sortedSchedulePlace)); //출발지 있을 경우 201
+            return new BaseResponse<>(BaseResponseCode.CREATED, new ResSchedule(departurePoint, fullShortestDistance, sortedSchedulePlace)); //출발지 있을 경우 201
         }
-        return new BaseResponse<>(BaseResponseCode.OK, new ResSchedule(fullShortestDistance, schedulePlaces)); //없는 경우 200
+        return new BaseResponse<>(BaseResponseCode.OK, new ResSchedule((DeparturePoint) null, fullShortestDistance, schedulePlaces)); //없는 경우 200
     }
 
     private void updateDistanceFromPrev(List<ResSchedulePlace> sortedSchedulePlaces, List<Double> distanceFromPrev) {

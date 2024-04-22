@@ -3,6 +3,7 @@ package flaskspring.demo.departure.dto.res;
 import flaskspring.demo.departure.domain.DeparturePoint;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 public class ResDeparture {
@@ -16,8 +17,10 @@ public class ResDeparture {
 
 
     public ResDeparture(DeparturePoint departurePoint) {
-        this.mapX = departurePoint.getLocation().getMapX();
-        this.mapY = departurePoint.getLocation().getMapY();
-        this.roadAddress = departurePoint.getRoadAddress();
+        if (departurePoint != null) {
+            this.mapX = departurePoint.getLocation().getMapX();
+            this.mapY = departurePoint.getLocation().getMapY();
+            this.roadAddress = departurePoint.getRoadAddress();
+        }
     }
 }

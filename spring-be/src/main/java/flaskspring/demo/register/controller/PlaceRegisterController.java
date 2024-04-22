@@ -30,10 +30,15 @@ public class PlaceRegisterController {
 
     private final PlaceRegisterService placeRegisterService;
 
-    @Operation(summary = "여행지 등록", description = "여행지를 등록합니다")
+    @Operation(summary = "여행지 등록", description = "여행지를 등록합니다" +
+            "<br> 200 : 여행지 등록 취소" +
+            "<br> 201 : 여행지 등록 성공" +
+            "<br> 400 : 여행지 등록 개수 초과")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "등록 성공"),
             @ApiResponse(responseCode = "200", description = "등록 해제"),
+            @ApiResponse(responseCode = "400", description = "여행지 등록 개수 초과",
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
