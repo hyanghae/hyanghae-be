@@ -51,8 +51,11 @@ public class TagService {
 
         // 새로운 태그 등록
         for (Tag tag : newTags) {
-            MemberTagLog memberTagLog = MemberTagLog.createMemberTagLog(member, tag);
-            memberTagLogRepository.save(memberTagLog);
+            boolean isExist = memberTagLogRepository.existsByMemberAndTag(member, tag);
+            if (!isExist) {
+                MemberTagLog memberTagLog = MemberTagLog.createMemberTagLog(member, tag);
+                memberTagLogRepository.save(memberTagLog);
+            }
         }
     }
 
@@ -64,8 +67,11 @@ public class TagService {
         List<Tag> tags = tagRepository.findByIdIn(tagIds);
 
         for (Tag tag : tags) {
-            MemberTagLog memberTagLog = MemberTagLog.createMemberTagLog(member, tag);
-            memberTagLogRepository.save(memberTagLog);
+            boolean isExist = memberTagLogRepository.existsByMemberAndTag(member, tag);
+            if (!isExist) {
+                MemberTagLog memberTagLog = MemberTagLog.createMemberTagLog(member, tag);
+                memberTagLogRepository.save(memberTagLog);
+            }
         }
     }
 }
