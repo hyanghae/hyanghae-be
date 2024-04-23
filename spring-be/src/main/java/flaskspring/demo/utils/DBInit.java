@@ -1,7 +1,7 @@
 package flaskspring.demo.utils;
 
-import flaskspring.demo.tag.repository.PlaceTagLogRepository;
-import flaskspring.demo.tag.repository.TagRepository;
+import flaskspring.demo.travel.repository.PlaceTagLogRepository;
+import flaskspring.demo.travel.repository.TagRepository;
 import flaskspring.demo.travel.repository.PlaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

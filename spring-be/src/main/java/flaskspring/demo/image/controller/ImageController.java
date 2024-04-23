@@ -31,7 +31,7 @@ public class ImageController {
 
     @Operation(summary = "이미지 업로드", description = "이미지 업로드 기능")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "업로드 취소"),
+            @ApiResponse(responseCode = "200", description = "업로드 성공"),
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })

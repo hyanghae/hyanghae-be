@@ -36,10 +36,9 @@ public enum BaseResponseCode {
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증되지 않았습니다."),
 
-    FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다");
+    FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다"),
 
-
-
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다");
 
 
     private HttpStatus code;

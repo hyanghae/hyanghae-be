@@ -16,12 +16,12 @@ public class AuthConstant {
 
     // GET 메서드에 대한 인증이 필요한 경로
     public static final String[] GET_AUTH_BLACKLIST
-            = {"/api/tag","/api/place/recommend","/api/departure", "/api/schedule/path","/api/tag/all",
+            = {"/api/tag","/api/feed/tag","/api/departure", "/api/schedule/path","/api/tag/all",
     "/api/mypage/main"};
 
     // POST 메서드에 대한 인증이 필요한 경로
     public static final String[] POST_AUTH_BLACKLIST
-            = {"/api/tag" ,"/api/like/{placeId}", "/api/departure", "/api/image"};
+            = {"/api/tag" ,"/api/like/{placeId}", "/api/departure", "/api/image", "/api/feed/image"};
 
     // PUT 메서드에 대한 인증이 필요한 경로
     public static final String[] PUT_AUTH_BLACKLIST

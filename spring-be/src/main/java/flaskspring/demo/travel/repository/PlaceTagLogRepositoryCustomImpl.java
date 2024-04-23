@@ -1,4 +1,4 @@
-package flaskspring.demo.tag.repository;
+package flaskspring.demo.travel.repository;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
@@ -32,7 +32,7 @@ public class PlaceTagLogRepositoryCustomImpl implements PlaceTagLogRepositoryCus
     QPlaceLike placeLike = QPlaceLike.placeLike;
     QPlaceRegister placeRegister = QPlaceRegister.placeRegister;
 
-    public List<Tuple> findByTagIn(List<Tag> tags, String sort, Member member) {
+    public List<Tuple> getFeedByTags(List<Tag> tags, String sort, Member member) {
 
         List<Long> tagIds = tags.stream().map(Tag::getId).collect(Collectors.toList());
 

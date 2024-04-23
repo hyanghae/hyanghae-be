@@ -1,4 +1,4 @@
-package flaskspring.demo.tag.repository;
+package flaskspring.demo.travel.repository;
 
 import com.querydsl.core.Tuple;
 import flaskspring.demo.member.domain.Member;
@@ -11,5 +11,5 @@ import java.util.List;
 
 public interface PlaceTagLogRepositoryCustom {
 
-    List<Tuple> findByTagIn(List<Tag> tags, String sort, Member members);
+    List<Tuple> getFeedByTags(List<Tag> tags, String sort, Member members);
 }

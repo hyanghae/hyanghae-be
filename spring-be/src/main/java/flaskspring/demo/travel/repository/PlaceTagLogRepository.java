@@ -1,13 +1,7 @@
-package flaskspring.demo.tag.repository;
+package flaskspring.demo.travel.repository;
 
 import flaskspring.demo.tag.domain.PlaceTagLog;
-import flaskspring.demo.tag.domain.Tag;
-import flaskspring.demo.travel.domain.Place;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
-import java.util.List;
 
 public interface PlaceTagLogRepository extends JpaRepository<PlaceTagLog, Long>, PlaceTagLogRepositoryCustom {
 
@@ -18,5 +12,5 @@ public interface PlaceTagLogRepository extends JpaRepository<PlaceTagLog, Long>,
             "JOIN ptl.place p " +
             "WHERE ptl.tag IN :tags " +
             "GROUP BY p")
-    List<Object[]> findByTagIn(@Param("tags") List<Tag> tags);*/
+    List<Object[]> getFeedByTags(@Param("tags") List<Tag> tags);*/
 }

@@ -1,4 +1,4 @@
-package flaskspring.demo.tag.repository;
+package flaskspring.demo.travel.repository;
 
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.tag.domain.MemberTagLog;

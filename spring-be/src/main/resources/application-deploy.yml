@@ -27,3 +27,6 @@ security:
     token:
       secret-key: "remoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoa"
       expire-length: "604800000" # 1 week in milliseconds
+
+flask:
+  base-url: http://flask:5000/ml/api/  # 로컬 프로파일용 Flask URL
