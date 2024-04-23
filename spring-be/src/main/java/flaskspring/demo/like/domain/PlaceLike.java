@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -28,6 +31,9 @@ public class PlaceLike {
     @JoinColumn(name = "place_id")
     private Place place;
 
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdTime;
 
     public static PlaceLike createLike(Member member, Place place) {
         return PlaceLike.builder()

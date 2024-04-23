@@ -21,22 +21,17 @@ public class UploadImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String savedImageUrl;
-
-    @Column(name = "original_file_name")
     private String originalFileName;
 
-    @Column(name = "save_file_name")
     private String saveFileName;
 
     private String extension;
 
     @Lob
-    @Column(name = "store_file_url")
-    private String storeFileUrl;
+    private String savedImageUrl;
 
     @CreationTimestamp
-    private LocalDateTime createdDate;
+    private LocalDateTime createdTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

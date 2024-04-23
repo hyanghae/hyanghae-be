@@ -1,11 +1,18 @@
 package flaskspring.demo.recommend.controller;
 
+import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.recommend.dto.res.ImgRecommendationDto;
 import flaskspring.demo.recommend.service.recommendService;
 import flaskspring.demo.travel.domain.Place;
 import flaskspring.demo.recommend.dto.req.FeatureScoreDto;
 import flaskspring.demo.recommend.dto.res.RecommendationDto;
 import flaskspring.demo.recommend.dto.res.ResRecommend;
+import flaskspring.demo.utils.MessageUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -67,6 +74,12 @@ public class RecommendController {
         return ResponseEntity.ok(resRecommend);
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
+            @ApiResponse(responseCode = "400", description = MessageUtils.BAD_REQUEST,
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class)))
+    })
+    @Operation(summary = "이미지 기반 추천", description = "이미지 유사도 기반 추천")
     @PostMapping("/image")
     public ResponseEntity<List<ImgRecommendationDto>> recommendByImage(@RequestParam("photo") MultipartFile placeImage) {
         try {

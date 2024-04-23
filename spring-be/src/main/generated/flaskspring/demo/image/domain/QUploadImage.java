@@ -22,7 +22,7 @@ public class QUploadImage extends EntityPathBase<UploadImage> {
 
     public static final QUploadImage uploadImage = new QUploadImage("uploadImage");
 
-    public final DateTimePath<java.time.LocalDateTime> createdDate = createDateTime("createdDate", java.time.LocalDateTime.class);
+    public final DateTimePath<java.time.LocalDateTime> createdTime = createDateTime("createdTime", java.time.LocalDateTime.class);
 
     public final StringPath extension = createString("extension");
 
@@ -35,8 +35,6 @@ public class QUploadImage extends EntityPathBase<UploadImage> {
     public final StringPath savedImageUrl = createString("savedImageUrl");
 
     public final StringPath saveFileName = createString("saveFileName");
-
-    public final StringPath storeFileUrl = createString("storeFileUrl");
 
     public QUploadImage(String variable) {
         this(UploadImage.class, forVariable(variable), INITS);

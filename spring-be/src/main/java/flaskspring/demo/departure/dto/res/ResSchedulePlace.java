@@ -82,5 +82,4 @@ public class ResSchedulePlace {
         return resTags;
     }
 
-
 }

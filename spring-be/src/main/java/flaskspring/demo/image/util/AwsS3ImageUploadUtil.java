@@ -66,7 +66,7 @@ public class AwsS3ImageUploadUtil implements ImageUploadUtil {
         UploadImage uploadImage = UploadImage.builder()
                 .originalFileName(originalFilename)
                 .saveFileName(savedFilename)
-                .storeFileUrl(savedImgUrl)
+                .savedImageUrl(savedImgUrl)
                 .extension(fileExtension)
                 .member(member)
                 .build();

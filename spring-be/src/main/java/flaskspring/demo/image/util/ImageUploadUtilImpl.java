@@ -49,7 +49,7 @@ public class ImageUploadUtilImpl implements ImageUploadUtil {
         UploadImage uploadImage = UploadImage.builder()
                 .originalFileName(originalFilename)
                 .saveFileName(fileName)
-                .storeFileUrl(savedImgUrl)
+                .savedImageUrl(savedImgUrl)
                 .extension(fileExtension)
                 .member(member)
                 .build();
