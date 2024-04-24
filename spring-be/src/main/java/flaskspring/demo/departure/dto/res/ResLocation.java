@@ -7,10 +7,10 @@ import lombok.Data;
 @Data
 public class ResLocation {
     @Schema(description = "출발지 x좌표", example = "127.12321")
-    private String mapX;
+    private double mapX;
 
     @Schema(description = "출발지 y좌표", example = "37.12321")
-    private String mapY;
+    private double mapY;
 
     public ResLocation(Location location) {
         this.mapX = location.getMapX();

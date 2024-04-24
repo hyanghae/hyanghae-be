@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 public class ResOPlace {
 
-    private String mapx;
-    private String mapy;
+    private double mapx;
+    private double mapy;
     private int searchCount;
     private String city;
     private String majorCategory;

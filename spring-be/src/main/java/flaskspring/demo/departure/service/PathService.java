@@ -175,10 +175,10 @@ public class PathService {
 
     private double calculateDistance(ResLocation place1, ResLocation place2) {
 
-        double startLat = Double.parseDouble(place1.getMapY());
-        double startLon = Double.parseDouble(place1.getMapX());
-        double endLat = Double.parseDouble(place2.getMapY());
-        double endLon = Double.parseDouble(place2.getMapX());
+        double startLat = place1.getMapY();
+        double startLon = place1.getMapX();
+        double endLat = place2.getMapY();
+        double endLon = place2.getMapX();
 
         double dLat = Math.toRadians(endLat - startLat);
         double dLon = Math.toRadians(endLon - startLon);

@@ -15,8 +15,8 @@ public class ResPlaceDetail {
     private ResFamousPlace simFamousPlace;
     private int totalSimScore;
     private List<ResTagSim> tagList;
-    private String mapX;
-    private String mapY;
+    private double mapX;
+    private double mapY;
     private String placeRoadAddress;
     private List<ResSchedulePlace> nearByPlaces;
 

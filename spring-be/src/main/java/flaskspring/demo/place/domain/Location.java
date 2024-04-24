@@ -14,19 +14,17 @@ public class Location {
 
     private static final double AVERAGE_RADIUS_OF_EARTH_KM = 6371;
 
-    String mapX;
-    String mapY;
-
-
+    double mapX;
+    double mapY;
 
 
     // 위도와 경도를 사용하여 두 지점 간의 거리를 계산하는 메서드
-    public double calculateDistance(String otherMapX, String otherMapY) {
+    public double calculateDistance(double otherMapX, double otherMapY) {
 
-        double startLat = Double.parseDouble(this.mapY);
-        double startLon = Double.parseDouble(this.mapX);
-        double endLat = Double.parseDouble(otherMapY);
-        double endLon = Double.parseDouble(otherMapX);
+        double startLat = this.mapY;
+        double startLon = this.mapX;
+        double endLat = otherMapY;
+        double endLon = otherMapX;
 
         double dLat = Math.toRadians(endLat - startLat);
         double dLon = Math.toRadians(endLon - startLon);
