@@ -1,7 +1,7 @@
 package flaskspring.demo.recommend.dto.res;
 
-import flaskspring.demo.travel.domain.Place;
-import flaskspring.demo.travel.dto.res.ResOPlace;
+import flaskspring.demo.place.domain.Place;
+import flaskspring.demo.place.dto.res.ResOPlace;
 import lombok.Data;
 
 import java.util.List;

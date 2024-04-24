@@ -25,6 +25,7 @@ app.register_blueprint(img_recommend, url_prefix="/ml/api/img-recommends")
 
 db.init_app(app)
 
+
 with app.app_context():
     db.create_all()
 

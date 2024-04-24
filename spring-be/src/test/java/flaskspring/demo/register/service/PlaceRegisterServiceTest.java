@@ -2,15 +2,14 @@ package flaskspring.demo.register.service;
 
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.MemberRepository;
-import flaskspring.demo.travel.domain.Place;
-import flaskspring.demo.travel.repository.PlaceRepository;
+import flaskspring.demo.place.domain.Place;
+import flaskspring.demo.place.repository.PlaceRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional

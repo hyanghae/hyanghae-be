@@ -28,7 +28,7 @@ public class QPlaceLike extends EntityPathBase<PlaceLike> {
 
     public final flaskspring.demo.member.domain.QMember member;
 
-    public final flaskspring.demo.travel.domain.QPlace place;
+    public final flaskspring.demo.place.domain.QPlace place;
 
     public QPlaceLike(String variable) {
         this(PlaceLike.class, forVariable(variable), INITS);
@@ -49,7 +49,7 @@ public class QPlaceLike extends EntityPathBase<PlaceLike> {
     public QPlaceLike(Class<? extends PlaceLike> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new flaskspring.demo.member.domain.QMember(forProperty("member")) : null;
-        this.place = inits.isInitialized("place") ? new flaskspring.demo.travel.domain.QPlace(forProperty("place"), inits.get("place")) : null;
+        this.place = inits.isInitialized("place") ? new flaskspring.demo.place.domain.QPlace(forProperty("place"), inits.get("place")) : null;
     }
 
 }

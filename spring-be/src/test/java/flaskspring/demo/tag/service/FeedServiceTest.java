@@ -1,26 +1,21 @@
 package flaskspring.demo.tag.service;
 
-import com.querydsl.core.Tuple;
 import flaskspring.demo.like.service.PlaceLikeService;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpReq;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpRes;
 import flaskspring.demo.member.service.MemberService;
+import flaskspring.demo.place.dto.res.ResPlaceWithSim;
 import flaskspring.demo.recommend.dto.res.ImgRecommendationDto;
 import flaskspring.demo.tag.dto.res.ResTag;
-import flaskspring.demo.travel.domain.Place;
-import flaskspring.demo.travel.dto.res.ResPlace;
+import flaskspring.demo.place.dto.res.ResPlace;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -44,13 +39,13 @@ class FeedServiceTest {
     void getRecommendFeedTestByImage() {
         Long savedMemberId = 1L;
         List<ImgRecommendationDto> recommendationDto = getRecommendationDto();
-        List<ResPlace> recommendFeed = feedService.getRecommendFeed(1L, recommendationDto);
+        List<ResPlaceWithSim> recommendFeed = feedService.getRecommendFeed(1L, recommendationDto);
         printResPlaces(recommendFeed);
     }
 
-    private static void printResPlaces(List<ResPlace> places) {
+    private static void printResPlaces(List<ResPlaceWithSim> places) {
         System.out.println("Recommended Places:");
-        for (ResPlace place : places) {
+        for (ResPlaceWithSim place : places) {
             System.out.println("Place ID: " + place.getPlaceId());
             System.out.println("Place Name: " + place.getPlaceName());
             System.out.println("Place Image URL: " + place.getPlaceImgUrl());

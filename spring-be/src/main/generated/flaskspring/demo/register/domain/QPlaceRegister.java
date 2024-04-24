@@ -28,7 +28,7 @@ public class QPlaceRegister extends EntityPathBase<PlaceRegister> {
 
     public final flaskspring.demo.member.domain.QMember member;
 
-    public final flaskspring.demo.travel.domain.QPlace place;
+    public final flaskspring.demo.place.domain.QPlace place;
 
     public QPlaceRegister(String variable) {
         this(PlaceRegister.class, forVariable(variable), INITS);
@@ -49,7 +49,7 @@ public class QPlaceRegister extends EntityPathBase<PlaceRegister> {
     public QPlaceRegister(Class<? extends PlaceRegister> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new flaskspring.demo.member.domain.QMember(forProperty("member")) : null;
-        this.place = inits.isInitialized("place") ? new flaskspring.demo.travel.domain.QPlace(forProperty("place"), inits.get("place")) : null;
+        this.place = inits.isInitialized("place") ? new flaskspring.demo.place.domain.QPlace(forProperty("place"), inits.get("place")) : null;
     }
 
 }

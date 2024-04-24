@@ -2,11 +2,10 @@ package flaskspring.demo.myPage.dto.res;
 
 import com.querydsl.core.Tuple;
 import flaskspring.demo.tag.dto.res.ResTag;
-import flaskspring.demo.travel.domain.Place;
+import flaskspring.demo.place.domain.Place;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

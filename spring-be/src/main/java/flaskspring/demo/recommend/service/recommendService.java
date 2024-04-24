@@ -1,16 +1,11 @@
 package flaskspring.demo.recommend.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import flaskspring.demo.travel.domain.Place;
-import flaskspring.demo.travel.repository.PlaceRepository;
-import jakarta.annotation.PostConstruct;
+import flaskspring.demo.place.domain.Place;
+import flaskspring.demo.place.repository.PlaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 @Service

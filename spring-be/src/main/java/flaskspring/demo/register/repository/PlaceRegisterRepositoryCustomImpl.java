@@ -8,12 +8,10 @@ import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.register.domain.QPlaceRegister;
 import flaskspring.demo.tag.domain.QPlaceTagLog;
 import flaskspring.demo.tag.domain.QTag;
-import flaskspring.demo.tag.domain.Tag;
-import flaskspring.demo.travel.domain.QPlace;
+import flaskspring.demo.place.domain.QPlace;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor

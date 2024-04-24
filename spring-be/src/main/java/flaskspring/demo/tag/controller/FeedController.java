@@ -2,9 +2,10 @@ package flaskspring.demo.tag.controller;
 
 import flaskspring.demo.config.auth.MemberDetails;
 import flaskspring.demo.exception.*;
+import flaskspring.demo.place.dto.res.ResPlaceWithSim;
 import flaskspring.demo.recommend.dto.res.ImgRecommendationDto;
 import flaskspring.demo.tag.service.FeedService;
-import flaskspring.demo.travel.dto.res.ResPlace;
+import flaskspring.demo.place.dto.res.ResPlace;
 import flaskspring.demo.utils.FlaskConfig;
 import flaskspring.demo.utils.MessageUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,9 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-
-import static flaskspring.demo.utils.Constant.BASE_FLASK_URL;
-import static flaskspring.demo.utils.Constant.LOCAL_BASE_FLASK_URL;
 
 
 @Tag(name = "여행지 추천 피드", description = "여행지 피드 API")
@@ -68,13 +66,13 @@ public class FeedController {
     })
     @Operation(summary = "이미지 기반 피드", description = "이미지 유사도 기반 추천")
     @PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<BaseResponse<BaseObject<ResPlace>>> recommendByImage(@AuthenticationPrincipal MemberDetails memberDetails,
+    public ResponseEntity<BaseResponse<BaseObject<ResPlaceWithSim>>> recommendByImage(@AuthenticationPrincipal MemberDetails memberDetails,
                                                                                @RequestParam("photo") MultipartFile placeImage) {
 
         Long myMemberId = memberDetails.getMemberId();
-        List<ImgRecommendationDto> resultFromFlask = getResultFromFlask(placeImage);
+        List<ImgRecommendationDto> resultFromFlask = getResultFromFlask(placeImage); //이미지 유사도 상위 3개
 
-        List<ResPlace> recommendFeed = feedService.getRecommendFeed(myMemberId, resultFromFlask);
+        List<ResPlaceWithSim> recommendFeed = feedService.getRecommendFeed(myMemberId, resultFromFlask);
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(recommendFeed)));
     }

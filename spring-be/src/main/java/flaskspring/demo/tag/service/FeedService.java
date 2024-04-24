@@ -5,19 +5,20 @@ import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.MemberRepository;
+import flaskspring.demo.place.dto.res.ResPlaceWithSim;
 import flaskspring.demo.recommend.dto.res.ImgRecommendationDto;
 import flaskspring.demo.tag.domain.MemberTagLog;
 import flaskspring.demo.tag.domain.Tag;
-import flaskspring.demo.travel.repository.MemberTagLogRepository;
-import flaskspring.demo.travel.repository.PlaceTagLogRepository;
-import flaskspring.demo.travel.dto.res.ResPlace;
-import flaskspring.demo.travel.repository.PlaceRepository;
+import flaskspring.demo.place.repository.MemberTagLogRepository;
+import flaskspring.demo.tag.repository.PlaceTagLogRepository;
+import flaskspring.demo.place.dto.res.ResPlace;
+import flaskspring.demo.place.repository.PlaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,17 +45,38 @@ public class FeedService {
     }
 
 
-    public List<ResPlace> getRecommendFeed(Long memberId, List<ImgRecommendationDto> recommendationDtos) {
-
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
+    public List<ResPlaceWithSim> getRecommendFeed(Long memberId, List<ImgRecommendationDto> recommendationDtos) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
 
         List<String> placeNames = recommendationDtos.stream()
                 .map(ImgRecommendationDto::getName)
                 .toList();
 
         List<Tuple> tuples = placeRepository.getFeedByPlaceNames(placeNames, member);
-        List<ResPlace> resPlaceList = tuples.stream().map(ResPlace::new).toList();
+
+        List<ResPlaceWithSim> resPlaceList = tuples.stream()
+                .map(ResPlaceWithSim::new)
+                .toList();
+
+        setSimilarityScoresAndSort(resPlaceList, recommendationDtos);
 
         return resPlaceList;
     }
+
+    private void setSimilarityScoresAndSort(List<ResPlaceWithSim> resPlaceList, List<ImgRecommendationDto> recommendationDtos) {
+        resPlaceList.forEach(resPlaceWithSim -> {
+            // recommendationDtos에서 해당 장소의 이름을 찾아 유사도 점수를 설정
+            ImgRecommendationDto recommendationDto = recommendationDtos.stream()
+                    .filter(dto -> dto.getName().equals(resPlaceWithSim.getPlaceName()))
+                    .findFirst()
+                    .orElse(null);
+            if (recommendationDto != null) {
+                resPlaceWithSim.setSimilarityScore(recommendationDto.getSimilarity());
+            }
+        });
+
+        resPlaceList.sort(Comparator.comparing(ResPlaceWithSim::getSimilarityScore).reversed());
+    }
+
 }

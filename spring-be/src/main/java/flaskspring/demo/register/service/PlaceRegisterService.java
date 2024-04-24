@@ -6,13 +6,12 @@ import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.MemberRepository;
 import flaskspring.demo.register.domain.PlaceRegister;
 import flaskspring.demo.register.repository.PlaceRegisterRepository;
-import flaskspring.demo.travel.domain.Place;
-import flaskspring.demo.travel.repository.PlaceRepository;
+import flaskspring.demo.place.domain.Place;
+import flaskspring.demo.place.repository.PlaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor

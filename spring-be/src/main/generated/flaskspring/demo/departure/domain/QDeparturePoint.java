@@ -26,7 +26,7 @@ public class QDeparturePoint extends EntityPathBase<DeparturePoint> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final flaskspring.demo.travel.domain.QLocation location;
+    public final flaskspring.demo.place.domain.QLocation location;
 
     public final flaskspring.demo.member.domain.QMember member;
 
@@ -50,7 +50,7 @@ public class QDeparturePoint extends EntityPathBase<DeparturePoint> {
 
     public QDeparturePoint(Class<? extends DeparturePoint> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.location = inits.isInitialized("location") ? new flaskspring.demo.travel.domain.QLocation(forProperty("location")) : null;
+        this.location = inits.isInitialized("location") ? new flaskspring.demo.place.domain.QLocation(forProperty("location")) : null;
         this.member = inits.isInitialized("member") ? new flaskspring.demo.member.domain.QMember(forProperty("member")) : null;
     }
 

@@ -5,7 +5,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.SimpleExpression;
 import com.querydsl.core.types.dsl.StringExpression;
-import flaskspring.demo.travel.domain.QPlace;
+import flaskspring.demo.place.domain.QPlace;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 

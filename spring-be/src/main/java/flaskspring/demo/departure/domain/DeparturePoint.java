@@ -2,7 +2,7 @@ package flaskspring.demo.departure.domain;
 
 import flaskspring.demo.departure.dto.req.ReqDeparture;
 import flaskspring.demo.member.domain.Member;
-import flaskspring.demo.travel.domain.Location;
+import flaskspring.demo.place.domain.Location;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

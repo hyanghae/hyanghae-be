@@ -1,7 +1,7 @@
 package flaskspring.demo.like.domain;
 
 import flaskspring.demo.member.domain.Member;
-import flaskspring.demo.travel.domain.Place;
+import flaskspring.demo.place.domain.Place;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

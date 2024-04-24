@@ -1,15 +1,12 @@
 package flaskspring.demo.departure.service;
 
-import com.querydsl.core.Tuple;
 import flaskspring.demo.departure.dto.req.ReqDeparture;
 import flaskspring.demo.departure.dto.res.ResDeparture;
 import flaskspring.demo.departure.dto.res.ResSchedulePlace;
 import flaskspring.demo.register.service.PlaceRegisterService;
-import flaskspring.demo.travel.domain.Place;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

@@ -17,7 +17,7 @@ public class AuthConstant {
     // GET 메서드에 대한 인증이 필요한 경로
     public static final String[] GET_AUTH_BLACKLIST
             = {"/api/tag","/api/feed/tag","/api/departure", "/api/schedule/path","/api/tag/all",
-    "/api/mypage/main"};
+    "/api/mypage/main", "/api/place/detail/{placeId}"};
 
     // POST 메서드에 대한 인증이 필요한 경로
     public static final String[] POST_AUTH_BLACKLIST

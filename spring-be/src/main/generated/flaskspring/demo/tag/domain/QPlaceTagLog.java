@@ -24,9 +24,11 @@ public class QPlaceTagLog extends EntityPathBase<PlaceTagLog> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final flaskspring.demo.travel.domain.QPlace place;
+    public final flaskspring.demo.place.domain.QPlace place;
 
     public final QTag tag;
+
+    public final NumberPath<Integer> tagScore = createNumber("tagScore", Integer.class);
 
     public QPlaceTagLog(String variable) {
         this(PlaceTagLog.class, forVariable(variable), INITS);
@@ -46,8 +48,8 @@ public class QPlaceTagLog extends EntityPathBase<PlaceTagLog> {
 
     public QPlaceTagLog(Class<? extends PlaceTagLog> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.place = inits.isInitialized("place") ? new flaskspring.demo.travel.domain.QPlace(forProperty("place"), inits.get("place")) : null;
-        this.tag = inits.isInitialized("tag") ? new QTag(forProperty("tag")) : null;
+        this.place = inits.isInitialized("place") ? new flaskspring.demo.place.domain.QPlace(forProperty("place"), inits.get("place")) : null;
+        this.tag = inits.isInitialized("tag") ? new QTag(forProperty("tag"), inits.get("tag")) : null;
     }
 
 }
