@@ -4,7 +4,7 @@ services:
 
   spring:
     build:
-      context: ./demo
+      context: ./spring-be
       dockerfile: Dockerfile
     container_name: spring
     ports:
@@ -15,7 +15,7 @@ services:
 
   flask:
     build:
-      context: ./flask-sqlAlchemy
+      context: ./flask-ml
       dockerfile: Dockerfile
     container_name: flask
     ports:
