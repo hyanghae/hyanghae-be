@@ -75,7 +75,7 @@ public class TagController {
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>())); // 응답 메시지에 따라 변경
     }
 
-    @Operation(summary = "모든 카테고리, 태그 보기", description = "모든 카테고리 태그 나열합니다")
+    @Operation(summary = "모든 카테고리, 태그 보기", description = "모든 카테고리, 태그 나열합니다")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,

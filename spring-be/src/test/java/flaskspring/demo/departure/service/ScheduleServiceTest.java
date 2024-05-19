@@ -57,8 +57,8 @@ class ScheduleServiceTest {
 
         ReqDeparture reqDeparture = new ReqDeparture();
         reqDeparture.setRoadAddress("Test Road Address");
-        reqDeparture.setMapX("127.619842753323");
-        reqDeparture.setMapY("37.2125169562113");
+        reqDeparture.setMapX(127.619842753323);
+        reqDeparture.setMapY(37.2125169562113);
         scheduleService.saveDeparture(savedMemberId, reqDeparture);
 
         List<ResSchedulePlace> schedule = scheduleService.getSchedule(savedMemberId);
@@ -88,8 +88,8 @@ class ScheduleServiceTest {
         for (int i = 1; i <= 3; i++) {
             ReqDeparture reqDeparture = new ReqDeparture();
             reqDeparture.setRoadAddress("Test Road Address" + i);
-            reqDeparture.setMapX("123.456");
-            reqDeparture.setMapY("789.012");
+            reqDeparture.setMapX(123.456);
+            reqDeparture.setMapY(789.012);
 
             scheduleService.saveDeparture(savedMemberId, reqDeparture);
         }

@@ -31,8 +31,8 @@ class PathServiceTest {
 
         ReqDeparture reqDeparture = new ReqDeparture();
         reqDeparture.setRoadAddress("Test Road Address");
-        reqDeparture.setMapX("127.619842753323");
-        reqDeparture.setMapY("37.2125169562113");
+        reqDeparture.setMapX(127.619842753323);
+        reqDeparture.setMapY(37.2125169562113);
         scheduleService.saveDeparture(savedMemberId, reqDeparture);
 
         BaseResponse<ResSchedule> schedule = pathService.getSchedule(savedMemberId);

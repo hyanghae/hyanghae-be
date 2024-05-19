@@ -24,11 +24,11 @@ public class KakaoLoginRequestDto {
 
     private String email;
 
-    public KakaoLoginRequestDto(KakaoProfile profile, String uniqueNickname) {
+    public KakaoLoginRequestDto(KakaoProfile profile) {
         this.account = profile.getProperties().getNickname() + profile.getId(); //닉네임과 카카오 식별자를 가지고 임의로 account를 만듦.
-        this.nickname = uniqueNickname;
+        this.nickname = profile.getProperties().getNickname();
         this.password = "password";
-        this.name = profile.getProperties().getNickname();
+        this.name = "이름";
         this.profileImageFileName = profile.getProperties().getProfile_image();
         this.kakaoIdentifier = profile.getId();
         this.email = profile.getKakao_account().getEmail();

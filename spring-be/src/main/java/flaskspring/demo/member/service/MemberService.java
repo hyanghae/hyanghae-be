@@ -2,13 +2,13 @@ package flaskspring.demo.member.service;
 
 import flaskspring.demo.config.jwt.JwtTokenProvider;
 import flaskspring.demo.exception.BaseException;
-import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralLoginReq;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralLoginRes;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpReq;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpRes;
+import flaskspring.demo.member.dto.Res.UserStauts;
 import flaskspring.demo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,8 +44,10 @@ public class MemberService {
             throw new BaseException(BaseResponseCode.UNAUTHORIZED);
         }
         String token = jwtTokenProvider.createToken(member.getAccount());
-
-        return new GeneralLoginRes(token, member);
+        if(!member.isOnboarded()){
+            return new GeneralLoginRes(token, UserStauts.NOT_ONBOARDED);
+        }
+        return new GeneralLoginRes(token, UserStauts.ONBOARDED);
     }
 
     @Transactional

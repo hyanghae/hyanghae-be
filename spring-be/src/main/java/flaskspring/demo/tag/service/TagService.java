@@ -78,6 +78,7 @@ public class TagService {
     }
 
 
+    @Transactional
     public void saveMemberTags(Long memberId, List<Long> tagIds) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
@@ -91,5 +92,6 @@ public class TagService {
                 memberTagLogRepository.save(memberTagLog);
             }
         }
+        member.onBoard();
     }
 }

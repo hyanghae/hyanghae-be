@@ -47,7 +47,7 @@ public class QMemberTagLog extends EntityPathBase<MemberTagLog> {
     public QMemberTagLog(Class<? extends MemberTagLog> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new flaskspring.demo.member.domain.QMember(forProperty("member")) : null;
-        this.tag = inits.isInitialized("tag") ? new QTag(forProperty("tag")) : null;
+        this.tag = inits.isInitialized("tag") ? new QTag(forProperty("tag"), inits.get("tag")) : null;
     }
 
 }

@@ -23,6 +23,8 @@ public class Member {
     private String nickname;
     private String profileImage;
 
+    private boolean isOnboarded;
+
     @Column(columnDefinition = "INT DEFAULT 0")
     private int registrationCount;
 
@@ -41,5 +43,9 @@ public class Member {
         if (this.registrationCount > 0) {
             this.registrationCount--;
         }
+    }
+
+    public void onBoard() {
+        this.isOnboarded = true;
     }
 }

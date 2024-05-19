@@ -10,25 +10,12 @@ public class KakaoLoginResponseDto {
     @Schema(description = "JWT 인증 토큰", example = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QWNjb3VudCIsImFjY291bnQiOiJ0ZXN0QWNjb3VudCIsImlhdCI6MTcxMDIyMTI1MCwiZXhwIjoxNzEwODI2MDUwfQ.wpMIUytr8MpqxGpFAJIlF8kG9OSm2KJE7xeUWQHVnAU")
     String token;
 
-
-    @Schema(description = "회원 닉네임", example = "test_nickname")
-    String nickname;
-
-    @Schema(description = "회원 이름", example = "이원준")
-    String name;
-
-    @Schema(description = "회원 번호", example = "1")
-    Long memberId;
-
-    @Schema(description = "회원 역할", example = "USER")
-    String role;
+    @Schema(description = "온보딩 여부", example = "NOT_ONBOARDED")
+    UserStauts userStauts;
 
 
-    public KakaoLoginResponseDto(String token, Member member) {
+    public KakaoLoginResponseDto(String token, UserStauts userStauts) {
         this.token = token;
-        this.nickname = member.getNickname();
-        this.name = member.getName();
-        this.memberId = member.getMemberId();
-        this.role = member.getRole().toString();
+        this.userStauts = userStauts;
     }
 }

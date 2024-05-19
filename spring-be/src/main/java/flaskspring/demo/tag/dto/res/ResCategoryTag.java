@@ -17,6 +17,9 @@ public class ResCategoryTag {
     @Schema(description = "카테고리 이름", example = "체험")
     String categoryName;
 
+    @Schema(description = "카테고리 이미지 url", example = "www.example.com")
+    String categoryImgUrl;
+
     @Schema(description = "태그들")
     List<ResTag> tags;
 

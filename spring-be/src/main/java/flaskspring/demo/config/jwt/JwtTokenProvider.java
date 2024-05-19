@@ -37,7 +37,6 @@ public class JwtTokenProvider {
 
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
-        ;
         this.tokenValidTime = Long.parseLong(tokenValidTime);
         this.memberDetailsService = memberDetailsService;
     }
