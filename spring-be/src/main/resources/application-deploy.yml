@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://remoa-db.c7smw8oye3a4.ap-northeast-2.rds.amazonaws.com:3306/hyanghae?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://hyanghae.c7smw8oye3a4.ap-northeast-2.rds.amazonaws.com:3306/hyanghae?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
     password: root1234
     driver-class-name: com.mysql.cj.jdbc.Driver
