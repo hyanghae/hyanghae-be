@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create #create update none
+      ddl-auto: update #create update none
     properties:
       hibernate:
         default_batch_fetch_size: 100
@@ -30,3 +30,15 @@ security:
 
 flask:
   base-url: http://flask:5000/ml/api/  # 로컬 프로파일용 Flask URL
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: remoa
+    stack:
+      auto: false

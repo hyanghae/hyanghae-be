@@ -9,16 +9,20 @@ import flaskspring.demo.image.domain.UploadImage;
 import flaskspring.demo.image.repository.UploadImageRepository;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.MemberRepository;
+import jakarta.persistence.SequenceGenerators;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.UUID;
 
+@Service
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
@@ -55,13 +59,15 @@ public class AwsS3ImageUploadUtil implements ImageUploadUtil {
         metadata.setContentType(file.getContentType());
         metadata.setContentLength(file.getSize());
 
+        String s3name = "hyanghae/" + savedFilename;
+
         try {
-            amazonS3Client.putObject(bucket, savedFilename, file.getInputStream(), metadata);
+            amazonS3Client.putObject(bucket, s3name, file.getInputStream(), metadata);
         } catch (IOException e) {
             log.debug("uploading error = ", e);
         }
 
-        String savedImgUrl = amazonS3.getUrl(bucket, savedFilename).toString().replaceAll("\\+", "+");
+        String savedImgUrl = amazonS3.getUrl(bucket, s3name).toString().replaceAll("\\+", "+");
 
         UploadImage uploadImage = UploadImage.builder()
                 .originalFileName(originalFilename)

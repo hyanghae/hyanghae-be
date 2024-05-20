@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from apis.user import member_bp
+# from apis.user import member_bp
 from apis.recommend import recommend
 from apis.img_recommend import img_recommend
 from extensions import db
@@ -18,7 +18,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = (
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-app.register_blueprint(member_bp, url_prefix="/ml/api/members")
+# app.register_blueprint(member_bp, url_prefix="/ml/api/members")
 app.register_blueprint(recommend, url_prefix="/ml/api/recommends")
 app.register_blueprint(img_recommend, url_prefix="/ml/api/img-recommends")
 
