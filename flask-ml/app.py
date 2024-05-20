@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 # from apis.user import member_bp
 from apis.recommend import recommend
 from apis.img_recommend import img_recommend
-from extensions import db
+# from extensions import db
 
 
 app = Flask(__name__)
@@ -22,13 +22,12 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.register_blueprint(recommend, url_prefix="/ml/api/recommends")
 app.register_blueprint(img_recommend, url_prefix="/ml/api/img-recommends")
 
-db.init_app(app)
+# db.init_app(app)
 
 
-with app.app_context():
-    db.create_all()
+# with app.app_context():
+#     db.create_all()
 
-# 사용자 블루프린트 등록
 
 if __name__ == "__main__":
     app.run(debug=True)
