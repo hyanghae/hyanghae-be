@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 
 @Tag(name = "스케쥴 기능", description = "스케쥴 API")
-@RestController
+//@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/schedule")
 public class ScheduleController {

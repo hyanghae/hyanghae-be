@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 
 @Tag(name = "이미지 업로드 기능", description = "이미지 업로드 API")
-@RestController
+//@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/image")
 public class ImageController {

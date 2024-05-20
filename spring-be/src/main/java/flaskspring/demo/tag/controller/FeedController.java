@@ -31,7 +31,7 @@ import java.util.List;
 
 
 @Tag(name = "여행지 추천 피드", description = "여행지 피드 API")
-@RestController
+//@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/feed")
 @Slf4j

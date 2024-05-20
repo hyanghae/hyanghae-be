@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 
 @Tag(name = "여행지 좋아요 기능", description = "여행지 좋아요 API")
-@RestController
+//@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/like")
 public class PlaceLikeController {

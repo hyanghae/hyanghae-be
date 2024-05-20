@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import static flaskspring.demo.utils.Constant.BASE_FLASK_REDIRECT_URL;
 
 
-@RestController
+//@RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
 @Slf4j

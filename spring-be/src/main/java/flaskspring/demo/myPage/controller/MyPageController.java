@@ -23,7 +23,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "마이페이지 기능", description = "마이페이지 API")
-@RestController
+//@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/mypage")
 public class MyPageController {
