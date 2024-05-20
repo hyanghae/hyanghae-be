@@ -11,10 +11,9 @@ app = Flask(__name__)
 # app.config["SQLALCHEMY_DATABASE_URI"] = (
 #     "mysql+pymysql://root:1234@127.0.0.1:3306/flaskexample"
 # )
-
 # 배포 환경
 app.config["SQLALCHEMY_DATABASE_URI"] = (
-    "mysql+pymysql://root:root1234@remoa-db.c7smw8oye3a4.ap-northeast-2.rds.amazonaws.com:3306/hyanghae"
+    "mysql+pymysql://root:root1234@hyanghae.c7smw8oye3a4.ap-northeast-2.rds.amazonaws.com:3306/hyanghae"
 )
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
