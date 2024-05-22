@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import flaskspring.demo.config.auth.MemberDetailsService;
 import flaskspring.demo.config.jwt.refreshToken.MemberRefreshToken;
 import flaskspring.demo.config.jwt.refreshToken.MemberRefreshTokenRepository;
+import flaskspring.demo.exception.BaseException;
+import flaskspring.demo.exception.BaseResponseCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -92,6 +94,9 @@ public class JwtTokenProvider {
 
     @Transactional
     public String recreateAccessToken(String oldAccessToken) throws JsonProcessingException {
+        if (oldAccessToken == null) {
+            throw new BaseException(BaseResponseCode.BAD_REQUEST);
+        }
         String account = getUserAccountFromOldToken(oldAccessToken);
         memberRefreshTokenRepository.findByAccountAndReissueCountLessThan(account, reissueCount)
                 .ifPresentOrElse(
@@ -105,6 +110,9 @@ public class JwtTokenProvider {
 
     @Transactional(readOnly = true)
     public void validateRefreshToken(String refreshToken, String oldAccessToken) throws JsonProcessingException {
+        if (oldAccessToken == null) {
+            throw new BaseException(BaseResponseCode.BAD_REQUEST);
+        }
         validateToken(refreshToken);
         String account = getUserAccountFromOldToken(oldAccessToken);
         memberRefreshTokenRepository.findByAccountAndReissueCountLessThan(account, reissueCount)

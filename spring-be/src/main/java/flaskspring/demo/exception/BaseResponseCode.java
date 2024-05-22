@@ -22,6 +22,8 @@ public enum BaseResponseCode {
     /**
      * 400
      */
+    BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다"),
+    CANNOT_REISSUE_TOKEN(HttpStatus.BAD_REQUEST, "토큰 재발급 실패하였습니다"),
     BAD_DUPLICATE(HttpStatus.BAD_REQUEST, "중복된 사용자가 있습니다"),
     AUTHORIZATION_NOT_VALID(HttpStatus.BAD_REQUEST, "인증정보가 일지하지 않습니다"),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "잘못된 비밀번호입니다. 다시 입력해주세요."),

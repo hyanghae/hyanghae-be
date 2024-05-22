@@ -33,6 +33,7 @@ public class MemberRefreshToken {
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+        this.reissueCount = 0;
     }
 
     public boolean validateRefreshToken(String refreshToken) {

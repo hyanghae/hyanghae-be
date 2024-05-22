@@ -6,6 +6,7 @@ import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.AccessToken;
 import flaskspring.demo.member.domain.Member;
+import flaskspring.demo.member.dto.Res.ResReIssue;
 import flaskspring.demo.member.repository.AccessTokenRepository;
 import flaskspring.demo.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,25 +54,28 @@ public class AuthService {
                 .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
     }
 
-    public void reissueAccessToken(HttpServletRequest request, HttpServletResponse response) {
+    @Transactional
+    public ResReIssue reissueAccessToken(HttpServletRequest request, HttpServletResponse response) {
+        String newAccessToken = null;
+        String refreshToken = null;
         System.out.println("reissueAccessToken 진입");
         try {
-            String refreshToken = parseBearerToken(request, "Refresh-Token");
+            refreshToken = parseBearerToken(request, "Refresh-Token");
             if (refreshToken == null) {
                 System.out.println("리프레시 토큰 없음");
                 throw new Exception();
             }
             String oldAccessToken = parseBearerToken(request, HttpHeaders.AUTHORIZATION);
             jwtTokenProvider.validateRefreshToken(refreshToken, oldAccessToken);
-            String newAccessToken = jwtTokenProvider.recreateAccessToken(oldAccessToken);
+            newAccessToken = jwtTokenProvider.recreateAccessToken(oldAccessToken);
             System.out.println("newAccessToken 발급 = " + newAccessToken);
 //            Authentication auth = jwtTokenProvider.getAuthentication(newAccessToken);
 //            SecurityContextHolder.getContext().setAuthentication(auth);
 
-            response.setHeader("New-Access-Token", newAccessToken);
         } catch (Exception e) {
-            request.setAttribute("exception", "새 토큰 재발급 실패");
+            throw new BaseException(BaseResponseCode.CANNOT_REISSUE_TOKEN);
         }
+        return new ResReIssue(newAccessToken, refreshToken);
     }
 
     private String parseBearerToken(HttpServletRequest request, String headerName) {
