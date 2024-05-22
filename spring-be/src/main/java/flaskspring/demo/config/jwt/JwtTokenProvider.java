@@ -1,11 +1,11 @@
 package flaskspring.demo.config.jwt;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import flaskspring.demo.config.auth.MemberDetailsService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import flaskspring.demo.config.jwt.refreshToken.MemberRefreshToken;
+import flaskspring.demo.config.jwt.refreshToken.MemberRefreshTokenRepository;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -14,11 +14,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -26,19 +31,26 @@ public class JwtTokenProvider {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
-    private Key key;
-    private Long tokenValidTime; //millisecond
+    private final Key key;
+    private final long expirationMinutes; //millisecond
+    private final long refreshExpirationHours;
     private final MemberDetailsService memberDetailsService;
+    private final MemberRefreshTokenRepository memberRefreshTokenRepository;
+    private int reissueCount = 10;
 
 
     public JwtTokenProvider(@Value("${security.jwt.token.secret-key}") String secretKey,
-                            @Value("${security.jwt.token.expire-length}") String tokenValidTime,
-                            MemberDetailsService memberDetailsService) {
+                            @Value("${security.jwt.token.expiration-minutes}") long expirationMinutes,    // hours -> minutes
+                            @Value("${security.jwt.token.refresh-expiration-hours}") long refreshExpirationHours,    // 추가
+                            MemberDetailsService memberDetailsService,
+                            MemberRefreshTokenRepository memberRefreshTokenRepository) {
 
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
-        this.tokenValidTime = Long.parseLong(tokenValidTime);
+        this.expirationMinutes = expirationMinutes;
+        this.refreshExpirationHours = refreshExpirationHours;
         this.memberDetailsService = memberDetailsService;
+        this.memberRefreshTokenRepository = memberRefreshTokenRepository;
     }
 
     public String createToken(String account) { //email 받음
@@ -46,7 +58,9 @@ public class JwtTokenProvider {
         claims.put("account", account); // key/ value 쌍으로 저장
 
         Date now = new Date();
-        Date validity = new Date(now.getTime() + tokenValidTime); // set Expire Time
+
+        Date validity = new Date(now.getTime() + expirationMinutes * 60000);  // set Expire Time
+
 //        log.info("now: {}", now);
 //        log.info("validity: {}", validity);
 
@@ -57,6 +71,45 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256) //서명하는 값은 우리가 임의로 설정 -> YAML파일
                 // 사용할 암호화 알고리즘과 signature에 들어갈 secret값 세팅
                 .compact();
+    }
+
+    public String createRefreshToken(String account) { //email 받음
+        Claims claims = Jwts.claims().setSubject(account); // JWT payload에 저장되는 정보 단위
+        claims.put("account", account); // key/ value 쌍으로 저장
+
+        Date now = new Date();
+        // 리프레시 토큰의 만료 시간 설정 (액세스 토큰의 만료 시간보다 더 길게 설정)
+        Date validity = new Date(now.getTime() + refreshExpirationHours * 3600000); // hours -> milliseconds
+
+        return Jwts.builder()
+                .setClaims(claims)  // sub 설정 (정보 저장)
+                .setIssuedAt(now)   // 토큰 발행 시간 정보
+                .setExpiration(validity) // Set Expire Time
+                .signWith(key, SignatureAlgorithm.HS256) //서명하는 값은 우리가 임의로 설정 -> YAML파일
+                // 사용할 암호화 알고리즘과 signature에 들어갈 secret값 세팅
+                .compact();
+    }
+
+    @Transactional
+    public String recreateAccessToken(String oldAccessToken) throws JsonProcessingException {
+        String account = getUserAccountFromOldToken(oldAccessToken);
+        memberRefreshTokenRepository.findByAccountAndReissueCountLessThan(account, reissueCount)
+                .ifPresentOrElse(
+                        MemberRefreshToken::increaseReissueCount,
+                        () -> {
+                            throw new ExpiredJwtException(null, null, "Refresh token expired.");
+                        }
+                );
+        return createToken(account);
+    }
+
+    @Transactional(readOnly = true)
+    public void validateRefreshToken(String refreshToken, String oldAccessToken) throws JsonProcessingException {
+        validateToken(refreshToken);
+        String account = getUserAccountFromOldToken(oldAccessToken);
+        memberRefreshTokenRepository.findByAccountAndReissueCountLessThan(account, reissueCount)
+                .filter(memberRefreshToken -> memberRefreshToken.validateRefreshToken(refreshToken))
+                .orElseThrow(() -> new ExpiredJwtException(null, null, "Refresh token expired."));
     }
 
     public Long getSubject(String token) {
@@ -71,6 +124,19 @@ public class JwtTokenProvider {
     public String getUserAccount(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build()
                 .parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String getUserAccountFromOldToken(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims().getSubject();
+        }
     }
 
     /*
@@ -92,8 +158,9 @@ public class JwtTokenProvider {
         return null;
     }
 
+
     // Token의 유효성 + 만료 기간 검사
-    public void validateToken(String jwtToken){
+    public void validateToken(String jwtToken) {
         Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build()
                 .parseClaimsJws(jwtToken);
     }
@@ -105,6 +172,11 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getExpiration();
+    }
+
+    private String decodeJwtPayloadSubject(String oldAccessToken) throws JsonProcessingException {
+
+        return null;
     }
 
 }

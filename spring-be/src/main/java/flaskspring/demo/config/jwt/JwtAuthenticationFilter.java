@@ -7,13 +7,16 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * 만들어둔 jwt 패키지에 OncePerRequestFilter를 상속받는 유효성 체크용 필터를 만든다.
@@ -41,16 +44,16 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         // 매 진입마다 토큰 검사가 이뤄진다. -> 토큰으로부터
         try {
             if (token != null) {
-                jwtTokenProvider.validateToken(token); //여기서 만료, 유효성 예외 발생.
                 if (doNotLogout(token)) { // 토큰이 블랙리스트에 없는 경우에만 인증 처리
+                    jwtTokenProvider.validateToken(token); //여기서 만료, 유효성 예외 발생.
                     Authentication auth = jwtTokenProvider.getAuthentication(token);  // 인증 객체 생성
                     SecurityContextHolder.getContext().setAuthentication(auth); // SecurityContext 에 Authentication 객체를 저장
                     log.info("인증 처리 함");//인증 객체를 통해 인증 처리
                 }
             }
         } catch (ExpiredJwtException e) {
-            log.info("토큰이 있지만 기간이 만료 됨, 인증 필요한 api 접근시 예외 발생");
-            servletRequest.setAttribute(JwtProperties.HEADER_STRING, "토큰이 만료되었습니다.");
+            log.info("토큰이 있지만 기간이 만료 됨, 리프레시 토큰을 통한 액세스 토큰 재발급");
+            reissueAccessToken((HttpServletRequest)servletRequest, (HttpServletResponse)servletResponse, e);
         } catch (Exception e) {
             log.info("토큰이 있지만 유효하지 않음, 인증 필요한 api 접근시 예외 발생");
             servletRequest.setAttribute(JwtProperties.HEADER_STRING, "유효하지 않은 토큰입니다.");
@@ -59,6 +62,36 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         filterChain.doFilter(servletRequest, servletResponse); //토큰이 없는 경우는 바로 다음 필터로 넘어감.
         //토큰 검증에서 예외가 발생하여도 인증이 필요 없는 경로로 요청한 경우 서블릿으로 진입가능하다. -> 정상적인 응답이 가능.
         //토큰 검증에서 예외가 발생하고 인증이 필요한 경로로 요청한 경우 서블릿 진입이 불가하고, -> 인증 예외 발생 ->  예외를 AuthenticationEntryPoint에서 다룬다.
+    }
+
+    private String parseBearerToken(HttpServletRequest request, String headerName) {
+        return Optional.ofNullable(request.getHeader(headerName))
+                .filter(token -> token.substring(0, 7).equalsIgnoreCase("Bearer "))
+                .map(token -> token.substring(7))
+                .orElse(null);
+    }
+
+    private void reissueAccessToken(HttpServletRequest request, HttpServletResponse response, Exception exception) {
+        System.out.println("reissueAccessToken 진입");
+        try {
+            String refreshToken = parseBearerToken(request, "Refresh-Token");
+            if (refreshToken == null) {
+                System.out.println("리프레시 토큰 없음");
+                throw exception;
+            }
+            String oldAccessToken = parseBearerToken(request, HttpHeaders.AUTHORIZATION);
+            jwtTokenProvider.validateRefreshToken(refreshToken, oldAccessToken);
+            String newAccessToken = jwtTokenProvider.recreateAccessToken(oldAccessToken);
+            System.out.println("newAccessToken 발급 = " + newAccessToken);
+            Authentication auth = jwtTokenProvider.getAuthentication(newAccessToken);
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
+
+
+            response.setHeader("New-Access-Token", newAccessToken);
+        } catch (Exception e) {
+            request.setAttribute("exception", "새 토큰 재발급 실패");
+        }
     }
 
     private boolean doNotLogout(String accessToken) {

@@ -1,6 +1,8 @@
 package flaskspring.demo.member.service;
 
 import flaskspring.demo.config.jwt.JwtTokenProvider;
+import flaskspring.demo.config.jwt.refreshToken.MemberRefreshToken;
+import flaskspring.demo.config.jwt.refreshToken.MemberRefreshTokenRepository;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.dto.Req.KakaoLoginRequestDto;
 import flaskspring.demo.member.dto.Req.ReqKakaoAccessToken;
@@ -24,26 +26,58 @@ public class KakaoService {
 
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final MemberRefreshTokenRepository memberRefreshTokenRepository;
 
     public KakaoLoginResponseDto kakaoLogin(ReqKakaoAccessToken reqKakaoAccessToken) {
         KakaoProfile kakaoProfile = getKakaoProfile(reqKakaoAccessToken.getAccessToken());
-
         log.info("kakaoProfile = {}", kakaoProfile);
 
-        KakaoLoginRequestDto kakaoLoginRequestDto = new KakaoLoginRequestDto(kakaoProfile);
-        Member member = memberRepository.findByKakaoId(kakaoLoginRequestDto.getKakaoIdentifier()).orElseGet(() -> null);
-        if (member == null) {
-            log.info("카카오로 회원가입");
-            member = memberRepository.save(kakaoLoginRequestDto.toEntity());
-            String token = jwtTokenProvider.createToken(member.getAccount()); //임의로 만든 account로 토큰 생성.
-            return new KakaoLoginResponseDto(token, UserStauts.NOT_ONBOARDED);
+        Member member = findOrRegisterMember(kakaoProfile);
+        String token = jwtTokenProvider.createToken(member.getAccount());
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getAccount());
+
+        log.info("refreshToken : {}", refreshToken);
+        updateRefreshToken(member, refreshToken);
+
+        if (!member.isOnboarded()) {
+            return new KakaoLoginResponseDto(token, refreshToken, UserStauts.NOT_ONBOARDED);
         }
-        String token = jwtTokenProvider.createToken(member.getAccount()); //임의로 만든 account로 토큰 생성.
-        if(!member.isOnboarded()){
-            return new KakaoLoginResponseDto(token, UserStauts.NOT_ONBOARDED);
-        }
-        return new KakaoLoginResponseDto(token, UserStauts.ONBOARDED);
+        return new KakaoLoginResponseDto(token, refreshToken, UserStauts.ONBOARDED);
     } // 그냥 회원 가입 할 경우는 로그인을 따로 진행해야 토큰을 주고, 카카오 로그인을 할 경우 처음 등록시에도 토큰을 부여? -> yes
+
+    private Member findOrRegisterMember(KakaoProfile kakaoProfile) {
+        KakaoLoginRequestDto kakaoLoginRequestDto = new KakaoLoginRequestDto(kakaoProfile);
+        return memberRepository.findByKakaoId(kakaoLoginRequestDto.getKakaoIdentifier())
+                .orElseGet(() -> {
+                    log.info("카카오로 회원가입");
+                    Member newMember = memberRepository.save(kakaoLoginRequestDto.toEntity());
+                    return newMember;
+                });
+    }
+
+    private void updateRefreshToken(Member member, String refreshToken) {
+        memberRefreshTokenRepository.findById(member.getMemberId())
+                .ifPresentOrElse(
+                        it -> it.updateRefreshToken(refreshToken),
+                        () -> memberRefreshTokenRepository.save(new MemberRefreshToken(member, refreshToken))
+                );
+    }
+
+
+    //(2)
+    // 발급 받은 accessToken 으로 카카오 회원 정보 얻기
+    public KakaoProfile getKakaoProfile(String accessToken) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", "Bearer " + accessToken);
+        httpHeaders.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest2 = new HttpEntity<>(httpHeaders); //헤더만 가지고 요청헤더를 만들 수 있다.
+        KakaoProfile kakaoProfile = restTemplate.exchange("https://kapi.kakao.com/v2/user/me", HttpMethod.POST, kakaoProfileRequest2, KakaoProfile.class).getBody();
+
+        return kakaoProfile;
+    }
 
     // (3) 회원 정보 DB 저장 후 JWT 를 생성
     /*public String SaveUserAndGetToken(String code) {
@@ -67,21 +101,6 @@ public class KakaoService {
         memberRepository.save(newMember);
         return createToken(newMember);
     }*/
-
-    //(2)
-    // 발급 받은 accessToken 으로 카카오 회원 정보 얻기
-    public KakaoProfile getKakaoProfile(String accessToken) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Authorization", "Bearer " + accessToken);
-        httpHeaders.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
-        HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest2 = new HttpEntity<>(httpHeaders); //헤더만 가지고 요청헤더를 만들 수 있다.
-        KakaoProfile kakaoProfile = restTemplate.exchange("https://kapi.kakao.com/v2/user/me", HttpMethod.POST, kakaoProfileRequest2, KakaoProfile.class).getBody();
-
-        return kakaoProfile;
-    }
 
     // (1)넘어온 인가 코드를 통해 access_token 발급
    /* public OAuthToken getAccessToken(String code) {

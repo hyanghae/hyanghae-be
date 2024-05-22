@@ -1,6 +1,8 @@
 package flaskspring.demo.member.service;
 
 import flaskspring.demo.config.jwt.JwtTokenProvider;
+import flaskspring.demo.config.jwt.refreshToken.MemberRefreshToken;
+import flaskspring.demo.config.jwt.refreshToken.MemberRefreshTokenRepository;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.Member;
@@ -11,6 +13,7 @@ import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpRes;
 import flaskspring.demo.member.dto.Res.UserStauts;
 import flaskspring.demo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +24,7 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class MemberService {
 
     private final Random random = new Random();
@@ -28,6 +32,7 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
     private final PasswordEncoder bCryptPasswordEncoder;
+    private final MemberRefreshTokenRepository memberRefreshTokenRepository;
 
     public List<Member> getAllMembers() {
         return memberRepository.findAll();
@@ -38,16 +43,26 @@ public class MemberService {
                 .orElseThrow(() -> new RuntimeException("Member not found with id: " + id));
     }
 
+    @Transactional
     public GeneralLoginRes generalLogin(GeneralLoginReq loginReq) {
         Member member = memberRepository.findByAccount(loginReq.getAccount()).orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
         if (!bCryptPasswordEncoder.matches(loginReq.getPassword(), member.getPassword())) {
             throw new BaseException(BaseResponseCode.UNAUTHORIZED);
         }
         String token = jwtTokenProvider.createToken(member.getAccount());
-        if(!member.isOnboarded()){
-            return new GeneralLoginRes(token, UserStauts.NOT_ONBOARDED);
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getAccount());
+
+        log.info("refreshToken : {}", refreshToken);
+
+        memberRefreshTokenRepository.findById(member.getMemberId())
+                .ifPresentOrElse(
+                        it -> it.updateRefreshToken(refreshToken),
+                        () -> memberRefreshTokenRepository.save(new MemberRefreshToken(member, refreshToken))
+                );
+        if (!member.isOnboarded()) {
+            return new GeneralLoginRes(token, refreshToken, UserStauts.NOT_ONBOARDED);
         }
-        return new GeneralLoginRes(token, UserStauts.ONBOARDED);
+        return new GeneralLoginRes(token, refreshToken, UserStauts.ONBOARDED);
     }
 
     @Transactional
@@ -75,7 +90,6 @@ public class MemberService {
         } while (nicknameDuplicate);
         return "유저-" + randomNumber;
     }
-
 
 
 }
