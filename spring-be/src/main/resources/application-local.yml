@@ -33,7 +33,7 @@ security:
   jwt:
     token:
       secret-key: "remoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoa"
-      expiration-minutes: 1    # 3시간 -> 30분
+      expiration-minutes: 30    # 3시간 -> 30분
       refresh-expiration-hours: 24    # 리프레시 토큰 유효시간은 24시간
 
 

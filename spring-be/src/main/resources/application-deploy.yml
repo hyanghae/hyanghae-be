@@ -26,7 +26,8 @@ security:
   jwt:
     token:
       secret-key: "remoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoa"
-      expire-length: "604800000" # 1 week in milliseconds
+      expiration-minutes: 30    # 3시간 -> 30분
+      refresh-expiration-hours: 24    # 리프레시 토큰 유효시간은 24시간
 
 flask:
   base-url: http://flask:5000/ml/api/  # 로컬 프로파일용 Flask URL
