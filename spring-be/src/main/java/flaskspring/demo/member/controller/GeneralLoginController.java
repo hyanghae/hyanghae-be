@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.*;
 public class GeneralLoginController {
 
     private final MemberService memberService;
-    private final AuthService authService;
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
@@ -65,16 +64,4 @@ public class GeneralLoginController {
     }
 
 
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
-            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
-                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
-    })
-    @Operation(summary = "로그아웃", description = "로그아웃입니다. ")
-    @PutMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletRequest request) {
-
-        authService.logout(request);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 }

@@ -53,7 +53,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             }
         } catch (ExpiredJwtException e) {
             log.info("토큰이 있지만 기간이 만료 됨, 리프레시 토큰을 통한 액세스 토큰 재발급");
-            reissueAccessToken((HttpServletRequest)servletRequest, (HttpServletResponse)servletResponse, e);
+            servletRequest.setAttribute(JwtProperties.HEADER_STRING, "토큰이 만료되었습니다.");
+      //      reissueAccessToken((HttpServletRequest)servletRequest, (HttpServletResponse)servletResponse, e);
         } catch (Exception e) {
             log.info("토큰이 있지만 유효하지 않음, 인증 필요한 api 접근시 예외 발생");
             servletRequest.setAttribute(JwtProperties.HEADER_STRING, "유효하지 않은 토큰입니다.");

@@ -39,7 +39,7 @@ public class SwaggerConfig {
                 .addSecurityItem(securityRequirement);
     }
 
-    @Bean
+   /* @Bean
     public OperationCustomizer globalHeader() {
         return (operation, handlerMethod) -> {
             operation.addParametersItem(new Parameter()
@@ -48,6 +48,6 @@ public class SwaggerConfig {
                     .name("Refresh-Token"));
             return operation;
         };
-    }
+    }*/
 
 }

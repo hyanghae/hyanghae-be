@@ -42,29 +42,41 @@ public class MemberService {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Member not found with id: " + id));
     }
-
     @Transactional
     public GeneralLoginRes generalLogin(GeneralLoginReq loginReq) {
-        Member member = memberRepository.findByAccount(loginReq.getAccount()).orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
-        if (!bCryptPasswordEncoder.matches(loginReq.getPassword(), member.getPassword())) {
-            throw new BaseException(BaseResponseCode.UNAUTHORIZED);
-        }
+        Member member = getMemberByAccount(loginReq.getAccount());
+        validatePassword(loginReq.getPassword(), member.getPassword());
+
         String token = jwtTokenProvider.createToken(member.getAccount());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getAccount());
-
         log.info("refreshToken : {}", refreshToken);
 
-        memberRefreshTokenRepository.findById(member.getMemberId())
-                .ifPresentOrElse(
-                        it -> it.updateRefreshToken(refreshToken),
-                        () -> memberRefreshTokenRepository.save(new MemberRefreshToken(member, refreshToken))
-                );
+        updateRefreshToken(member, refreshToken);
+
         if (!member.isOnboarded()) {
             return new GeneralLoginRes(token, refreshToken, UserStauts.NOT_ONBOARDED);
         }
         return new GeneralLoginRes(token, refreshToken, UserStauts.ONBOARDED);
     }
 
+    private Member getMemberByAccount(String account) {
+        return memberRepository.findByAccount(account)
+                .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
+    }
+
+    private void validatePassword(String rawPassword, String encodedPassword) {
+        if (!bCryptPasswordEncoder.matches(rawPassword, encodedPassword)) {
+            throw new BaseException(BaseResponseCode.UNAUTHORIZED);
+        }
+    }
+
+    private void updateRefreshToken(Member member, String refreshToken) {
+        memberRefreshTokenRepository.findById(member.getMemberId())
+                .ifPresentOrElse(
+                        it -> it.updateRefreshToken(refreshToken),
+                        () -> memberRefreshTokenRepository.save(new MemberRefreshToken(member, refreshToken))
+                );
+    }
     @Transactional
     public GeneralSignUpRes generalSignUp(GeneralSignUpReq signUpReq) {
         signUpReq.setPassword(bCryptPasswordEncoder.encode(signUpReq.getPassword()));
