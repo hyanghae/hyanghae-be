@@ -1,8 +1,8 @@
 package flaskspring.demo.member.service;
 
 import flaskspring.demo.config.jwt.JwtTokenProvider;
-import flaskspring.demo.config.jwt.refreshToken.MemberRefreshToken;
-import flaskspring.demo.config.jwt.refreshToken.MemberRefreshTokenRepository;
+import flaskspring.demo.config.jwt.auth.MemberRefreshToken;
+import flaskspring.demo.config.jwt.auth.MemberRefreshTokenRepository;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.dto.Req.KakaoLoginRequestDto;
 import flaskspring.demo.member.dto.Req.ReqKakaoAccessToken;

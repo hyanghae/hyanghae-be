@@ -1,8 +1,8 @@
 package flaskspring.demo.member.service;
 
 import flaskspring.demo.config.jwt.JwtTokenProvider;
-import flaskspring.demo.config.jwt.refreshToken.MemberRefreshToken;
-import flaskspring.demo.config.jwt.refreshToken.MemberRefreshTokenRepository;
+import flaskspring.demo.config.jwt.auth.MemberRefreshToken;
+import flaskspring.demo.config.jwt.auth.MemberRefreshTokenRepository;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.Member;

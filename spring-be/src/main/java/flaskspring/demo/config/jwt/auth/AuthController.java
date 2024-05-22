@@ -1,4 +1,4 @@
-package flaskspring.demo.config.jwt.refreshToken;
+package flaskspring.demo.config.jwt.auth;
 
 import flaskspring.demo.config.jwt.JwtTokenProvider;
 import flaskspring.demo.exception.BaseExceptionResponse;
@@ -18,7 +18,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,9 +57,9 @@ public class AuthController {
     })
     @Operation(summary = "로그아웃", description = "로그아웃입니다. ")
     @PutMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletRequest request) {
+    public ResponseEntity<BaseResponse<Object>> logout(HttpServletRequest request) {
 
         authService.logout(request);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>()));
     }
 }

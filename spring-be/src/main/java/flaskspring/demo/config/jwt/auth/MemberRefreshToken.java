@@ -1,12 +1,10 @@
-package flaskspring.demo.config.jwt.refreshToken;
+package flaskspring.demo.config.jwt.auth;
 
 import flaskspring.demo.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

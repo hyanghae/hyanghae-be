@@ -3,8 +3,8 @@ package flaskspring.demo.config.jwt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import flaskspring.demo.config.auth.MemberDetailsService;
-import flaskspring.demo.config.jwt.refreshToken.MemberRefreshToken;
-import flaskspring.demo.config.jwt.refreshToken.MemberRefreshTokenRepository;
+import flaskspring.demo.config.jwt.auth.MemberRefreshToken;
+import flaskspring.demo.config.jwt.auth.MemberRefreshTokenRepository;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import io.jsonwebtoken.*;
@@ -19,13 +19,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Date;
-import java.util.UUID;
 
 @Component
 @Slf4j

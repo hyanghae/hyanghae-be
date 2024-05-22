@@ -1,4 +1,4 @@
-package flaskspring.demo.config.jwt.refreshToken;
+package flaskspring.demo.config.jwt.auth;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QMemberRefreshToken extends EntityPathBase<MemberRefreshToken> {
 
-    private static final long serialVersionUID = -1221836622L;
+    private static final long serialVersionUID = 938065064L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
