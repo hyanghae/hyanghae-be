@@ -9,8 +9,8 @@ import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralLoginReq;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralLoginRes;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpReq;
-import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpRes;
-import flaskspring.demo.member.dto.Res.UserStauts;
+import flaskspring.demo.member.dto.Res.GeneralSignUpRes;
+import flaskspring.demo.member.dto.Res.UserStatus;
 import flaskspring.demo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,9 +54,9 @@ public class MemberService {
         updateRefreshToken(member, refreshToken);
 
         if (!member.isOnboarded()) {
-            return new GeneralLoginRes(token, refreshToken, UserStauts.NOT_ONBOARDED);
+            return new GeneralLoginRes(token, refreshToken, UserStatus.NOT_ONBOARDED);
         }
-        return new GeneralLoginRes(token, refreshToken, UserStauts.ONBOARDED);
+        return new GeneralLoginRes(token, refreshToken, UserStatus.ONBOARDED);
     }
 
     private Member getMemberByAccount(String account) {

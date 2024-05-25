@@ -45,11 +45,16 @@ public class SettingController {
                                                            @RequestPart(value = "tag", required = false) ReqTagIndexes tagRequest,
                                                            @RequestPart(value = "image", required = false) MultipartFile image) {
         Long myMemberId = memberDetails.getMemberId();
+        System.out.println("tagRequest = " + tagRequest);
+        System.out.println("image = " + image);
 
-        tagService.saveMemberTags(myMemberId, tagRequest.getTagIndexes());
+        if (tagRequest != null && tagRequest.getTagIndexes() != null) {
+            tagService.saveMemberTags(myMemberId, tagRequest.getTagIndexes());
+        }
         if (image != null) {
             imageUploadUtil.uploadImage(image, myMemberId);
         }
+
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>()));
     }
 }

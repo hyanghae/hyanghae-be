@@ -1,7 +1,7 @@
 package flaskspring.demo.like.service;
 
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpReq;
-import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpRes;
+import flaskspring.demo.member.dto.Res.GeneralSignUpRes;
 import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.domain.Place;
 import flaskspring.demo.place.repository.PlaceRepository;

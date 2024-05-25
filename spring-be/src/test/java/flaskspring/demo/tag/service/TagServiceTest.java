@@ -1,12 +1,11 @@
 package flaskspring.demo.tag.service;
 
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpReq;
-import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpRes;
+import flaskspring.demo.member.dto.Res.GeneralSignUpRes;
 import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.tag.dto.res.ResCategoryTag;
 import flaskspring.demo.tag.dto.res.ResRegisteredTag;
 import flaskspring.demo.tag.dto.res.ResTag;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +16,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional

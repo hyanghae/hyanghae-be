@@ -2,7 +2,7 @@ package flaskspring.demo.tag.service;
 
 import flaskspring.demo.like.service.PlaceLikeService;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpReq;
-import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpRes;
+import flaskspring.demo.member.dto.Res.GeneralSignUpRes;
 import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.dto.res.ResPlaceWithSim;
 import flaskspring.demo.recommend.dto.res.ImgRecommendationDto;

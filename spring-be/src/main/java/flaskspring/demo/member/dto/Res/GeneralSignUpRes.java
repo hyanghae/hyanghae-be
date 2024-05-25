@@ -1,4 +1,4 @@
-package flaskspring.demo.member.dto.GerneralLoginDto;
+package flaskspring.demo.member.dto.Res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

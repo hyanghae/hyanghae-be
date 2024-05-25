@@ -1,14 +1,12 @@
 package flaskspring.demo.member.controller;
 
-import flaskspring.demo.config.jwt.JwtTokenProvider;
 import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralLoginReq;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralLoginRes;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpReq;
-import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpRes;
-import flaskspring.demo.member.service.AuthService;
+import flaskspring.demo.member.dto.Res.GeneralSignUpRes;
 import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.utils.MessageUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,11 +16,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

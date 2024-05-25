@@ -7,7 +7,7 @@ import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.dto.Req.KakaoLoginRequestDto;
 import flaskspring.demo.member.dto.Req.ReqKakaoAccessToken;
 import flaskspring.demo.member.dto.Res.KakaoLoginResponseDto;
-import flaskspring.demo.member.dto.Res.UserStauts;
+import flaskspring.demo.member.dto.Res.UserStatus;
 import flaskspring.demo.member.dto.kakaoLoginDto.KakaoProfile;
 import flaskspring.demo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,9 +40,9 @@ public class KakaoService {
         updateRefreshToken(member, refreshToken);
 
         if (!member.isOnboarded()) {
-            return new KakaoLoginResponseDto(token, refreshToken, UserStauts.NOT_ONBOARDED);
+            return new KakaoLoginResponseDto(token, refreshToken, UserStatus.NOT_ONBOARDED);
         }
-        return new KakaoLoginResponseDto(token, refreshToken, UserStauts.ONBOARDED);
+        return new KakaoLoginResponseDto(token, refreshToken, UserStatus.ONBOARDED);
     } // 그냥 회원 가입 할 경우는 로그인을 따로 진행해야 토큰을 주고, 카카오 로그인을 할 경우 처음 등록시에도 토큰을 부여? -> yes
 
     private Member findOrRegisterMember(KakaoProfile kakaoProfile) {

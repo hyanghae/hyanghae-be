@@ -35,7 +35,10 @@ public class KakaoLoginController {
             @ApiResponse(responseCode = "400", description = MessageUtils.ERROR,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
     })
-    @Operation(summary = "카카오 엑세스토큰 전송하는 곳", description = "카카오로부터 받은 코드 전송해주세요. 로그인 처리 후 jwt토큰, 이름, 회원 번호 리턴됩니다.")
+    @Operation(summary = "카카오 엑세스토큰 전송하는 곳", description = "카카오로부터 받은 코드 전송해주세요. 로그인 처리 후 jwt토큰, 온보딩 여부 반환. " +
+            "<br> NOT_ONBOARDED : 온보딩 안 한 경우" +
+            "<br> ONBOARDED : 온보딩 한 경우" +
+            "<br> DEACTIVATED : 탈퇴")
     @PostMapping("/auth/kakao")
     public BaseResponse<KakaoLoginResponseDto> getLogin(@RequestBody ReqKakaoAccessToken accessToken) { //(1)
         log.info("code = {}", accessToken);
