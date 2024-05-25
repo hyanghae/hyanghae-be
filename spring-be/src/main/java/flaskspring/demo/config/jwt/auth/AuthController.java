@@ -26,7 +26,7 @@ import java.util.HashMap;
 @Tag(name = "인증 기능", description = "인증 API")
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
@@ -40,7 +40,7 @@ public class AuthController {
     })
     @Operation(summary = "토큰 재발급", description = "Header " +
             "<br> Authorization : Bearer 만료토큰" +
-            "<br> Refresh-Token: Bearer 리프레시토큰" +
+            "<br> Refresh-Token : Bearer 리프레시토큰" +
             "<br> 재발급 요청 횟수 10회로 제한됨. 다시 로그인 한 경우 횟수 리셋")
     @PatchMapping("/reissue")
     public ResponseEntity<BaseResponse<ResReIssue>> reissue(HttpServletRequest request,

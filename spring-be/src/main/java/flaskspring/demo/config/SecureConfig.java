@@ -49,6 +49,7 @@ public class SecureConfig {
                         .requestMatchers(HttpMethod.GET, GET_AUTH_BLACKLIST).authenticated()
                         .requestMatchers(HttpMethod.POST, POST_AUTH_BLACKLIST).authenticated()
                         .requestMatchers(HttpMethod.PUT, PUT_AUTH_BLACKLIST).authenticated()
+                        .requestMatchers(HttpMethod.PATCH, PATCH_AUTH_BLACKLIST).authenticated()
                         .requestMatchers(HttpMethod.DELETE, DELETE_AUTH_BLACKLIST).authenticated()
                         .requestMatchers(HttpMethod.POST, ADMIN_POST_AUTH_BLACKLIST).hasAuthority(Role.ADMIN.toString()) // ADMIN 권한
                         .requestMatchers(HttpMethod.PUT, ADMIN_PUT_AUTH_BLACKLIST).hasAuthority(Role.ADMIN.toString()) // ADMIN 권한

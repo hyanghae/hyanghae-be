@@ -27,8 +27,8 @@ import java.util.HashMap;
 @Tag(name = "온보딩 기능", description = "온보딩 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/on-boarding")
-public class OnBoardingController {
+@RequestMapping("/api/recommend/setting")
+public class SettingController {
 
 
     private final TagService tagService;
@@ -41,7 +41,7 @@ public class OnBoardingController {
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<BaseResponse<Object>> onBoarding(@AuthenticationPrincipal MemberDetails memberDetails,
+    public ResponseEntity<BaseResponse<Object>> recommendSetting(@AuthenticationPrincipal MemberDetails memberDetails,
                                                            @RequestPart(value = "tag", required = false) ReqTagIndexes tagRequest,
                                                            @RequestPart(value = "image", required = false) MultipartFile image) {
         Long myMemberId = memberDetails.getMemberId();
