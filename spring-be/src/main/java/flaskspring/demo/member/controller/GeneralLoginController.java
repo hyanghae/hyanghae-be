@@ -52,7 +52,10 @@ public class GeneralLoginController {
             @ApiResponse(responseCode = "404", description = MessageUtils.NOT_FOUND,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
     })
-    @Operation(summary = "테스트용 일반 로그인 Test completed", description = "account, password 기반 일반 로그인입니다. ")
+    @Operation(summary = "테스트용 일반 로그인 Test completed", description = "account, password 기반 일반 로그인입니다. " +
+            "<br> ONBOARDING : 온보딩 안 한 경우" +
+            "<br> LOGINED : 온보딩 하여 로그인 한 경우" +
+            "<br> DEACTIVATED : 탈퇴")
     @PostMapping("/login")
     public ResponseEntity<BaseResponse<GeneralLoginRes>> login(@Parameter(name = "로그인 위한 회원 정보들", required = true) @RequestBody GeneralLoginReq loginRequestDto) {
         BaseResponse<GeneralLoginRes> response = new BaseResponse<>(BaseResponseCode.OK, memberService.generalLogin(loginRequestDto));

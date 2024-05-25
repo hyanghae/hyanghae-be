@@ -54,9 +54,9 @@ public class MemberService {
         updateRefreshToken(member, refreshToken);
 
         if (!member.isOnboarded()) {
-            return new GeneralLoginRes(token, refreshToken, UserStatus.NOT_ONBOARDED);
+            return new GeneralLoginRes(token, refreshToken, UserStatus.ONBOARDING);
         }
-        return new GeneralLoginRes(token, refreshToken, UserStatus.ONBOARDED);
+        return new GeneralLoginRes(token, refreshToken, UserStatus.LOGINED);
     }
 
     private Member getMemberByAccount(String account) {

@@ -15,7 +15,7 @@ public class GeneralLoginRes {
     @Schema(description = "토큰 정보")
     HyanghaeToken hyanghaeToken;
 
-    @Schema(description = "온보딩 여부", example = "NOT_ONBOARDED")
+    @Schema(description = "온보딩 여부", example = "ONBOARDING")
     UserStatus userStatus;
 
 
