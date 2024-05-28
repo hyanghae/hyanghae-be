@@ -68,6 +68,7 @@ public class KakaoService {
     // 발급 받은 accessToken 으로 카카오 회원 정보 얻기
     public KakaoProfile getKakaoProfile(String accessToken) {
         RestTemplate restTemplate = new RestTemplate();
+        System.out.println("accessToken = " + accessToken);
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", "Bearer " + accessToken);
@@ -75,7 +76,6 @@ public class KakaoService {
 
         HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest2 = new HttpEntity<>(httpHeaders); //헤더만 가지고 요청헤더를 만들 수 있다.
         KakaoProfile kakaoProfile = restTemplate.exchange("https://kapi.kakao.com/v2/user/me", HttpMethod.POST, kakaoProfileRequest2, KakaoProfile.class).getBody();
-
         return kakaoProfile;
     }
 

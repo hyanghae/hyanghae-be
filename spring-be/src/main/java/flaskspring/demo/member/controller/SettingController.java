@@ -42,7 +42,7 @@ public class SettingController {
     })
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BaseResponse<Object>> recommendSetting(@AuthenticationPrincipal MemberDetails memberDetails,
-                                                           @RequestPart(value = "tag", required = false) ReqTagIndexes tagRequest,
+                                                           @RequestPart(value = "data", required = false) ReqTagIndexes tagRequest,
                                                            @RequestPart(value = "image", required = false) MultipartFile image) {
         Long myMemberId = memberDetails.getMemberId();
         System.out.println("tagRequest = " + tagRequest);
