@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/recommend/setting")
+@Slf4j
 public class SettingController {
 
 
@@ -44,6 +46,8 @@ public class SettingController {
     public ResponseEntity<BaseResponse<Object>> recommendSetting(@AuthenticationPrincipal MemberDetails memberDetails,
                                                            @RequestPart(value = "data", required = false) ReqTagIndexes tagRequest,
                                                            @RequestPart(value = "image", required = false) MultipartFile image) {
+        log.info("POST /api/recommend/setting");
+
         Long myMemberId = memberDetails.getMemberId();
         System.out.println("tagRequest = " + tagRequest);
         System.out.println("image = " + image);

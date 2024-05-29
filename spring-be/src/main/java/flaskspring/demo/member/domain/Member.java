@@ -48,4 +48,8 @@ public class Member {
     public void onBoard() {
         this.isOnboarded = true;
     }
+
+    public void initStatus() {
+        this.isOnboarded = false;
+    }
 }

@@ -41,6 +41,7 @@ public class KakaoLoginController {
             "<br> DEACTIVATED : 탈퇴")
     @PostMapping("/auth/kakao")
     public BaseResponse<KakaoLoginResponseDto> getLogin(@RequestBody ReqKakaoAccessToken accessToken) { //(1)
+        log.info("POST /api/auth/kakao");
         log.info("code = {}", accessToken);
         return new BaseResponse<>(BaseResponseCode.OK, kakaoService.kakaoLogin(accessToken));
     }

@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,6 +30,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/tag")
+@Slf4j
 public class TagController {
 
     private final TagService tagService;
@@ -42,6 +44,8 @@ public class TagController {
     })
     @PostMapping("")
     public ResponseEntity<BaseResponse<Object>> TagsCreate(@AuthenticationPrincipal MemberDetails memberDetails, @RequestBody ReqTagIndexes request) {
+        log.info("POST /api/tag");
+
         Long myMemberId = memberDetails.getMemberId();
         tagService.saveMemberTags(myMemberId, request.getTagIndexes());
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>()));
@@ -56,6 +60,8 @@ public class TagController {
     })
     @GetMapping("")
     public ResponseEntity<BaseResponse<List<ResRegisteredTag>>> registeredTagGet(@AuthenticationPrincipal MemberDetails memberDetails) {
+        log.info("GET /api/tag");
+
         Long myMemberId = memberDetails.getMemberId();
         List<ResRegisteredTag> registeredTags = tagService.getRegisteredTag(myMemberId);
 
@@ -70,6 +76,8 @@ public class TagController {
     })
     @PutMapping("")
     public ResponseEntity<BaseResponse<Object>> TagsModify(@AuthenticationPrincipal MemberDetails memberDetails, @RequestBody ReqTagIndexes request) {
+        log.info("PUT /api/tag");
+
         Long myMemberId = memberDetails.getMemberId();
         tagService.modifyMemberTags(myMemberId, request.getTagIndexes()); // 수정하는 서비스 메서드로 변경
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>())); // 응답 메시지에 따라 변경
@@ -83,6 +91,8 @@ public class TagController {
     })
     @GetMapping("/all")
     public ResponseEntity<BaseResponse<Object>> TagAll(@AuthenticationPrincipal MemberDetails memberDetails) {
+        log.info("GET /api/tag/all");
+
         Long myMemberId = memberDetails.getMemberId();
         List<ResCategoryTag> allCategoryTag = tagService.getAllTag();// 수정하는 서비스 메서드로 변경
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(allCategoryTag))); // 응답 메시지에 따라 변경

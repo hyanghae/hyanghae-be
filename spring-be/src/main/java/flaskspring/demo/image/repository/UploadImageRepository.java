@@ -9,4 +9,7 @@ import java.util.List;
 public interface UploadImageRepository extends JpaRepository<UploadImage, Long> {
 
     List<UploadImage> findByMemberOrderByCreatedTimeDesc(Member member);
+
+    void deleteByMember(Member member);
+
 }
