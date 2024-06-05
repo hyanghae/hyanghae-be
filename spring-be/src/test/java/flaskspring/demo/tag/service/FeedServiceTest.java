@@ -5,7 +5,7 @@ import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpReq;
 import flaskspring.demo.member.dto.Res.GeneralSignUpRes;
 import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.dto.res.ResPlaceWithSim;
-import flaskspring.demo.recommend.dto.res.ImgRecommendationDto;
+import flaskspring.demo.home.dto.res.ImgRecommendationDto;
 import flaskspring.demo.tag.dto.res.ResTag;
 import flaskspring.demo.place.dto.res.ResPlace;
 import org.junit.jupiter.api.Test;

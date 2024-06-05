@@ -6,7 +6,7 @@ import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.MemberRepository;
 import flaskspring.demo.place.dto.res.ResPlaceWithSim;
-import flaskspring.demo.recommend.dto.res.ImgRecommendationDto;
+import flaskspring.demo.home.dto.res.ImgRecommendationDto;
 import flaskspring.demo.tag.domain.MemberTagLog;
 import flaskspring.demo.tag.domain.Tag;
 import flaskspring.demo.place.repository.MemberTagLogRepository;

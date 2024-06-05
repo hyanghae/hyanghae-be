@@ -1,6 +1,5 @@
 package flaskspring.demo.place.service;
 
-import com.querydsl.core.Tuple;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.place.domain.FamousPlace;
@@ -13,8 +12,8 @@ import flaskspring.demo.tag.domain.FamousPlaceTagLog;
 import flaskspring.demo.tag.dto.res.ResTag;
 import flaskspring.demo.tag.repository.FamousPlaceTagLogRepository;
 import flaskspring.demo.tag.repository.PlaceTagLogRepository;
-import flaskspring.demo.recommend.dto.req.TagScoreDto;
-import flaskspring.demo.recommend.dto.res.SimFamousPlaceDto;
+import flaskspring.demo.home.dto.req.TagScoreDto;
+import flaskspring.demo.home.dto.res.SimFamousPlaceDto;
 import flaskspring.demo.tag.domain.PlaceTagLog;
 import flaskspring.demo.utils.FlaskConfig;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

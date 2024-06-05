@@ -1,4 +1,4 @@
-package flaskspring.demo.recommend.service;
+package flaskspring.demo.home.service;
 
 import flaskspring.demo.place.domain.Place;
 import flaskspring.demo.place.repository.PlaceRepository;

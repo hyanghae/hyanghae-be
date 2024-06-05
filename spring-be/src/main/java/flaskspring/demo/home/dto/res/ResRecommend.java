@@ -1,4 +1,4 @@
-package flaskspring.demo.recommend.dto.res;
+package flaskspring.demo.home.dto.res;
 
 import flaskspring.demo.place.domain.Place;
 import flaskspring.demo.place.dto.res.ResOPlace;

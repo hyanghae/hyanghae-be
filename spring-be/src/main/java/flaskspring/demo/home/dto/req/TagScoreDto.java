@@ -1,9 +1,8 @@
-package flaskspring.demo.recommend.dto.req;
+package flaskspring.demo.home.dto.req;
 
 import flaskspring.demo.tag.domain.PlaceTagLog;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;

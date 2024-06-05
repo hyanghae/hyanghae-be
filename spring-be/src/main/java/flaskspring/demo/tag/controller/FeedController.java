@@ -3,7 +3,7 @@ package flaskspring.demo.tag.controller;
 import flaskspring.demo.config.auth.MemberDetails;
 import flaskspring.demo.exception.*;
 import flaskspring.demo.place.dto.res.ResPlaceWithSim;
-import flaskspring.demo.recommend.dto.res.ImgRecommendationDto;
+import flaskspring.demo.home.dto.res.ImgRecommendationDto;
 import flaskspring.demo.tag.service.FeedService;
 import flaskspring.demo.place.dto.res.ResPlace;
 import flaskspring.demo.utils.FlaskConfig;
