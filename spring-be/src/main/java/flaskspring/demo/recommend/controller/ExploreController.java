@@ -35,7 +35,7 @@ public class ExploreController {
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
     })
-    @Operation(summary = "여행지 탐색 설정 정보", description = "탐색 상단 여행지 탐색 정보 API")
+    @Operation(summary = "여행지 추천 설정 정보", description = "추천 상단 여행지 설정 정보 API")
     @GetMapping("/config")
     public ResponseEntity<BaseResponse<ResConfigInfo>> exploreConfigGet() {
         log.info("GET /api/explore/config");
@@ -43,6 +43,8 @@ public class ExploreController {
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new ResConfigInfo()));
     }
+
+
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),

@@ -3,6 +3,7 @@ package flaskspring.demo.search.controller;
 import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
+import flaskspring.demo.home.dto.res.ResPopularSearch;
 import flaskspring.demo.recommend.dto.res.ResPlaceRecommendPaging;
 import flaskspring.demo.search.dto.res.ResPlaceSearchPaging;
 import flaskspring.demo.utils.MessageUtils;
@@ -20,10 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Tag(name = "여행지 검색", description = "여행지 검색 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/search")
+@RequestMapping("/api")
 @Slf4j
 public class SearchController {
 
@@ -34,9 +37,25 @@ public class SearchController {
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
     })
+    @Operation(summary = "인기 검색어", description = "인기 검색어 API")
+    @GetMapping("/popular-searches")
+    public ResponseEntity<BaseResponse<List<ResPopularSearch>>> PopularSearchGet() {
+        log.info("GET /api/popular-searches");
+
+
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, null));
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
+            @ApiResponse(responseCode = "400", description = MessageUtils.ERROR,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
+            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
+    })
     @Operation(summary = "여행지 검색", description = "여행지 검색 API" +
             " <br> sort : 확정 필요 ")
-    @GetMapping("")
+    @GetMapping("/search")
     public ResponseEntity<BaseResponse<ResPlaceSearchPaging>> searchPlaceGet(
             @RequestParam(required = false, defaultValue = "similar", name = "sort") String sort,
             @RequestParam(required = false, defaultValue = "1", name = "page") int pageNumber,

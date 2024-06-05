@@ -3,6 +3,7 @@ package flaskspring.demo.home.dto.res;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,8 +16,8 @@ public class ResUpcomingSchedule {
     private int DDay;
 
     @Schema(description = "스케쥴 시작 일자", example = "2024.08.27")
-    private LocalDateTime startDate;
+    private LocalDate startDate;
 
     @Schema(description = "스케쥴 종료 일자", example = "2024.08.30")
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 }
