@@ -7,6 +7,9 @@ import lombok.Data;
 public class ResFamous {
 
     @Schema(description = "지역", example = "부산 해운대구")
+    Long famousPlaceId;
+
+    @Schema(description = "지역", example = "부산 해운대구")
     String region;
 
     @Schema(description = "여행지명", example = "해운대")

@@ -59,13 +59,13 @@ public class TagController {
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
     @GetMapping("")
-    public ResponseEntity<BaseResponse<List<ResRegisteredTag>>> registeredTagGet(@AuthenticationPrincipal MemberDetails memberDetails) {
+    public ResponseEntity<BaseResponse<BaseObject<ResRegisteredTag>>> registeredTagGet(@AuthenticationPrincipal MemberDetails memberDetails) {
         log.info("GET /api/tag");
 
         Long myMemberId = memberDetails.getMemberId();
         List<ResRegisteredTag> registeredTags = tagService.getRegisteredTag(myMemberId);
 
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, registeredTags));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(registeredTags)));
     }
 
     @Operation(summary = "태그 수정", description = "유저의 태그를 수정합니다.")
@@ -90,7 +90,7 @@ public class TagController {
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
     @GetMapping("/all")
-    public ResponseEntity<BaseResponse<Object>> TagAll(@AuthenticationPrincipal MemberDetails memberDetails) {
+    public ResponseEntity<BaseResponse<BaseObject<ResCategoryTag>>> TagAll(@AuthenticationPrincipal MemberDetails memberDetails) {
         log.info("GET /api/tag/all");
 
         Long myMemberId = memberDetails.getMemberId();

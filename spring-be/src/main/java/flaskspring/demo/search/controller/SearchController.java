@@ -1,6 +1,7 @@
 package flaskspring.demo.search.controller;
 
 import flaskspring.demo.exception.BaseExceptionResponse;
+import flaskspring.demo.exception.BaseObject;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.home.dto.res.ResPopularSearch;
@@ -39,11 +40,11 @@ public class SearchController {
     })
     @Operation(summary = "인기 검색어", description = "인기 검색어 API")
     @GetMapping("/popular-searches")
-    public ResponseEntity<BaseResponse<List<ResPopularSearch>>> PopularSearchGet() {
+    public ResponseEntity<BaseResponse<BaseObject<ResPopularSearch>>> PopularSearchGet() {
         log.info("GET /api/popular-searches");
 
 
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, null));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(null)));
     }
 
     @ApiResponses(value = {
@@ -57,9 +58,12 @@ public class SearchController {
             " <br> sort : 확정 필요 ")
     @GetMapping("/search")
     public ResponseEntity<BaseResponse<ResPlaceSearchPaging>> searchPlaceGet(
-            @RequestParam(required = false, defaultValue = "similar", name = "sort") String sort,
-            @RequestParam(required = false, defaultValue = "1", name = "page") int pageNumber,
-            @RequestParam(required = false, defaultValue = "", name = "searchQuery") String searchQuery
+            @RequestParam(required = false, defaultValue = "", name = "searchQuery") String searchQuery,
+            @RequestParam(required = false, defaultValue = "recommend", name = "sort") String sort,
+            @RequestParam(required = false, name = "countCursor") Long count,
+            @RequestParam(required = false, name = "idCursor") Long placeId,
+            @RequestParam(required = false, name = "nameCursor") String name,
+            @RequestParam(required = false, defaultValue = "10", name = "size") int size
     ) {
         log.info("GET /api/search");
 

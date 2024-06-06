@@ -5,6 +5,7 @@ import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.image.util.ImageUploadUtil;
+import flaskspring.demo.recommend.dto.res.ResConfigInfo;
 import flaskspring.demo.tag.dto.req.ReqTagIndexes;
 import flaskspring.demo.tag.service.TagService;
 import flaskspring.demo.utils.MessageUtils;
@@ -60,5 +61,21 @@ public class SettingController {
         }
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>()));
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
+            @ApiResponse(responseCode = "400", description = MessageUtils.ERROR,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
+            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
+    })
+    @Operation(summary = "여행지 취향 설정 정보", description = "여행지 취향 설정 정보 API")
+    @GetMapping("")
+    public ResponseEntity<BaseResponse<ResConfigInfo>> exploreConfigGet() {
+        log.info("GET /api/explore/config");
+
+
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new ResConfigInfo()));
     }
 }

@@ -17,12 +17,9 @@ public class ResRisingPlacePaging {
     @Schema(description = "뜨고 있는 여행지 목록")
     List<ResPlaceBrief> risingPlaces;
 
-    @Schema(description = "전체 페이지 수", example = "5")
-    private int numOfTotalPages;
+    @Schema(description = "카운트 커서", example = "3")
+    private Long nextCountCursor;
 
-    @Schema(description = "모든 요소 개수", example = "50")
-    private long numOfTotalElements;
-
-    @Schema(description = "현재 페이지의 요소 개수", example = "10")
-    private int numOfElements;
+    @Schema(description = "ID 커서", example = "1234")
+    private Long nextIdCursor;
 }

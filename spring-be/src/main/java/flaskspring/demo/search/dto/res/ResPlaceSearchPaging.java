@@ -12,12 +12,12 @@ public class ResPlaceSearchPaging {
     @Schema(description = "검색된 여행지 목록")
     List<ResPlaceBrief> searchedPlaces;
 
-    @Schema(description = "전체 페이지 수", example = "5")
-    private int numOfTotalPages;
+    @Schema(description = "카운트 커서", example = "3")
+    private Long nextCountCursor;
 
-    @Schema(description = "모든 요소 개수", example = "50")
-    private long numOfTotalElements;
+    @Schema(description = "ID 커서", example = "1234")
+    private Long nextIdCursor;
 
-    @Schema(description = "현재 페이지의 요소 개수", example = "10")
-    private int numOfElements;
+    @Schema(description = "이름 커서", example = "강문해변")
+    private String nextNameCursor;
 }
