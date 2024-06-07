@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Profile("local")
@@ -46,12 +47,17 @@ public class ImageUploadUtilImpl implements ImageUploadUtil {
             throw new RuntimeException(e);
         }
 
+        //기존 설정 이미지가 있다면 디세팅. 세팅 이미지는 하나여야 한다
+        uploadImageRepository.findByMemberAndIsSetting(member, true).ifPresent(UploadImage::deSetting);
+
+
         UploadImage uploadImage = UploadImage.builder()
                 .originalFileName(originalFilename)
                 .saveFileName(fileName)
                 .savedImageUrl(savedImgUrl)
                 .extension(fileExtension)
                 .member(member)
+                .isSetting(true)
                 .build();
 
         uploadImageRepository.save(uploadImage);

@@ -27,6 +27,8 @@ public class UploadImage {
 
     private String extension;
 
+    private boolean isSetting;
+
     @Lob
     private String savedImageUrl;
 
@@ -36,4 +38,8 @@ public class UploadImage {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public void deSetting() {
+        this.isSetting = false;
+    }
 }

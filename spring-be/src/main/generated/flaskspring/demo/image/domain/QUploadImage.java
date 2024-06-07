@@ -28,6 +28,8 @@ public class QUploadImage extends EntityPathBase<UploadImage> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isSetting = createBoolean("isSetting");
+
     public final flaskspring.demo.member.domain.QMember member;
 
     public final StringPath originalFileName = createString("originalFileName");

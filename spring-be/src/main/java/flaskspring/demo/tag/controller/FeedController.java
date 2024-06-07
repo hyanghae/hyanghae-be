@@ -2,6 +2,7 @@ package flaskspring.demo.tag.controller;
 
 import flaskspring.demo.config.auth.MemberDetails;
 import flaskspring.demo.exception.*;
+import flaskspring.demo.image.repository.UploadImageRepository;
 import flaskspring.demo.place.dto.res.ResPlaceWithSim;
 import flaskspring.demo.home.dto.res.ImgRecommendationDto;
 import flaskspring.demo.tag.service.FeedService;
@@ -41,6 +42,8 @@ public class FeedController {
     private final FeedService feedService;
     RestTemplate restTemplate = new RestTemplate();
 
+    private final UploadImageRepository uploadImageRepository;
+
 
     @Operation(summary = "유저 태그 기반 비인기 여행지 피드", description = "저장된 태그 기반 비인기 여행지 피드" +
             "<br> sort : \"register\"(등록순), \"like\"(좋아요순), \"alpha\"(가나다순), \"recommend(default)(추천순)\"  ")
@@ -69,7 +72,11 @@ public class FeedController {
     public ResponseEntity<BaseResponse<BaseObject<ResPlaceWithSim>>> recommendByImage(@AuthenticationPrincipal MemberDetails memberDetails,
                                                                                @RequestParam("photo") MultipartFile placeImage) {
 
+
         Long myMemberId = memberDetails.getMemberId();
+
+
+
         List<ImgRecommendationDto> resultFromFlask = getResultFromFlask(placeImage); //이미지 유사도 상위 3개
 
         List<ResPlaceWithSim> recommendFeed = feedService.getRecommendFeed(myMemberId, resultFromFlask);
@@ -78,6 +85,7 @@ public class FeedController {
     }
 
     private List<ImgRecommendationDto> getResultFromFlask(MultipartFile placeImage) {
+
         try {
             byte[] imageBytes = convertImageToByteArray(placeImage);
             HttpEntity<MultiValueMap<String, Object>> requestEntity = createRequestEntity(placeImage, imageBytes);

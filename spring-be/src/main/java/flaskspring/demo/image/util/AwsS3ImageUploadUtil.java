@@ -69,6 +69,8 @@ public class AwsS3ImageUploadUtil implements ImageUploadUtil {
 
         String savedImgUrl = amazonS3.getUrl(bucket, s3name).toString().replaceAll("\\+", "+");
 
+        uploadImageRepository.findByMemberAndIsSetting(member, true).ifPresent(UploadImage::deSetting);
+
         UploadImage uploadImage = UploadImage.builder()
                 .originalFileName(originalFilename)
                 .saveFileName(savedFilename)
