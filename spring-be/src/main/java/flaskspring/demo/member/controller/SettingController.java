@@ -26,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 
 
-@Tag(name = "온보딩 기능", description = "온보딩 API")
+@Tag(name = "취향 기능", description = "취향 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/recommend/setting")
