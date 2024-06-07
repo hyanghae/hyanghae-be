@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-@Profile("deploy")
+@Profile({"deploy", "docker"})
 @Configuration
 public class AwsConfig {
 

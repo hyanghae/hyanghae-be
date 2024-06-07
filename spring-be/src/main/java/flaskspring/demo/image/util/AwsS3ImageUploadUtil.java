@@ -26,7 +26,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-@Profile("deploy")
+@Profile({"deploy", "docker"})
 public class AwsS3ImageUploadUtil implements ImageUploadUtil {
 
     private final AmazonS3Client amazonS3Client;
@@ -77,6 +77,7 @@ public class AwsS3ImageUploadUtil implements ImageUploadUtil {
                 .savedImageUrl(savedImgUrl)
                 .extension(fileExtension)
                 .member(member)
+                .isSetting(true)
                 .build();
 
         uploadImageRepository.save(uploadImage);

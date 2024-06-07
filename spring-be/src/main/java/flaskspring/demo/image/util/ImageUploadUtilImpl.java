@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
-@Profile("local")
+@Profile({"local"})
 @Service
 @Transactional
 @RequiredArgsConstructor

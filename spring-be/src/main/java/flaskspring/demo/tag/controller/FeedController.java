@@ -3,6 +3,7 @@ package flaskspring.demo.tag.controller;
 import flaskspring.demo.config.auth.MemberDetails;
 import flaskspring.demo.exception.*;
 import flaskspring.demo.image.repository.UploadImageRepository;
+import flaskspring.demo.image.service.UploadImageService;
 import flaskspring.demo.place.dto.res.ResPlaceWithSim;
 import flaskspring.demo.home.dto.res.ImgRecommendationDto;
 import flaskspring.demo.tag.service.FeedService;
@@ -32,7 +33,7 @@ import java.util.List;
 
 
 @Tag(name = "여행지 추천 피드", description = "여행지 피드 API")
-//@RestController
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/feed")
 @Slf4j
@@ -40,6 +41,8 @@ public class FeedController {
 
     private final FlaskConfig flaskConfig;
     private final FeedService feedService;
+    private final UploadImageService uploadImageService;
+
     RestTemplate restTemplate = new RestTemplate();
 
     private final UploadImageRepository uploadImageRepository;
@@ -68,20 +71,21 @@ public class FeedController {
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
     @Operation(summary = "이미지 기반 피드", description = "이미지 유사도 기반 추천")
-    @PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<BaseResponse<BaseObject<ResPlaceWithSim>>> recommendByImage(@AuthenticationPrincipal MemberDetails memberDetails,
-                                                                               @RequestParam("photo") MultipartFile placeImage) {
-
+    @PostMapping(value = "/image")
+    public ResponseEntity<BaseResponse<BaseObject<ResPlaceWithSim>>> recommendByImage(@AuthenticationPrincipal MemberDetails memberDetails) {
 
         Long myMemberId = memberDetails.getMemberId();
 
+        MultipartFile settingImage = uploadImageService.getSettingImageFile(myMemberId);
 
+        List<ImgRecommendationDto> resultFromFlask = getResultFromFlask(settingImage);
+        for (ImgRecommendationDto recommendation : resultFromFlask) {
+            System.out.println("Name: " + recommendation.getName() + ", Similarity: " + recommendation.getSimilarity());
+        }
 
-        List<ImgRecommendationDto> resultFromFlask = getResultFromFlask(placeImage); //이미지 유사도 상위 3개
+       // List<ResPlaceWithSim> recommendFeed = feedService.getRecommendFeed(myMemberId, resultFromFlask);
 
-        List<ResPlaceWithSim> recommendFeed = feedService.getRecommendFeed(myMemberId, resultFromFlask);
-
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(recommendFeed)));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(null)));
     }
 
     private List<ImgRecommendationDto> getResultFromFlask(MultipartFile placeImage) {
