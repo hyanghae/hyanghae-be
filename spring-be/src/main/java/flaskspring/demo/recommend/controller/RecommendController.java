@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 
-@Tag(name = "여행지 추천", description = "여행지 추천 API")
+@Tag(name = "여행지 추천", description = "유저 공통 여행지 추천 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/recommend")

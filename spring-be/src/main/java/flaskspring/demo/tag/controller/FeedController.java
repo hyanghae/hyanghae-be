@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-@Tag(name = "여행지 추천 피드", description = "여행지 피드 API")
+@Tag(name = "여행지 피드 Test 용", description = "사용하지 마시오")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/feed")

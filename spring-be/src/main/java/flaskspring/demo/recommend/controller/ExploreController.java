@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@Tag(name = "여행지 탐색", description = "여행지 탐색 API")
+@Tag(name = "여행지 탐색", description = "취향 설정 정보로 탐색하는 기능 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/explore")

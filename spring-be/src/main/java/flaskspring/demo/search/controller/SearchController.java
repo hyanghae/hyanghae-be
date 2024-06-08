@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Tag(name = "여행지 검색", description = "여행지 검색 API")
+@Tag(name = "여행지 검색", description = "검색어로 검색하는 기능 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
