@@ -5,8 +5,10 @@ import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.image.domain.UploadImage;
 import flaskspring.demo.image.repository.UploadImageRepository;
 import flaskspring.demo.image.util.CustomMultipartFile;
+import flaskspring.demo.image.util.ImageUploadUtil;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.MemberRepository;
+import flaskspring.demo.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,12 +29,31 @@ import java.nio.file.Files;
 public class UploadImageService {
 
     private final UploadImageRepository uploadImageRepository;
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final ImageFileService imageFileService;
+    private final ImageUploadUtil imageUploadUtil;
+
+    public void uploadImage(MultipartFile file, Long memberId) {
+        Member member = memberService.findMemberById(memberId);
+        imageUploadUtil.uploadImage(file, member);
+        member.onBoard();
+    }
+
+    public void deleteSettingImage(Long memberId) {
+        Member member = memberService.findMemberById(memberId);
+        Optional<UploadImage> uploadImage = uploadImageRepository.findByMemberAndIsSetting(member, true);
+        uploadImage.ifPresent(UploadImage::deSetting);
+    }
+
+    public String getSettingImageURL(Long memberId) {
+        Member member = memberService.findMemberById(memberId);
+        Optional<UploadImage> uploadImage = uploadImageRepository.findByMemberAndIsSetting(member, true);
+        return uploadImage.map(UploadImage::getSavedImageUrl).orElse(null);
+    }
+
 
     public MultipartFile getSettingImageFile(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
+        Member member = memberService.findMemberById(memberId);
 
         UploadImage uploadImage = uploadImageRepository.findByMemberAndIsSetting(member, true)
                 .orElseThrow(() -> new BaseException(BaseResponseCode.NO_IMAGE_EXCEPTION));

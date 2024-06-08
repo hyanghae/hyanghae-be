@@ -7,6 +7,7 @@ import flaskspring.demo.home.dto.res.ResPlaceBrief;
 import flaskspring.demo.home.dto.res.ResRisingPlacePaging;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.MemberRepository;
+import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.domain.Place;
 import flaskspring.demo.place.dto.res.ResPlaceWithSim;
 import flaskspring.demo.place.repository.PlaceRepository;
@@ -23,10 +24,10 @@ import java.util.stream.Collectors;
 public class RecommendService {
 
     private final PlaceRepository placeRepository;
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     public ResRisingPlacePaging getRisingPlaces(Long memberId, Long countCursor, Long placeId, int size) {
-        Member member = findMemberById(memberId);
+        Member member = memberService.findMemberById(memberId);
         List<Tuple> places = placeRepository.findRisingPlaces(member, countCursor, placeId, size);
 
         Long nextCountCursor = null;
@@ -45,10 +46,6 @@ public class RecommendService {
         return new ResRisingPlacePaging(placeDto, nextCountCursor, nextIdCursor);
     }
 
-    private Member findMemberById(Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
-    }
 
     private List<ResPlaceBrief> convertToPlaceBriefList(List<Tuple> places) {
         return places.stream()

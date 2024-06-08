@@ -103,6 +103,10 @@ public class MemberService {
         return "유저-" + randomNumber;
     }
 
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
+    }
 
 
 

@@ -1,12 +1,14 @@
 package flaskspring.demo.home.dto.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 public class ResUpcomingSchedule {
 
     @Schema(description = "스케쥴명", example = "강원 강릉")

@@ -28,7 +28,7 @@ import java.util.HashMap;
 //@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/schedule")
-public class ScheduleController {
+public class ScheduleController2 {
 
     private final ScheduleService scheduleService;
     private final PathService pathService;

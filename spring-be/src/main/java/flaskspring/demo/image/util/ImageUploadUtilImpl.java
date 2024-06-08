@@ -28,9 +28,8 @@ public class ImageUploadUtilImpl implements ImageUploadUtil {
     private final UploadImageRepository uploadImageRepository;
 
     @Override
-    public String uploadImage(MultipartFile file, Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
+    public String uploadImage(MultipartFile file, Member member) {
+
         //파일 이름
         String originalFilename = file.getOriginalFilename();
         //파일 이름이 비어있으면 (assert 오류 반환)
@@ -65,14 +64,14 @@ public class ImageUploadUtilImpl implements ImageUploadUtil {
     }
 
     @Override
-    public String updateImage(MultipartFile file, String existingImageName, Long memberId) {
-        deleteImage(existingImageName, memberId);
-        return uploadImage(file, memberId);
+    public String updateImage(MultipartFile file, String existingImageName, Member member) {
+        deleteImage(existingImageName, member);
+        return uploadImage(file, member);
     }
 
 
     @Override
-    public void deleteImage(String savedImageName, Long memberId) {
+    public void deleteImage(String savedImageName, Member member) {
         String fileExtension = extractExtension(savedImageName);
         String filename = extractFilename(savedImageName);
         String filePath = getFilePath(UPLOAD_PATH, filename, fileExtension);

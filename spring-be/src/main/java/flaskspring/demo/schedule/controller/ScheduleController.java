@@ -1,5 +1,6 @@
 package flaskspring.demo.schedule.controller;
 
+import flaskspring.demo.departure.service.ScheduleService;
 import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+
 
 @Tag(name = "스케쥴 기능", description = "스케쥴 API")
 @RestController
@@ -25,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 @Slf4j
 public class ScheduleController {
+
+    private final ScheduleService scheduleService;
 
 
     @ApiResponses(value = {
@@ -34,12 +39,19 @@ public class ScheduleController {
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
     })
-    @Operation(summary = "홈화면 스케쥴 API", description = "홈화면 스케쥴 API")
+    @Operation(summary = "홈화면 스케쥴 API", description = "홈화면 스케쥴 API" +
+            "<br> 스케쥴 없을 경우 data : null 리턴")
     @GetMapping("/schedule")
     public ResponseEntity<BaseResponse<ResUpcomingSchedule>> homeSchedule() {
         log.info("GET /api/schedule");
 
+        ResUpcomingSchedule resUpcomingSchedule = ResUpcomingSchedule.builder()
+                .scheduleName("강원 강릉")
+                .DDay(3)
+                .startDate(LocalDate.of(2024, 8, 22))
+                .endDate(LocalDate.of(2024, 8, 24))
+                .build();
 
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new ResUpcomingSchedule()));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, resUpcomingSchedule));
     }
 }

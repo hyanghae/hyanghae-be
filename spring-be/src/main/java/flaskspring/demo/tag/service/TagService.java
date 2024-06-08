@@ -83,15 +83,16 @@ public class TagService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
 
+        memberTagLogRepository.deleteByMember(member); //기존 설정 태그 모두 삭제
+
         List<Tag> tags = tagRepository.findByIdIn(tagIds);
 
         for (Tag tag : tags) {
-            boolean isExist = memberTagLogRepository.existsByMemberAndTag(member, tag);
-            if (!isExist) {
-                MemberTagLog memberTagLog = MemberTagLog.createMemberTagLog(member, tag);
-                memberTagLogRepository.save(memberTagLog);
-            }
+            MemberTagLog memberTagLog = MemberTagLog.createMemberTagLog(member, tag);
+            memberTagLogRepository.save(memberTagLog);
         }
-        member.onBoard();
+        if (!tagIds.isEmpty()) {
+            member.onBoard();
+        }
     }
 }

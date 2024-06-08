@@ -30,7 +30,7 @@ import java.util.UUID;
 public class AwsS3ImageUploadUtil implements ImageUploadUtil {
 
     private final AmazonS3Client amazonS3Client;
-    private final MemberRepository memberRepository;
+
     private final UploadImageRepository uploadImageRepository;
 
     private final AmazonS3 amazonS3;
@@ -39,10 +39,7 @@ public class AwsS3ImageUploadUtil implements ImageUploadUtil {
     private String bucket;/**/
 
     @Override
-    public String uploadImage(MultipartFile file, Long memberId) {
-
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
+    public String uploadImage(MultipartFile file, Member member) {
 
         //파일 이름
         String originalFilename = file.getOriginalFilename();
@@ -94,13 +91,13 @@ public class AwsS3ImageUploadUtil implements ImageUploadUtil {
     }
 
     @Override
-    public String updateImage(MultipartFile file, String existingImageName, Long memberId) {
-        deleteImage(existingImageName, memberId);
-        return uploadImage(file, memberId);
+    public String updateImage(MultipartFile file, String existingImageName, Member member) {
+        deleteImage(existingImageName, member);
+        return uploadImage(file, member);
     }
 
     @Override
-    public void deleteImage(String savedImageName, Long memberId) {
+    public void deleteImage(String savedImageName, Member member) {
         amazonS3Client.deleteObject(bucket, savedImageName);
     }
 

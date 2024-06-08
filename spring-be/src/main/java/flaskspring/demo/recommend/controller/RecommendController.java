@@ -8,6 +8,7 @@ import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.home.dto.res.ResFamous;
 import flaskspring.demo.home.dto.res.ResRisingPlacePaging;
 import flaskspring.demo.place.repository.FamousPlaceRepository;
+import flaskspring.demo.place.service.FamousPlaceService;
 import flaskspring.demo.recommend.service.RecommendService;
 import flaskspring.demo.utils.MessageUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 
 @Tag(name = "여행지 추천", description = "여행지 추천 API")
 @RestController
@@ -34,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RecommendController {
 
     private final RecommendService recommendService;
-    private final FamousPlaceRepository
+    private final FamousPlaceService famousPlaceService;
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
@@ -44,9 +47,9 @@ public class RecommendController {
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
     })
     @Operation(summary = "뜨고 있는 여행지", description = "뜨고 있는 여행지 API" +
-            "처음 요청시 countCursor: null idCursor: null" +
-            "다음 요청시 countCursor: 이전 리턴값 idCursor: 이전 리턴값" +
-            "로드 데이터 없는 경우 빈 리스트, countCursor: null idCursor: null 반환")
+            "<br> 처음 요청시 countCursor: null idCursor: null" +
+            "<br> 다음 요청시 countCursor: 이전 리턴값 idCursor: 이전 리턴값" +
+            "<br> 로드 데이터 없는 경우 빈 리스트, countCursor: null idCursor: null 반환")
     @GetMapping("/rising")
     public ResponseEntity<BaseResponse<ResRisingPlacePaging>> homeRisingGet(
             @AuthenticationPrincipal MemberDetails memberDetails,
@@ -74,7 +77,7 @@ public class RecommendController {
     @GetMapping("/famous")
     public ResponseEntity<BaseResponse<BaseObject<ResFamous>>> homeSuggestionGet() {
         log.info("GET /api/recommend/famous");
-
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(null)));
+        List<ResFamous> famousPlaces = famousPlaceService.get24FamousPlaces();
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(famousPlaces)));
     }
 }

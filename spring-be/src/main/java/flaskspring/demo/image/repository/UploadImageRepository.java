@@ -11,8 +11,9 @@ public interface UploadImageRepository extends JpaRepository<UploadImage, Long> 
 
     List<UploadImage> findByMemberOrderByCreatedTimeDesc(Member member);
 
-    void deleteByMember(Member member);
+    void deleteByMember(Member member); //멤버가 등록한 모든 이미지 삭제
 
     Optional<UploadImage> findByMemberAndIsSetting(Member member, boolean isSetting);
+
 
 }

@@ -17,7 +17,7 @@ public class BaseResponse<T> {
     private String message; // 에러 설명
 
     @Schema(description = "전달 데이터")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    //@JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 
     public BaseResponse(BaseResponseCode responseCode, T data) {
