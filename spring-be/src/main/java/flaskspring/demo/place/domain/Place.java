@@ -39,9 +39,9 @@ public class Place {
     @Column(name = "image_path", length = 200) // 이미지 경로의 최대 길이에 맞게 지정
     private String imagePath;
 
-    private int likeCount;
+    private Long likeCount;
 
-    private int registerCount;
+    private Long registerCount;
 
     // 생성자, getter, setter 등 필요한 메서드 추가
 

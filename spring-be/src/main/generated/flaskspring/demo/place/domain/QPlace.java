@@ -28,7 +28,7 @@ public class QPlace extends EntityPathBase<Place> {
 
     public final StringPath imagePath = createString("imagePath");
 
-    public final NumberPath<Integer> likeCount = createNumber("likeCount", Integer.class);
+    public final NumberPath<Long> likeCount = createNumber("likeCount", Long.class);
 
     public final QLocation location;
 
@@ -36,7 +36,7 @@ public class QPlace extends EntityPathBase<Place> {
 
     public final StringPath region = createString("region");
 
-    public final NumberPath<Integer> registerCount = createNumber("registerCount", Integer.class);
+    public final NumberPath<Long> registerCount = createNumber("registerCount", Long.class);
 
     public final StringPath roadAddress = createString("roadAddress");
 

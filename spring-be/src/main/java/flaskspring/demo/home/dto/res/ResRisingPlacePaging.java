@@ -22,4 +22,6 @@ public class ResRisingPlacePaging {
 
     @Schema(description = "ID 커서", example = "1234")
     private Long nextIdCursor;
+
+
 }

@@ -29,10 +29,10 @@ public class ResSchedulePlace {
     private List<ResTag> tags;
 
     @Schema(description = "좋아요 수", example = "100")
-    private Integer likesCount;
+    private Long likesCount;
 
     @Schema(description = "등록 수", example = "50")
-    private Integer registerCount;
+    private Long registerCount;
 
     @Schema(description = "좋아요 여부", example = "false")
     private Boolean isLiked;

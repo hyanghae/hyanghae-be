@@ -42,8 +42,12 @@ public enum BaseResponseCode {
 
     FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다"),
 
+    /**
+     * 500
+     */
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다"),
-    IMAGE_PROCESSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 처리 중 오류가 발생했습니다.");
+    IMAGE_PROCESSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 처리 중 오류가 발생했습니다."),
+    DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "데이터 불러오는 도중 에러가 발생");
 
 
     private HttpStatus code;
