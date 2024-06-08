@@ -4,6 +4,7 @@ import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.recommend.dto.res.ResPlaceRecommendPaging;
+import flaskspring.demo.recommend.service.ExploreService;
 import flaskspring.demo.utils.MessageUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ExploreController {
 
+    private final ExploreService exploreService;
+
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
@@ -38,10 +41,13 @@ public class ExploreController {
     @Operation(summary = "탐색 여행지 목록", description = "탐색 하단 : 태그, 이미지 기반 추천 여행지 목록 API" +
             " <br> sort : 'recommend'(추천순) -> 미확정" +
             " <br> sort : 'alpha'(가나다순)" +
-            " <br> sort : 'popular'(저장수 순) ")
+            " <br> sort : 'popular'(저장수 순) " +
+            "<br> " +
+            "<br> city : ")
     @GetMapping("")
     public ResponseEntity<BaseResponse<ResPlaceRecommendPaging>> exploreRecommendGet(
             @RequestParam(required = false, defaultValue = "recommend", name = "sort") String sort,
+            @RequestParam(required = false, defaultValue = "all", name = "city") String city,
             @RequestParam(required = false, name = "countCursor") Long count,
             @RequestParam(required = false, name = "idCursor") Long placeId,
             @RequestParam(required = false, name = "nameCursor") String name,
@@ -53,7 +59,8 @@ public class ExploreController {
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new ResPlaceRecommendPaging()));
     }
 
-
-
-
+    /**
+     * 태그, 이미지
+     * 지역, 정렬
+     */
 }

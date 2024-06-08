@@ -12,6 +12,9 @@ import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpReq;
 import flaskspring.demo.member.dto.Res.GeneralSignUpRes;
 import flaskspring.demo.member.dto.Res.UserStatus;
 import flaskspring.demo.member.repository.MemberRepository;
+import flaskspring.demo.place.repository.MemberTagLogRepository;
+import flaskspring.demo.tag.domain.MemberTagLog;
+import flaskspring.demo.tag.domain.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +36,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder bCryptPasswordEncoder;
     private final MemberRefreshTokenRepository memberRefreshTokenRepository;
+    private final MemberTagLogRepository memberTagLogRepository;
 
     public List<Member> getAllMembers() {
         return memberRepository.findAll();
@@ -42,6 +46,7 @@ public class MemberService {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Member not found with id: " + id));
     }
+
     @Transactional
     public GeneralLoginRes generalLogin(GeneralLoginReq loginReq) {
         Member member = getMemberByAccount(loginReq.getAccount());
@@ -77,6 +82,7 @@ public class MemberService {
                         () -> memberRefreshTokenRepository.save(new MemberRefreshToken(member, refreshToken))
                 );
     }
+
     @Transactional
     public GeneralSignUpRes generalSignUp(GeneralSignUpReq signUpReq) {
         signUpReq.setPassword(bCryptPasswordEncoder.encode(signUpReq.getPassword()));
@@ -108,6 +114,10 @@ public class MemberService {
                 .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
     }
 
+    public List<Tag> getRegisteredTag(Member member) { //N+1 문제 대비 -> 페치 조인 적용해보기
+        List<MemberTagLog> memberTagLogs = memberTagLogRepository.findByMember(member);
+        return memberTagLogs.stream().map(MemberTagLog::getTag).toList();
+    }
 
 
 }

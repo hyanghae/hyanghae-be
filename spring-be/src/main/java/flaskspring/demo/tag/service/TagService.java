@@ -4,6 +4,7 @@ import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.MemberRepository;
+import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.tag.domain.Category;
 import flaskspring.demo.tag.domain.MemberTagLog;
 import flaskspring.demo.tag.domain.Tag;
@@ -28,6 +29,7 @@ public class TagService {
     private final TagRepository tagRepository;
     private final MemberTagLogRepository memberTagLogRepository;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     public List<ResCategoryTag> getAllTag() {
 
@@ -47,15 +49,11 @@ public class TagService {
     }
 
     public List<ResRegisteredTag> getRegisteredTag(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
-
-        List<MemberTagLog> memberTagLogs = memberTagLogRepository.findByMember(member);
-
-        return memberTagLogs.stream()
-                .map(MemberTagLog::getTag)
+        Member member = memberService.findMemberById(memberId);
+        return memberService.getRegisteredTag(member)
+                .stream()
                 .map(ResRegisteredTag::new)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public void modifyMemberTags(Long memberId, List<Long> modifyTagIds) {

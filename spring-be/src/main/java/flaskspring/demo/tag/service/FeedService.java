@@ -5,6 +5,7 @@ import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.MemberRepository;
+import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.dto.res.ResPlaceWithSim;
 import flaskspring.demo.home.dto.res.ImgRecommendationDto;
 import flaskspring.demo.tag.domain.MemberTagLog;
@@ -28,12 +29,11 @@ public class FeedService {
     private final MemberTagLogRepository memberTagLogRepository;
     private final PlaceTagLogRepository placeTagLogRepository;
     private final PlaceRepository placeRepository;
+    private final MemberService memberService;
 
     public List<ResPlace> getRecommendFeed(Long memberId, String sort) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
-        List<MemberTagLog> memberTagLogs = memberTagLogRepository.findByMember(member);
-
-        List<Tag> tags = memberTagLogs.stream().map(MemberTagLog::getTag).toList();
+        Member member = memberService.findMemberById(memberId);
+        List<Tag> tags = memberService.getRegisteredTag(member);
         List<Tuple> tuples = placeTagLogRepository.getFeedByTags(tags, sort, member);
 
         List<ResPlace> resPlaceList = new ArrayList<>();

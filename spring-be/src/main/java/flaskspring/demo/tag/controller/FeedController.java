@@ -9,6 +9,7 @@ import flaskspring.demo.home.dto.res.ImgRecommendationDto;
 import flaskspring.demo.tag.service.FeedService;
 import flaskspring.demo.place.dto.res.ResPlace;
 import flaskspring.demo.utils.FlaskConfig;
+import flaskspring.demo.utils.FlaskService;
 import flaskspring.demo.utils.MessageUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -39,13 +40,10 @@ import java.util.List;
 @Slf4j
 public class FeedController {
 
-    private final FlaskConfig flaskConfig;
+
     private final FeedService feedService;
     private final UploadImageService uploadImageService;
-
-    RestTemplate restTemplate = new RestTemplate();
-
-    private final UploadImageRepository uploadImageRepository;
+    private final FlaskService flaskService;
 
 
     @Operation(summary = "유저 태그 기반 비인기 여행지 피드", description = "저장된 태그 기반 비인기 여행지 피드" +
@@ -78,60 +76,16 @@ public class FeedController {
 
         MultipartFile settingImage = uploadImageService.getSettingImageFile(myMemberId);
 
-        List<ImgRecommendationDto> resultFromFlask = getResultFromFlask(settingImage);
+        //멀티파트 변환 후 다시 보낼 필요는 없음
+
+        List<ImgRecommendationDto> resultFromFlask = flaskService.getResultFromFlask(settingImage);
         for (ImgRecommendationDto recommendation : resultFromFlask) {
             System.out.println("Name: " + recommendation.getName() + ", Similarity: " + recommendation.getSimilarity());
         }
 
-       // List<ResPlaceWithSim> recommendFeed = feedService.getRecommendFeed(myMemberId, resultFromFlask);
+        // List<ResPlaceWithSim> recommendFeed = feedService.getRecommendFeed(myMemberId, resultFromFlask);
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(null)));
-    }
-
-    private List<ImgRecommendationDto> getResultFromFlask(MultipartFile placeImage) {
-
-        try {
-            byte[] imageBytes = convertImageToByteArray(placeImage);
-            HttpEntity<MultiValueMap<String, Object>> requestEntity = createRequestEntity(placeImage, imageBytes);
-            log.info("이미지 요청 들어옴");
-            ResponseEntity<List<ImgRecommendationDto>> response = sendImageToFlask(requestEntity);
-            return response.getBody();
-        } catch (Exception e) {
-            log.error("Failed to share image: {}", e.getMessage());
-            throw new BaseException(BaseResponseCode.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    private byte[] convertImageToByteArray(MultipartFile placeImage) throws IOException {
-        return placeImage.getBytes();
-    }
-
-    private HttpEntity<MultiValueMap<String, Object>> createRequestEntity(MultipartFile placeImage, byte[] imageBytes) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        ByteArrayResource contentsAsResource = new ByteArrayResource(imageBytes) {
-            @Override
-            public String getFilename() {
-                return placeImage.getOriginalFilename();
-            }
-        };
-
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("photo", contentsAsResource);
-
-        return new HttpEntity<>(body, headers);
-    }
-
-    private ResponseEntity<List<ImgRecommendationDto>> sendImageToFlask(HttpEntity<MultiValueMap<String, Object>> requestEntity) {
-        return restTemplate.exchange(
-
-                flaskConfig.getBaseUrl() + "/img-recommends/upload-image",
-                HttpMethod.POST,
-                requestEntity,
-                new ParameterizedTypeReference<List<ImgRecommendationDto>>() {
-                }
-        );
     }
 
 
