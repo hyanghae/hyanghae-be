@@ -3,6 +3,8 @@ package flaskspring.demo.utils;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.home.dto.res.ImgRecommendationDto;
+import flaskspring.demo.home.dto.res.ResImageStandardScore;
+import flaskspring.demo.image.service.UploadImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -25,13 +27,14 @@ public class FlaskService {
     private final FlaskConfig flaskConfig;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public List<ImgRecommendationDto> getResultFromFlask(MultipartFile placeImage) {
+
+    public List<ResImageStandardScore> getResultFromFlask(MultipartFile placeImage) {
 
         try {
             byte[] imageBytes = convertImageToByteArray(placeImage);
             HttpEntity<MultiValueMap<String, Object>> requestEntity = createRequestEntity(placeImage, imageBytes);
             log.info("이미지 요청 들어옴");
-            ResponseEntity<List<ImgRecommendationDto>> response = sendImageToFlask(requestEntity);
+            ResponseEntity<List<ResImageStandardScore>> response = sendImageToFlask(requestEntity);
             return response.getBody();
         } catch (Exception e) {
             log.error("Failed to share image: {}", e.getMessage());
@@ -60,13 +63,13 @@ public class FlaskService {
         return new HttpEntity<>(body, headers);
     }
 
-    private ResponseEntity<List<ImgRecommendationDto>> sendImageToFlask(HttpEntity<MultiValueMap<String, Object>> requestEntity) {
+    private ResponseEntity<List<ResImageStandardScore>> sendImageToFlask(HttpEntity<MultiValueMap<String, Object>> requestEntity) {
         return restTemplate.exchange(
 
                 flaskConfig.getBaseUrl() + "/img-recommends/upload-image",
                 HttpMethod.POST,
                 requestEntity,
-                new ParameterizedTypeReference<List<ImgRecommendationDto>>() {
+                new ParameterizedTypeReference<List<ResImageStandardScore>>() {
                 }
         );
     }

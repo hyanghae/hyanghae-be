@@ -37,6 +37,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath profileImage = createString("profileImage");
 
+    public final BooleanPath refreshNeeded = createBoolean("refreshNeeded");
+
     public final NumberPath<Integer> registrationCount = createNumber("registrationCount", Integer.class);
 
     public final EnumPath<Role> role = createEnum("role", Role.class);

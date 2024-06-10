@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static flaskspring.demo.utils.ConvertUtil.convertToPlaceBriefList;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -47,10 +49,6 @@ public class RecommendService {
     }
 
 
-    private List<ResPlaceBrief> convertToPlaceBriefList(List<Tuple> places) {
-        return places.stream()
-                .map(ResPlaceBrief::new)
-                .toList();
-    }
+
 
 }

@@ -30,14 +30,19 @@ public enum BaseResponseCode {
     NO_ID_EXCEPTION(HttpStatus.BAD_REQUEST, "해당 ID가 존재하지 않습니다."),
     NO_DEPARTURE_EXCEPTION(HttpStatus.BAD_REQUEST, "등록된 출발지가 없습니다."),
     NO_IMAGE_EXCEPTION(HttpStatus.BAD_REQUEST, "등록된 이미지가 없습니다."),
+    INVALID_CITY_FILTER(HttpStatus.BAD_REQUEST, "유효하지 않은 지역 필터입니다"),
 
     REGISTRATION_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "여행지 등록개수 초과하였습니다."),
+
     /**
      * 401
      */
     NOT_VALID_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다."),
+
     NO_TOKEN_FOUND(HttpStatus.UNAUTHORIZED, "토큰이 없습니다."),
+
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
+
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증되지 않았습니다."),
 
     FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다"),
@@ -46,7 +51,9 @@ public enum BaseResponseCode {
      * 500
      */
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다"),
+
     IMAGE_PROCESSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 처리 중 오류가 발생했습니다."),
+
     DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "데이터 불러오는 도중 에러가 발생");
 
 

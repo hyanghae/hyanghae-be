@@ -31,6 +31,8 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    private boolean refreshNeeded;
+
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
@@ -51,5 +53,12 @@ public class Member {
 
     public void initStatus() {
         this.isOnboarded = false;
+    }
+
+    public void setRefreshNeeded() {
+        this.refreshNeeded = true;
+    }
+    public void setRefreshNotNeeded() {
+        this.refreshNeeded = false;
     }
 }

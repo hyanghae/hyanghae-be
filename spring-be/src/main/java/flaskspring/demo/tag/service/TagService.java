@@ -77,13 +77,14 @@ public class TagService {
 
 
     @Transactional
-    public void saveMemberTags(Long memberId, List<Long> tagIds) {
+    public void saveMemberTags(Long memberId, List<Long> tagIds) { // 수정사항 있는 지 확인하여 RefreshNeeded 갱신 필요
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
 
         memberTagLogRepository.deleteByMember(member); //기존 설정 태그 모두 삭제
 
         List<Tag> tags = tagRepository.findByIdIn(tagIds);
+
 
         for (Tag tag : tags) {
             MemberTagLog memberTagLog = MemberTagLog.createMemberTagLog(member, tag);
@@ -92,5 +93,6 @@ public class TagService {
         if (!tagIds.isEmpty()) {
             member.onBoard();
         }
+        member.setRefreshNeeded();
     }
 }

@@ -51,10 +51,12 @@ def upload_image():
     image_bytes = file.read()
 
     sample_feature_vector = extract_feature_vector(image_bytes)
-    top_similarities =  find_top_similarities(sample_feature_vector, merged_feature_maps_with_names)
-
+    #top_similarities =  find_top_similarities(sample_feature_vector, merged_feature_maps_with_names)
     # JSON 형식으로 데이터 구성
-    result = [{"name": name, "similarity": float(similarity)} for name, similarity in top_similarities] #직렬화를 위해 float형식으로
+    #result = [{"name": name, "similarity": float(similarity)} for name, similarity in top_similarities] #직렬화를 위해 float형식으로
+    
+    result = find_standardized_scores1(sample_feature_vector, merged_feature_maps_with_names) #표준점수 계산
+    result = [{k: float(v) if isinstance(v, (np.float32, np.float64)) else v for k, v in item.items()} for item in result]
 
     # JSON 형식으로 반환
     return make_response(jsonify(result), 200)
@@ -89,3 +91,66 @@ def find_top_similarities(sample_feature_vector, feature_maps_with_names, top_n=
     # 상위 top_n개의 유사도와 해당하는 데이터 이름 출력
     top_similarities = sorted_similarities[:top_n]
     return top_similarities
+
+# 표준점수 계산 함수
+def find_standardized_scores(sample_feature_vector, feature_maps_with_names):
+    similarities = []
+    
+    # 유사도 계산
+    for data_name, feature_vector in feature_maps_with_names.items():
+        similarity = cosine_similarity(feature_vector.reshape(1, -1), sample_feature_vector.reshape(1, -1))[0][0]
+        similarities.append((data_name, similarity))
+
+    # 유사도 목록을 numpy 배열로 변환
+    similarity_values = np.array([sim[1] for sim in similarities])
+
+    # 평균과 표준 편차 계산
+    mean = np.mean(similarity_values)
+    std_dev = np.std(similarity_values)
+
+    # 표준점수 계산
+    standardized_scores = [
+        {
+            "name": name,
+            "score": (similarity - mean) / std_dev
+        }
+        for name, similarity in similarities
+    ]
+
+    # 표준점수를 기준으로 내림차순으로 정렬
+    sorted_standardized_scores = sorted(standardized_scores, key=lambda x: x["score"], reverse=True)
+
+    return sorted_standardized_scores
+
+def find_standardized_scores1(sample_feature_vector, feature_maps_with_names):
+    similarities = []
+    
+    # 유사도 계산
+    for data_name, feature_vector in feature_maps_with_names.items():
+        similarity = cosine_similarity(feature_vector.reshape(1, -1), sample_feature_vector.reshape(1, -1))[0][0]
+        similarities.append((data_name, similarity))
+
+    # 유사도 목록을 numpy 배열로 변환
+    similarity_values = np.array([sim[1] for sim in similarities])
+
+    # 평균과 표준 편차 계산
+    mean = np.mean(similarity_values)
+    std_dev = np.std(similarity_values)
+
+    # 표준점수 계산
+    standardized_scores = [
+        {
+            "name": name,
+            "score": (similarity - mean) / std_dev
+        }
+        for name, similarity in similarities
+    ]
+
+    # 표준점수를 기준으로 내림차순으로 정렬
+    sorted_standardized_scores = sorted(standardized_scores, key=lambda x: x["score"], reverse=True)
+
+    # 정렬된 결과 출력
+    for item in sorted_standardized_scores:
+        print(f"Name: {item['name']}, Standard Score: {item['score']}")
+
+    return sorted_standardized_scores

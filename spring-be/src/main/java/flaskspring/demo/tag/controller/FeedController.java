@@ -2,6 +2,7 @@ package flaskspring.demo.tag.controller;
 
 import flaskspring.demo.config.auth.MemberDetails;
 import flaskspring.demo.exception.*;
+import flaskspring.demo.home.dto.res.ResImageStandardScore;
 import flaskspring.demo.image.repository.UploadImageRepository;
 import flaskspring.demo.image.service.UploadImageService;
 import flaskspring.demo.place.dto.res.ResPlaceWithSim;
@@ -78,9 +79,9 @@ public class FeedController {
 
         //멀티파트 변환 후 다시 보낼 필요는 없음
 
-        List<ImgRecommendationDto> resultFromFlask = flaskService.getResultFromFlask(settingImage);
-        for (ImgRecommendationDto recommendation : resultFromFlask) {
-            System.out.println("Name: " + recommendation.getName() + ", Similarity: " + recommendation.getSimilarity());
+        List<ResImageStandardScore> resultFromFlask = flaskService.getResultFromFlask(settingImage);
+        for (ResImageStandardScore recommendation : resultFromFlask) {
+            System.out.println("Name: " + recommendation.getName() + ", Similarity: " + recommendation.getScore());
         }
 
         // List<ResPlaceWithSim> recommendFeed = feedService.getRecommendFeed(myMemberId, resultFromFlask);

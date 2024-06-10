@@ -53,15 +53,15 @@ public class RecommendController {
     @GetMapping("/rising")
     public ResponseEntity<BaseResponse<ResRisingPlacePaging>> homeRisingGet(
             @AuthenticationPrincipal MemberDetails memberDetails,
-            @RequestParam(required = false, name = "countCursor") Long count,
-            @RequestParam(required = false, name = "idCursor") Long placeId,
+            @RequestParam(required = false, name = "countCursor") Long countCursor,
+            @RequestParam(required = false, name = "idCursor") Long idCursor,
             @RequestParam(required = false, defaultValue = "10", name = "size") int size
     ) {
         log.info("GET /api/recommend/rising");
 
         Long memberId = memberDetails.getMemberId();
 
-        ResRisingPlacePaging response = recommendService.getRisingPlaces(memberId, count, placeId, size);
+        ResRisingPlacePaging response = recommendService.getRisingPlaces(memberId, countCursor, idCursor, size);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, response));
     }
 

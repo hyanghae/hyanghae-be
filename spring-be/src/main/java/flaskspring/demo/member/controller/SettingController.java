@@ -64,6 +64,7 @@ public class SettingController {
             uploadImageService.deleteSettingImage(myMemberId);
         }
 
+
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>()));
     }
 

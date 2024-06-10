@@ -60,12 +60,13 @@ public class SearchController {
     public ResponseEntity<BaseResponse<ResPlaceSearchPaging>> searchPlaceGet(
             @RequestParam(required = false, defaultValue = "", name = "searchQuery") String searchQuery,
             @RequestParam(required = false, defaultValue = "recommend", name = "sort") String sort,
-            @RequestParam(required = false, name = "countCursor") Long count,
-            @RequestParam(required = false, name = "idCursor") Long placeId,
+            @RequestParam(required = false, name = "countCursor") Long countCursor,
+            @RequestParam(required = false, name = "idCursor") Long idCursor,
             @RequestParam(required = false, name = "nameCursor") String name,
             @RequestParam(required = false, defaultValue = "10", name = "size") int size
     ) {
         log.info("GET /api/search");
+
 
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new ResPlaceSearchPaging()));
