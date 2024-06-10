@@ -23,7 +23,9 @@ public class Member {
     private String nickname;
     private String profileImage;
 
-    private boolean isOnboarded;
+    private boolean isOnboarded; //온보딩 여부 (앱 처음 시작시 무조건 true)
+    private boolean recommendPossible; //설정 정보 있는지 여부 -> 추천 가능 여부
+
 
     @Column(columnDefinition = "INT DEFAULT 0")
     private int registrationCount;
@@ -50,6 +52,12 @@ public class Member {
     public void onBoard() {
         this.isOnboarded = true;
     }
+    public void canRecommend() {
+        this.recommendPossible = true;
+    }
+    public void canNotRecommend() {
+        this.recommendPossible = false;
+    }
 
     public void initStatus() {
         this.isOnboarded = false;
@@ -61,4 +69,6 @@ public class Member {
     public void setRefreshNotNeeded() {
         this.refreshNeeded = false;
     }
+
+
 }

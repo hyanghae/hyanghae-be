@@ -48,6 +48,7 @@ public class ExploreService {
     private final FlaskService flaskService;
     private final UploadImageService uploadImageService;
     private final SortedPlaceNameRepository sortedPlaceNameRepository;
+    private final PlaceRepository placeRepository;
 
     public void getStandardScoreFromImage(Long memberId) {
         MultipartFile settingImageFile = uploadImageService.getSettingImageFile(memberId);
@@ -59,44 +60,66 @@ public class ExploreService {
     }
 
     public ResPlaceRecommendPaging getExplorePlace(Long memberId, ExploreFilter filter, ExploreCursor cursor, int size) {
-
-
         Member member = memberService.findMemberById(memberId);
         if (filter.getSort().equals("alpha") || filter.getSort().equals("popular")) {
             List<Tuple> explorePlace = exploreRepository.findExplorePlaceWithoutTags(member, filter, cursor, size);
             return createResPlaceRecommendPaging(explorePlace, filter);
         } else if (filter.getSort().equals("recommend")) {
-            if (cursor.getIdCursor() == null) { //처음 진입 시 저장
-                if (member.isRefreshNeeded()) {
-                    sortedPlaceNameRepository.deleteByMember(member);
-                    List<Long> tagIds = memberService.getRegisteredTag(member).stream().map(Tag::getId).toList();
-                    List<PlaceScore> placeScores = getPlaceScoresWithStandardizedScores(exploreRepository.findExplorePlaceWithTags(member, tagIds));
-                    MultipartFile settingImageFile = uploadImageService.getSettingImageFile(memberId);
-                    List<ResImageStandardScore> resultFromFlask = flaskService.getResultFromFlask(settingImageFile);
-                    updatePlaceScoresWithImageScores(placeScores, resultFromFlask);
-                    List<PlaceScore> sortedPlaceScores = getSortedPlaceScores(placeScores);
-                    saveSortedPlaceNames(member, sortedPlaceScores);
-                    member.setRefreshNotNeeded();
-                }
+            if (isFirstRecommendRequest(cursor)) { // 처음 진입 시
+                handleInitialRecommendationRequest(member);
             }
-
-            /*List<SortedPlaceName> sortedPlaceNames = sortedPlaceNameRepository
-                    .findByMemberAndIdGreaterThanOrderByIdAsc(member, idCursor, PageRequest.of(0, size));
-            idCursor = sortedPlaceNames.get(sortedPlaceNames.size() - 1).getId();
-
-            List<String> PlaceNames = sortedPlaceNames.stream()
-                    .map(SortedPlaceName::getPlaceName)
-                    .toList();
-
-            System.out.println("PlaceNames = " + PlaceNames);
-
-            List<Tuple> explorePlaceWithRecommend = exploreRepository.findExplorePlaceWithRecommend(member, PlaceNames);*/
-
             List<Tuple> explorePlaceWithRecommend = sortedPlaceNameRepository.findExplorePlaceSorted(member, filter, cursor, size);
             return createResPlaceRecommendPaging(explorePlaceWithRecommend, filter);
         }
         return null;
     }
+
+    private boolean isFirstRecommendRequest(ExploreCursor cursor) {
+        return cursor.getIdCursor() == null;
+    }
+
+    private void handleInitialRecommendationRequest(Member member) {
+        if (member.isRecommendPossible()) { // 추천 가능: 설정 정보 있음
+            if (member.isRefreshNeeded()) { // 갱신 필요
+                processRecommendation(member);
+            }
+        } else { // 추천 불가 : 설정 정보 없음
+            throw new BaseException(BaseResponseCode.MISSING_PREFERENCES_FOR_RECOMMENDATION);
+        }
+    }
+
+    private void processRecommendation(Member member) {
+        sortedPlaceNameRepository.deleteByMember(member);
+        List<PlaceScore> placeScores = getPlaceScores(member);
+        saveSortedPlaceNamesAndUpdateRefreshStatus(member, placeScores);
+    }
+
+    private List<PlaceScore> getPlaceScores(Member member) {
+        List<Long> tagIds = memberService.getRegisteredTag(member).stream().map(Tag::getId).toList();
+        List<PlaceScore> placeScores;
+        if (!tagIds.isEmpty()) { // 태그 설정이 있음
+            placeScores = getPlaceScoresWithStandardizedScores(exploreRepository.findExplorePlaceWithTags(member, tagIds));
+        } else { // 이미지 설정만 있음
+            placeScores = getPlaceScoreWithNoScore(placeRepository.findAll());
+        }
+
+        if (uploadImageService.isSettingImageExist(member)) { // 이미지 설정이 있는 경우에만 이미지 스코어 업데이트
+            MultipartFile settingImageFile = uploadImageService.getSettingImageFile(member.getMemberId());
+            List<ResImageStandardScore> resultFromFlask = flaskService.getResultFromFlask(settingImageFile);
+            updatePlaceScoresWithImageScores(placeScores, resultFromFlask);
+        }
+        return placeScores;
+    }
+
+
+    private void saveSortedPlaceNamesAndUpdateRefreshStatus(Member member, List<PlaceScore> placeScores) {
+        if (placeScores != null) {
+            List<PlaceScore> sortedPlaceScores = getSortedPlaceScores(placeScores);
+            saveSortedPlaceNames(member, sortedPlaceScores);
+            member.setRefreshNotNeeded();
+        }
+    }
+
 
     private void saveSortedPlaceNames(Member member, List<PlaceScore> sortedPlaceScores) {
         List<SortedPlaceName> sortedPlaceNames = new ArrayList<>();
@@ -108,9 +131,19 @@ public class ExploreService {
         sortedPlaceNameRepository.saveAllSortedPlace(sortedPlaceNames);
     }
 
+    private List<PlaceScore> getPlaceScoreWithNoScore(List<Place> places) {
+
+        List<PlaceScore> placeScores = new ArrayList<>();
+        // 각 여행지 이름만 할당
+        for (Place place : places) {
+            placeScores.add(new PlaceScore(place.getTouristSpotName(), null, null));
+        }
+        return placeScores;
+    }
+
     private List<PlaceScore> getPlaceScoresWithStandardizedScores(List<Tuple> explorePlace) {
         List<Integer> scores = explorePlace.stream()
-                .map(tuple -> tuple.get(4, Integer.class)) // totalTagScore 가져오기
+                .map(tuple -> tuple.get(1, Integer.class)) // totalTagScore 가져오기
                 .toList();
 
         // 평균 계산
@@ -128,7 +161,7 @@ public class ExploreService {
         // 각 여행지의 표준 점수 계산
         for (Tuple tuple : explorePlace) {
             Place place = tuple.get(0, Place.class);
-            Integer totalTagScore = tuple.get(4, Integer.class);
+            Integer totalTagScore = tuple.get(1, Integer.class);
 
             double standardizedScore = (totalTagScore - mean) / standardDeviation;
             placeScores.add(new PlaceScore(place.getTouristSpotName(), standardizedScore, null));

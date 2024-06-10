@@ -76,9 +76,6 @@ public class ExploreRepositoryImpl implements ExploreRepository {
         return jpaQueryFactory
                 .select(
                         place,
-                        Expressions.stringTemplate("group_concat({0})", tag.id).as("tagIds"), // tagId를 모음
-                        Expressions.stringTemplate("group_concat({0})", tag.tagName).as("tagNames"),
-                        placeRegister.place.isNotNull().as("isRegistered"),
                         totalTagScore.as("totalTagScore") // 조건부 tagScore의 합계
                 )
                 .from(place)

@@ -21,6 +21,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,12 +78,32 @@ public class SortedPlaceNameRepositoryCustomImpl implements SortedPlaceNameRepos
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
-                        ps.setString(1, placeNames.get(i).getPlaceName());
-                        ps.setLong(2, placeNames.get(i).getMember().getMemberId());
-                        ps.setDouble(3, placeNames.get(i).getTagScore());
-                        ps.setDouble(4, placeNames.get(i).getImageScore());
-                        ps.setDouble(5, placeNames.get(i).getSum());
+                        SortedPlaceName placeName = placeNames.get(i);
+                        ps.setString(1, placeName.getPlaceName());
+                        ps.setLong(2, placeName.getMember().getMemberId());
+
+                        // 태그 스코어가 null이면 null을 설정하고, 그렇지 않으면 값 설정
+                        if (placeName.getTagScore() != null) {
+                            ps.setDouble(3, placeName.getTagScore());
+                        } else {
+                            ps.setNull(3, Types.DOUBLE);
+                        }
+
+                        // 이미지 스코어가 null이면 null을 설정하고, 그렇지 않으면 값 설정
+                        if (placeName.getImageScore() != null) {
+                            ps.setDouble(4, placeName.getImageScore());
+                        } else {
+                            ps.setNull(4, Types.DOUBLE);
+                        }
+
+                        // 합계가 null이면 null을 설정하고, 그렇지 않으면 값 설정
+                        if (placeName.getSum() != null) {
+                            ps.setDouble(5, placeName.getSum());
+                        } else {
+                            ps.setNull(5, Types.DOUBLE);
+                        }
                     }
+
 
                     @Override
                     public int getBatchSize() {

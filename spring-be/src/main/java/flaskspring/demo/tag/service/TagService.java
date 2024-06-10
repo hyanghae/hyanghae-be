@@ -16,9 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,22 +75,56 @@ public class TagService {
 
 
     @Transactional
-    public void saveMemberTags(Long memberId, List<Long> tagIds) { // 수정사항 있는 지 확인하여 RefreshNeeded 갱신 필요
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
+    public void saveMemberTags(Long memberId, List<Long> tagIds) {
+        Member member = memberService.findMemberById(memberId);
 
-        memberTagLogRepository.deleteByMember(member); //기존 설정 태그 모두 삭제
+        member.onBoard(); // 온보딩 생애 최초
+        // 변경된 태그 처리하기
+        if (tagIds.isEmpty()) {
+            // 추천 불가능
+            member.canNotRecommend();
 
-        List<Tag> tags = tagRepository.findByIdIn(tagIds);
+            // 기존에 등록된 태그 모두 삭제
+            List<Tag> registeredTags = memberService.getRegisteredTag(member);
+            Set<Long> removedTagIds = registeredTags.stream().map(Tag::getId).collect(Collectors.toSet());
+            memberTagLogRepository.deleteByMemberAndTagIdIn(member, removedTagIds);
 
+            // 태그가 삭제되었을 때만 refreshNeeded 설정
+            if (!removedTagIds.isEmpty()) {
+                member.setRefreshNeeded();
+            }
+        } else {
+            // 추천 가능
+            member.canRecommend();
 
-        for (Tag tag : tags) {
-            MemberTagLog memberTagLog = MemberTagLog.createMemberTagLog(member, tag);
-            memberTagLogRepository.save(memberTagLog);
+            // 기존에 등록된 태그 가져오기
+            List<Tag> registeredTags = memberService.getRegisteredTag(member);
+
+            // 바뀐 태그만 처리하기 위한 작업
+            Set<Long> newTagIds = new HashSet<>(tagIds);
+            Set<Long> existingTagIds = registeredTags.stream().map(Tag::getId).collect(Collectors.toSet());
+
+            // 새로 추가된 태그 처리
+            Set<Long> addedTagIds = new HashSet<>(newTagIds);
+            addedTagIds.removeAll(existingTagIds);
+            for (Long addedTagId : addedTagIds) {
+                Tag addedTag = tagRepository.findById(addedTagId)
+                        .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
+                MemberTagLog memberTagLog = MemberTagLog.createMemberTagLog(member, addedTag);
+                memberTagLogRepository.save(memberTagLog);
+            }
+
+            // 기존에 등록된 태그 중에서 삭제된 태그 처리
+            Set<Long> removedTagIds = new HashSet<>(existingTagIds);
+            removedTagIds.removeAll(newTagIds);
+            memberTagLogRepository.deleteByMemberAndTagIdIn(member, removedTagIds);
+
+            // 변경 사항이 있을 경우에만 refreshNeeded 설정
+            if (!addedTagIds.isEmpty() || !removedTagIds.isEmpty()) {
+                member.setRefreshNeeded();
+            }
         }
-        if (!tagIds.isEmpty()) {
-            member.onBoard();
-        }
-        member.setRefreshNeeded();
     }
+
+
 }

@@ -51,7 +51,7 @@ public class ExploreController {
     })
     @Operation(summary = "탐색 여행지 목록", description = "탐색 하단 : 태그, 이미지 기반 추천 여행지 목록 API" +
             "<br> 처음 요청시: 커서 null, 다음 요청시 커서 이전 리턴값" +
-            "<br> sort : 'recommend'(추천순)  idCursor " +
+            "<br> sort : 'recommend'(추천순)  idCursor  -> 취향 설정 없을 경우 400에러" +
             "<br> sort : 'alpha'(가나다순) nameCursor" +
             "<br> sort : 'popular'(저장수 순) countCursor, idCursor" +
             "<br> " +

@@ -36,13 +36,23 @@ public class UploadImageService {
     public void uploadImage(MultipartFile file, Long memberId) {
         Member member = memberService.findMemberById(memberId);
         imageUploadUtil.uploadImage(file, member);
-        member.onBoard();
+        member.canRecommend();
+        member.setRefreshNeeded();
     }
 
     public void deleteSettingImage(Long memberId) {
         Member member = memberService.findMemberById(memberId);
         Optional<UploadImage> uploadImage = uploadImageRepository.findByMemberAndIsSetting(member, true);
-        uploadImage.ifPresent(UploadImage::deSetting);
+        uploadImage.ifPresent(upload -> {
+            upload.deSetting();
+            member.setRefreshNeeded(); // 삭제가 진행된 경우 refreshNeeded 설정
+        });
+    }
+
+
+
+    public boolean isSettingImageExist(Member member) {
+        return uploadImageRepository.findByMemberAndIsSetting(member, true).isPresent();
     }
 
     public String getSettingImageURL(Long memberId) {

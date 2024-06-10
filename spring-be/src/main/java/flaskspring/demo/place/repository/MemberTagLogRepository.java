@@ -9,10 +9,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Set;
 
 public interface MemberTagLogRepository extends JpaRepository<MemberTagLog, Long> {
 
     List<MemberTagLog> findByMember(Member member);
+
+    void deleteByMemberAndTagIdIn(Member member, Set<Long> removedTagIds);
 
     /*@Query("SELECT DISTINCT mtl.tag FROM MemberTagLog mtl JOIN FETCH mtl.tag WHERE mtl.member = :member")
     List<MemberTagLog> findTagsByMember(@Param("member") Member member);*/
