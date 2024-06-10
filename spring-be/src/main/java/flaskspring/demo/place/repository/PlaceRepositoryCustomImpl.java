@@ -77,7 +77,8 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom {
                         place.id.gt(effectivePlaceId)
                 )
                 .groupBy(place.id) //그루핑
-                .orderBy(place.registerCount.desc()) //등록 순 내림차순
+                .orderBy(place.registerCount.desc(), // 등록 순 내림차순
+                        place.id.asc()) // id 순 오름차순
                 .limit(size)
                 .fetch();
     }

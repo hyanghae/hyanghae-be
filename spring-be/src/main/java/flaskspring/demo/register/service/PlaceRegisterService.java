@@ -4,6 +4,8 @@ import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.MemberRepository;
+import flaskspring.demo.member.service.MemberService;
+import flaskspring.demo.place.service.PlaceService;
 import flaskspring.demo.register.domain.PlaceRegister;
 import flaskspring.demo.register.repository.PlaceRegisterRepository;
 import flaskspring.demo.place.domain.Place;
@@ -19,17 +21,14 @@ import java.util.Optional;
 @Transactional
 public class PlaceRegisterService {
     private final PlaceRegisterRepository placeRegisterRepository;
-    private final PlaceRepository placeRepository;
-    private final MemberRepository memberRepository;
+    private final PlaceService placeService;
+    private final MemberService memberService;
 
     private static final int MAX_REGISTRATION_COUNT = 20;
 
     public boolean registerPlace(Long memberId, Long placeId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
-        Place place = placeRepository.findById(placeId)
-                .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
-
+        Member member = memberService.findMemberById(memberId);
+        Place place = placeService.findPlaceById(placeId);
         // 여행지 등록 개수를 초과하는지 확인
         if (member.getRegistrationCount() >= MAX_REGISTRATION_COUNT) {
             throw new BaseException(BaseResponseCode.REGISTRATION_LIMIT_EXCEEDED);

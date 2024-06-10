@@ -124,4 +124,9 @@ public class PlaceService {
 
         return resTags;
     }
+
+    public Place findPlaceById(Long placeId) {
+        return placeRepository.findById(placeId)
+                .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
+    }
 }

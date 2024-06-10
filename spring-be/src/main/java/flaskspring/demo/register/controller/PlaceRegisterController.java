@@ -23,9 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 
 @Tag(name = "여행지 등록 기능", description = "여행지 등록 API")
-//@RestController
+@RestController
 @RequiredArgsConstructor
-@RequestMapping("/register")
+@RequestMapping("/api/save")
 public class PlaceRegisterController {
 
     private final PlaceRegisterService placeRegisterService;
@@ -44,7 +44,7 @@ public class PlaceRegisterController {
     })
     @PostMapping("/{placeId}")
     public ResponseEntity<BaseResponse<Object>> register(@AuthenticationPrincipal MemberDetails memberDetails,
-                                                         @PathVariable Long placeId) {
+                                                         @PathVariable("placeId") Long placeId) {
         Long myMemberId = memberDetails.getMemberId();
 
         boolean isRegisterAction = placeRegisterService.registerPlace(myMemberId, placeId);
