@@ -29,19 +29,18 @@ import java.util.Optional;
 public class UploadImageService {
 
     private final UploadImageRepository uploadImageRepository;
-    private final MemberService memberService;
+
     private final ImageFileService imageFileService;
     private final ImageUploadUtil imageUploadUtil;
 
-    public void uploadImage(MultipartFile file, Long memberId) {
-        Member member = memberService.findMemberById(memberId);
+    public void uploadImage(MultipartFile file, Member member) {
+
         imageUploadUtil.uploadImage(file, member);
         member.canRecommend();
         member.setRefreshNeeded();
     }
 
-    public void deleteSettingImage(Long memberId) {
-        Member member = memberService.findMemberById(memberId);
+    public void deleteSettingImage(Member member) {
         Optional<UploadImage> uploadImage = uploadImageRepository.findByMemberAndIsSetting(member, true);
         uploadImage.ifPresent(upload -> {
             upload.deSetting();
@@ -55,15 +54,13 @@ public class UploadImageService {
         return uploadImageRepository.findByMemberAndIsSetting(member, true).isPresent();
     }
 
-    public String getSettingImageURL(Long memberId) {
-        Member member = memberService.findMemberById(memberId);
+    public String getSettingImageURL(Member member) {
         Optional<UploadImage> uploadImage = uploadImageRepository.findByMemberAndIsSetting(member, true);
         return uploadImage.map(UploadImage::getSavedImageUrl).orElse(null);
     }
 
 
-    public MultipartFile getSettingImageFile(Long memberId) {
-        Member member = memberService.findMemberById(memberId);
+    public MultipartFile getSettingImageFile(Member member) {
 
         UploadImage uploadImage = uploadImageRepository.findByMemberAndIsSetting(member, true)
                 .orElseThrow(() -> new BaseException(BaseResponseCode.NO_IMAGE_EXCEPTION));

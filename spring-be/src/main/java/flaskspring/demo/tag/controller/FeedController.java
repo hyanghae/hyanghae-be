@@ -5,6 +5,8 @@ import flaskspring.demo.exception.*;
 import flaskspring.demo.home.dto.res.ResImageStandardScore;
 import flaskspring.demo.image.repository.UploadImageRepository;
 import flaskspring.demo.image.service.UploadImageService;
+import flaskspring.demo.member.domain.Member;
+import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.dto.res.ResPlaceWithSim;
 import flaskspring.demo.home.dto.res.ImgRecommendationDto;
 import flaskspring.demo.tag.service.FeedService;
@@ -45,6 +47,7 @@ public class FeedController {
     private final FeedService feedService;
     private final UploadImageService uploadImageService;
     private final FlaskService flaskService;
+    private final MemberService memberService;
 
 
     @Operation(summary = "유저 태그 기반 비인기 여행지 피드", description = "저장된 태그 기반 비인기 여행지 피드" +
@@ -74,8 +77,9 @@ public class FeedController {
     public ResponseEntity<BaseResponse<BaseObject<ResPlaceWithSim>>> recommendByImage(@AuthenticationPrincipal MemberDetails memberDetails) {
 
         Long myMemberId = memberDetails.getMemberId();
+        Member member = memberService.findMemberById(myMemberId);
 
-        MultipartFile settingImage = uploadImageService.getSettingImageFile(myMemberId);
+        MultipartFile settingImage = uploadImageService.getSettingImageFile(member);
 
         //멀티파트 변환 후 다시 보낼 필요는 없음
 

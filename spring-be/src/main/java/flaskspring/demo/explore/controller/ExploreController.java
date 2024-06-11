@@ -6,6 +6,8 @@ import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.home.dto.res.ResPlaceBrief;
+import flaskspring.demo.member.domain.Member;
+import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.domain.CityCode;
 import flaskspring.demo.place.dto.res.ResPlace;
 import flaskspring.demo.recommend.dto.res.ResPlaceRecommendPaging;
@@ -40,6 +42,7 @@ import java.util.Optional;
 public class ExploreController {
 
     private final ExploreService exploreService;
+    private final MemberService memberService;
 
 
     @ApiResponses(value = {
@@ -71,12 +74,12 @@ public class ExploreController {
         log.info("sort: {}, cityFilter: {}, countCursor: {}, nameCursor: {}, idCursor: {}", sort, cityFilter, countCursor, nameCursor, idCursor);
 
         Long memberId = memberDetails.getMemberId();
-
+        Member member = memberService.findMemberById(memberId);
 
         // 디폴트 값 또는 "all"일 경우 필터를 적용하지 않음
         ExploreFilter filter = new ExploreFilter(sort, CityCode.fromCityName(cityFilter));
         ExploreCursor cursor = new ExploreCursor(countCursor, nameCursor, idCursor);
-        ResPlaceRecommendPaging response = exploreService.getExplorePlace(memberId, filter, cursor, size);
+        ResPlaceRecommendPaging response = exploreService.getExplorePlace(member, filter, cursor, size);
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, response));
     }

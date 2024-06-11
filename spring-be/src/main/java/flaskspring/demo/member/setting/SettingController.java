@@ -1,4 +1,4 @@
-package flaskspring.demo.member.controller;
+package flaskspring.demo.member.setting;
 
 import flaskspring.demo.config.auth.MemberDetails;
 import flaskspring.demo.exception.BaseExceptionResponse;
@@ -6,6 +6,8 @@ import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.image.service.UploadImageService;
 import flaskspring.demo.image.util.ImageUploadUtil;
+import flaskspring.demo.member.domain.Member;
+import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.recommend.dto.res.ResConfigInfo;
 import flaskspring.demo.tag.dto.req.ReqTagIndexes;
 import flaskspring.demo.tag.dto.res.ResRegisteredTag;
@@ -38,6 +40,8 @@ public class SettingController {
 
 
     private final TagService tagService;
+    private final SettingService settingService;
+    private final MemberService memberService;
 
     private final UploadImageService uploadImageService;
 
@@ -56,13 +60,17 @@ public class SettingController {
         Long myMemberId = memberDetails.getMemberId();
         System.out.println("tagRequest = " + tagRequest);
         System.out.println("image = " + image);
+        Member member = memberService.findMemberById(myMemberId);
 
-        tagService.saveMemberTags(myMemberId, tagRequest.getTagIndexes()); //무조건 진입
+        tagService.saveMemberTags(member, tagRequest.getTagIndexes()); //무조건 진입
         if (image != null) {
-            uploadImageService.uploadImage(image, myMemberId);
+            uploadImageService.uploadImage(image, member);
         } else {
-            uploadImageService.deleteSettingImage(myMemberId);
+            uploadImageService.deleteSettingImage(member);
         }
+
+        settingService.refreshData(member);
+
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>()));
     }
 
@@ -82,9 +90,11 @@ public class SettingController {
     ) {
         log.info("GET /api/recommend/setting");
 
-        Long memberId = memberDetails.getMemberId();
-        String settingImageURL = uploadImageService.getSettingImageURL(memberId);
-        List<ResRegisteredTag> registeredTag = tagService.getRegisteredTag(memberId);
+        Long myMemberId = memberDetails.getMemberId();
+        Member member = memberService.findMemberById(myMemberId);
+
+        String settingImageURL = uploadImageService.getSettingImageURL(member);
+        List<ResRegisteredTag> registeredTag = tagService.getRegisteredTag(member);
         System.out.println("registeredTag = " + registeredTag);
 
         if (settingImageURL == null && registeredTag.isEmpty()) {

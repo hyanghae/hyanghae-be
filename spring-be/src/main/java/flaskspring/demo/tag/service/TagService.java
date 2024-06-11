@@ -46,8 +46,8 @@ public class TagService {
         return resCategoryTags;
     }
 
-    public List<ResRegisteredTag> getRegisteredTag(Long memberId) {
-        Member member = memberService.findMemberById(memberId);
+    public List<ResRegisteredTag> getRegisteredTag(Member member) {
+
         return memberService.getRegisteredTag(member)
                 .stream()
                 .map(ResRegisteredTag::new)
@@ -75,8 +75,7 @@ public class TagService {
 
 
     @Transactional
-    public void saveMemberTags(Long memberId, List<Long> tagIds) {
-        Member member = memberService.findMemberById(memberId);
+    public void saveMemberTags(Member member, List<Long> tagIds) {
 
         member.onBoard(); // 온보딩 생애 최초
         // 변경된 태그 처리하기

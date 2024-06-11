@@ -5,6 +5,8 @@ import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseObject;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
+import flaskspring.demo.member.domain.Member;
+import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.tag.dto.req.ReqTagIndexes;
 import flaskspring.demo.tag.dto.res.ResCategoryTag;
 import flaskspring.demo.tag.dto.res.ResRegisteredTag;
@@ -34,6 +36,7 @@ import java.util.List;
 public class TagController {
 
     private final TagService tagService;
+    private final MemberService memberService;
 
 
     @Operation(summary = "태그 저장", description = "유저의 태그를 저장합니다.")
@@ -45,9 +48,10 @@ public class TagController {
     @PostMapping("")
     public ResponseEntity<BaseResponse<Object>> TagsCreate(@AuthenticationPrincipal MemberDetails memberDetails, @RequestBody ReqTagIndexes request) {
         log.info("POST /api/tag");
-
         Long myMemberId = memberDetails.getMemberId();
-        tagService.saveMemberTags(myMemberId, request.getTagIndexes());
+        Member member = memberService.findMemberById(myMemberId);
+
+        tagService.saveMemberTags(member, request.getTagIndexes());
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>()));
     }
 
@@ -63,7 +67,9 @@ public class TagController {
         log.info("GET /api/tag");
 
         Long myMemberId = memberDetails.getMemberId();
-        List<ResRegisteredTag> registeredTags = tagService.getRegisteredTag(myMemberId);
+        Member member = memberService.findMemberById(myMemberId);
+
+        List<ResRegisteredTag> registeredTags = tagService.getRegisteredTag(member);
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(registeredTags)));
     }
@@ -97,9 +103,6 @@ public class TagController {
         List<ResCategoryTag> allCategoryTag = tagService.getAllTag();// 수정하는 서비스 메서드로 변경
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(allCategoryTag))); // 응답 메시지에 따라 변경
     }
-
-
-
 
 
 }

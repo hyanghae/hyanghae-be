@@ -4,6 +4,8 @@ import flaskspring.demo.config.auth.MemberDetails;
 import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
+import flaskspring.demo.member.domain.Member;
+import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.register.service.PlaceRegisterService;
 import flaskspring.demo.utils.MessageUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +31,7 @@ import java.util.HashMap;
 public class PlaceRegisterController {
 
     private final PlaceRegisterService placeRegisterService;
+    private final MemberService memberService;
 
     @Operation(summary = "여행지 등록", description = "여행지를 등록합니다" +
             "<br> 200 : 여행지 등록 취소" +
@@ -46,8 +49,9 @@ public class PlaceRegisterController {
     public ResponseEntity<BaseResponse<Object>> register(@AuthenticationPrincipal MemberDetails memberDetails,
                                                          @PathVariable("placeId") Long placeId) {
         Long myMemberId = memberDetails.getMemberId();
+        Member member = memberService.findMemberById(myMemberId);
 
-        boolean isRegisterAction = placeRegisterService.registerPlace(myMemberId, placeId);
+        boolean isRegisterAction = placeRegisterService.registerPlace(member, placeId);
 
         // 등록 경우 : 201 CREATED, 등록 해제의 경우 : 200 OK
         BaseResponseCode baseResponseCode = isRegisterAction ? BaseResponseCode.OK_REGISTER : BaseResponseCode.OK_UNREGISTER;

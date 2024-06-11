@@ -22,12 +22,11 @@ import java.util.Optional;
 public class PlaceRegisterService {
     private final PlaceRegisterRepository placeRegisterRepository;
     private final PlaceService placeService;
-    private final MemberService memberService;
+
 
     private static final int MAX_REGISTRATION_COUNT = 20;
 
-    public boolean registerPlace(Long memberId, Long placeId) {
-        Member member = memberService.findMemberById(memberId);
+    public boolean registerPlace(Member member, Long placeId) {
         Place place = placeService.findPlaceById(placeId);
         // 여행지 등록 개수를 초과하는지 확인
         if (member.getRegistrationCount() >= MAX_REGISTRATION_COUNT) {

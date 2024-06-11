@@ -6,6 +6,8 @@ import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.image.service.UploadImageService;
 import flaskspring.demo.image.util.ImageUploadUtil;
+import flaskspring.demo.member.domain.Member;
+import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.utils.MessageUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,6 +31,7 @@ import java.util.HashMap;
 public class ImageController {
 
     private final UploadImageService uploadImageService;
+    private final MemberService memberService;
 
     @Operation(summary = "이미지 업로드", description = "이미지 업로드 기능")
     @ApiResponses(value = {
@@ -40,7 +43,9 @@ public class ImageController {
     public ResponseEntity<BaseResponse<Object>> imageUpload(@AuthenticationPrincipal MemberDetails memberDetails,
                                                             @RequestPart("image") MultipartFile placeImage) {
         Long myMemberId = memberDetails.getMemberId();
-        uploadImageService.uploadImage(placeImage, myMemberId);
+        Member member = memberService.findMemberById(myMemberId);
+
+        uploadImageService.uploadImage(placeImage, member);
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>()));
     }
