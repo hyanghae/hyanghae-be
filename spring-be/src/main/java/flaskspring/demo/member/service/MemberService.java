@@ -119,5 +119,9 @@ public class MemberService {
         return memberTagLogs.stream().map(MemberTagLog::getTag).toList();
     }
 
+    public boolean isRefreshNeeded(Member member) {
+        Member findMember = findMemberById(member.getMemberId());
+        return findMember.isRefreshNeeded();
+    }
 
 }

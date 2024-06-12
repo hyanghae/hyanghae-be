@@ -14,6 +14,7 @@ import flaskspring.demo.place.repository.PlaceRepository;
 import flaskspring.demo.place.service.PlaceService;
 import flaskspring.demo.tag.domain.Tag;
 import flaskspring.demo.utils.FlaskService;
+import flaskspring.demo.utils.rabbit.RabbitMqService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,7 @@ public class SettingService {
     private final PlaceRepository placeRepository;
     private final UploadImageService uploadImageService;
     private final FlaskService flaskService;
+    private final RabbitMqService rabbitMqService;
 
     public void refreshData(Member member) {
         if (member.isRefreshNeeded()) { // 갱신 필요
@@ -84,6 +86,8 @@ public class SettingService {
         }
 
         if (uploadImageService.isSettingImageExist(member)) { // 이미지 설정이 있는 경우에만 이미지 스코어 업데이트
+
+            rabbitMqService.sendMember(member);
             MultipartFile settingImageFile = uploadImageService.getSettingImageFile(member);
             List<ResImageStandardScore> resultFromFlask = flaskService.getResultFromFlask(settingImageFile);
             updatePlaceScoresWithImageScores(placeScores, resultFromFlask);

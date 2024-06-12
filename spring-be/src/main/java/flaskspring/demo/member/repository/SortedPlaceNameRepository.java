@@ -12,10 +12,6 @@ import java.util.List;
 
 public interface SortedPlaceNameRepository extends JpaRepository<SortedPlaceName, Long>, SortedPlaceNameRepositoryCustom {
 
-    List<SortedPlaceName> findAllByMemberAndIdBetween(Member member, Long startId, Long endId);
-
-    List<SortedPlaceName> findByMemberAndIdGreaterThanOrderByIdAsc(Member member, Long id, Pageable pageable);
-
     @Modifying
     @Query("DELETE FROM SortedPlaceName s WHERE s.member = :member")
     void deleteByMember(@Param("member")Member member);

@@ -59,6 +59,9 @@ dependencies {
 	//modelmapper
 	implementation 'org.modelmapper:modelmapper:3.1.0'
 
+	//메시지 큐
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
 
 
 	implementation group: 'com.twelvemonkeys.imageio', name: 'imageio-core', version: '3.8.2'
@@ -76,3 +79,8 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+tasks.withType(JavaCompile) {
+	options.compilerArgs.add("-parameters")
+}
+

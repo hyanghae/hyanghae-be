@@ -13,6 +13,7 @@ import flaskspring.demo.tag.dto.req.ReqTagIndexes;
 import flaskspring.demo.tag.dto.res.ResRegisteredTag;
 import flaskspring.demo.tag.service.TagService;
 import flaskspring.demo.utils.MessageUtils;
+import flaskspring.demo.utils.rabbit.RabbitMqService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -40,8 +41,8 @@ public class SettingController {
 
 
     private final TagService tagService;
-    private final SettingService settingService;
     private final MemberService memberService;
+    private final RabbitMqService rabbitMqService;
 
     private final UploadImageService uploadImageService;
 
@@ -68,8 +69,7 @@ public class SettingController {
         } else {
             uploadImageService.deleteSettingImage(member);
         }
-
-        settingService.refreshData(member);
+        rabbitMqService.sendMember(member);
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>()));
     }
