@@ -15,6 +15,7 @@ import flaskspring.demo.place.domain.QPlace;
 import flaskspring.demo.register.domain.QPlaceRegister;
 import flaskspring.demo.tag.domain.QPlaceTagLog;
 import flaskspring.demo.tag.domain.QTag;
+import flaskspring.demo.utils.filter.ExploreFilter;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -156,7 +157,7 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public List<jakarta.persistence.Tuple> findSimilarPlacesByKNN2(Member member, Long countCursor, TagScoreDto tagScoreDto, int size) {
+    public List<jakarta.persistence.Tuple> findSimilarPlacesByKNN2(Member member, ExploreFilter filter, Long countCursor, TagScoreDto tagScoreDto, int size) {
         StringBuilder jpql = new StringBuilder("SELECT p AS place, " +
                 "GROUP_CONCAT(CASE WHEN ptl.tagScore <> 0 THEN t.id ELSE NULL END) AS tagIds, " +
                 "GROUP_CONCAT(CASE WHEN ptl.tagScore <> 0 THEN t.tagName ELSE NULL END) AS tagNames, " +
@@ -177,27 +178,41 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom {
                 "FROM Place p " +
                 "JOIN PlaceTagLog ptl ON ptl.place = p " +
                 "JOIN ptl.tag t " +
-                "LEFT JOIN PlaceRegister pr ON pr.place = p AND pr.member = :member " +
-                "WHERE p.id > :countCursor " +
-                "GROUP BY p.id " +
+                "LEFT JOIN PlaceRegister pr ON pr.place = p AND pr.member = :member ");
+
+        // 지역 필터 적용
+        if (filter.getCityFilter() != null) {
+            jpql.append("WHERE p.city = :cityFilter ");
+        } else {
+            jpql.append("WHERE 1 = 1 "); // 필터가 없을 때는 기본적으로 모든 결과를 고려
+        }
+
+        jpql.append("GROUP BY p.id " +
                 "ORDER BY distance ASC, p.registerCount DESC, p.id ASC");
 
         TypedQuery<jakarta.persistence.Tuple> query = entityManager.createQuery(jpql.toString(), jakarta.persistence.Tuple.class);
 
-        // Set parameters
+        // 지역 필터 매개변수 설정
+        if (filter.getCityFilter() != null) {
+            query.setParameter("cityFilter", filter.getCityFilter());
+        }
+
+        // 태그 스코어 매개변수 설정
         for (int i = 1; i <= 24; i++) {
             query.setParameter("tagId" + i, i);
             query.setParameter("score" + i, tagScoreDto.getTagScore(i));
         }
         query.setParameter("member", member);
-        query.setParameter("countCursor", countCursor);
 
-        // Set the maximum results limit
+        // 페이지 계산
+        int offset = (int) ((countCursor - 1) * size);
+        query.setFirstResult(offset);
         query.setMaxResults(size);
 
-        // Execute the query and return results
+        // 쿼리 실행 및 결과 반환
         return query.getResultList();
     }
+
 
 
 }

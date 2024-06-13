@@ -24,5 +24,4 @@ public class ResPlaceRecommendPaging {
     private Long nextIdCursor;
 
 
-
 }

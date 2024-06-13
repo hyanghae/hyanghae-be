@@ -7,10 +7,13 @@ import flaskspring.demo.home.dto.res.ResPlaceBrief;
 import flaskspring.demo.home.dto.res.ResRisingPlacePaging;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.service.MemberService;
+import flaskspring.demo.place.domain.CityCode;
 import flaskspring.demo.place.repository.FamousPlaceRepository;
 import flaskspring.demo.place.service.FamousPlaceService;
+import flaskspring.demo.recommend.dto.res.ResPlaceRecommendPaging;
 import flaskspring.demo.recommend.service.RecommendService;
 import flaskspring.demo.utils.MessageUtils;
+import flaskspring.demo.utils.filter.ExploreFilter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,7 +38,6 @@ public class RecommendController {
 
     private final RecommendService recommendService;
     private final FamousPlaceService famousPlaceService;
-
 
 
     @ApiResponses(value = {
@@ -80,23 +82,30 @@ public class RecommendController {
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(famousPlaces)));
     }
 
-    @Operation(summary = "유명 여행지와 유사한 여행지들", description = "유명 여행지 태그 할당 점수와 유사도순")
+    @Operation(summary = "유명 여행지와 유사한 여행지들", description = "유명 여행지 태그 할당 점수와 유사도순" +
+            " <br> city : " +
+            " <br> 'SEOUL', 'BUSAN', 'DAEGU', 'INCHEON', 'GWANGJU', 'DAEJEON', 'ULSAN', 'GYEONGGI', 'GANGWON', 'CHUNGBUK', 'CHUNGNAM', 'JEONBUK', 'JEONNAM', 'GYEONGBUK', 'GYEONGNAM', 'JEJU')")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
     @GetMapping("/{famousPlaceId}/similar")
-    public ResponseEntity<BaseResponse<BaseObject<ResPlaceBrief>>> FeedGet(@AuthenticationPrincipal MemberDetails memberDetails,
-                                                                           @PathVariable("famousPlaceId") Long famousPlaceId,
-                                                                           @RequestParam(required = false, defaultValue = "1", name = "cursor") Long cursor,
-                                                                           @RequestParam(required = false, defaultValue = "10", name = "size") int size) {
+    public ResponseEntity<BaseResponse<ResPlaceRecommendPaging>> similarPlacesGet(@AuthenticationPrincipal MemberDetails memberDetails,
+                                                                                    @PathVariable("famousPlaceId") Long famousPlaceId,
+                                                                                    @RequestParam(required = false, defaultValue = "ALL", name = "city") String cityFilter,
+                                                                                    @RequestParam(required = false, defaultValue = "1", name = "cursor") Long cursor,
+                                                                                    @RequestParam(required = false, defaultValue = "10", name = "size") int size) {
+        log.info("GET /api/recommend/{famousPlaceId}/similar");
+
         if (cursor != null && cursor <= 0) {
             throw new BaseException(BaseResponseCode.INVALID_CURSOR);
         }
         Long memberId = memberDetails.getMemberId();
 
-        List<ResPlaceBrief> similarPlaces = famousPlaceService.getSimilarPlaces(memberId, famousPlaceId, cursor, size);
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(similarPlaces)));
+        ExploreFilter filter = new ExploreFilter(null, CityCode.fromCityName(cityFilter));
+
+        ResPlaceRecommendPaging similarPlaces = famousPlaceService.getSimilarPlaces(memberId, filter, famousPlaceId, cursor, size);
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, similarPlaces));
     }
 }

@@ -45,6 +45,7 @@ public class ExploreController {
     private final MemberService memberService;
 
 
+
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
             @ApiResponse(responseCode = "400", description = MessageUtils.ERROR,
@@ -83,7 +84,6 @@ public class ExploreController {
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, response));
     }
-
 
     /**
      * 태그, 이미지

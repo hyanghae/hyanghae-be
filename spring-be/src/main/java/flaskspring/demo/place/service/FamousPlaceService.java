@@ -15,9 +15,11 @@ import flaskspring.demo.place.dto.res.ResSimilarPlaceDto;
 import flaskspring.demo.place.dto.res.SimFamousPlaceDto;
 import flaskspring.demo.place.repository.FamousPlaceRepository;
 import flaskspring.demo.place.repository.PlaceRepository;
+import flaskspring.demo.recommend.dto.res.ResPlaceRecommendPaging;
 import flaskspring.demo.tag.domain.FamousPlaceTagLog;
 import flaskspring.demo.tag.repository.FamousPlaceTagLogRepository;
 import flaskspring.demo.utils.FlaskService;
+import flaskspring.demo.utils.filter.ExploreFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,17 +54,17 @@ public class FamousPlaceService {
         return top24FamousPlaces.stream().map(ResFamous::new).toList();
     }
 
-    public List<ResPlaceBrief> getSimilarPlaces(Long memberId, Long famousPlaceId, Long cursor, int size) {
+    public ResPlaceRecommendPaging getSimilarPlaces(Long memberId, ExploreFilter filter, Long famousPlaceId, Long cursor, int size) {
         Member member = memberService.findMemberById(memberId);
 
         FamousPlace famousPlace = findByFamousPlaceId(famousPlaceId);
         List<FamousPlaceTagLog> tagsByFamousPlace = famousPlaceTagLogRepository.findTagsByFamousPlace(famousPlace);
         TagScoreDto tagScoreDto = new TagScoreDto(tagsByFamousPlace);
         System.out.println("tagScoreDto = " + tagScoreDto);
-        List<jakarta.persistence.Tuple> similarPlacesByKNN2 = placeRepository.findSimilarPlacesByKNN2(member, cursor, tagScoreDto, size);
+        List<jakarta.persistence.Tuple> similarPlacesByKNN2 = placeRepository.findSimilarPlacesByKNN2(member, filter, cursor, tagScoreDto, size);
 
-
-        return convertToPlaceBriefList2(similarPlacesByKNN2);
+        List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList2(similarPlacesByKNN2);
+        return new ResPlaceRecommendPaging(resPlaceBriefs, cursor + 1, null, null);
     }
 
     public List<ResPlaceBrief> getSimilarPlacesDeprecated(Long memberId, Long famousPlaceId, Long cursor, int size) {
@@ -71,9 +73,6 @@ public class FamousPlaceService {
         FamousPlace famousPlace = findByFamousPlaceId(famousPlaceId);
         List<FamousPlaceTagLog> tagsByFamousPlace = famousPlaceTagLogRepository.findTagsByFamousPlace(famousPlace);
         TagScoreDto tagScoreDto = new TagScoreDto(tagsByFamousPlace);
-
-        List<jakarta.persistence.Tuple> similarPlacesByKNN2 = placeRepository.findSimilarPlacesByKNN2(member, cursor, tagScoreDto, size);
-
 
         LinkedHashMap<String, String> stringStringMap = flaskService.sendPostSimilarRequest(tagScoreDto, cursor, size);
         List<Long> placeIds = extractPlaceIds(stringStringMap);
