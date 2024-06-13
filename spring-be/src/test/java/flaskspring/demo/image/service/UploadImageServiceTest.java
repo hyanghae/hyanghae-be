@@ -1,5 +1,7 @@
 package flaskspring.demo.image.service;
 
+import flaskspring.demo.member.domain.Member;
+import flaskspring.demo.member.service.MemberService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,10 +19,13 @@ class UploadImageServiceTest {
 
     @Autowired
     UploadImageService uploadImageService;
+    @Autowired
+    MemberService memberService;
 
     @Test
     void getSettingImageFileTest() throws IOException {
-        MultipartFile multipartFile = uploadImageService.getSettingImageFile(1L);
+        Member member = memberService.findMemberById(1L);
+        MultipartFile multipartFile = uploadImageService.getSettingImageFile(member);
 
         assertThat(multipartFile).isNotNull();
         System.out.println("multipartFile.getOriginalFilename() = " + multipartFile.getOriginalFilename());

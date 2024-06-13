@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlaceTagLog {
+public class PlaceTagLog extends BaseTagLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,6 +2,7 @@ package flaskspring.demo.register.service;
 
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.MemberRepository;
+import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.domain.Place;
 import flaskspring.demo.place.repository.PlaceRepository;
 import org.junit.jupiter.api.Test;
@@ -24,12 +25,15 @@ class PlaceRegisterServiceTest {
     @Autowired
     MemberRepository memberRepository;
 
+    @Autowired
+    MemberService memberService;
+
     @Test
     void registerPlaceTest() {
         Long savedMemberId = createMember();
         Long placeId = 1L;
-
-        placeRegisterService.registerPlace(savedMemberId, placeId);
+        Member member = memberService.findMemberById(savedMemberId);
+        placeRegisterService.registerPlace(member, placeId);
         Place place = placeRepository.findById(placeId).orElseThrow();
         assertThat(place.getRegisterCount()).isEqualTo(1);
     }
@@ -39,8 +43,10 @@ class PlaceRegisterServiceTest {
         Long savedMemberId = createMember();
         Long placeId = 1L;
 
-        placeRegisterService.registerPlace(savedMemberId, placeId);
-        placeRegisterService.registerPlace(savedMemberId, placeId); // 취소
+        Member member = memberService.findMemberById(1L);
+
+        placeRegisterService.registerPlace(member, placeId);
+        placeRegisterService.registerPlace(member, placeId); // 취소
         Place place = placeRepository.findById(placeId).orElseThrow();
         assertThat(place.getRegisterCount()).isEqualTo(0);
     }

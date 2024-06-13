@@ -9,8 +9,9 @@ import org.springframework.security.core.parameters.P;
 import java.util.List;
 import java.util.Optional;
 
-public interface FamousPlaceRepository extends JpaRepository<FamousPlace, Long> {
-
+public interface FamousPlaceRepository extends JpaRepository<FamousPlace, Long>, FamousPlaceRepositoryCustom {
 
     List<FamousPlace> findByIdIn(List<Long> ids);
+
+
 }

@@ -3,6 +3,8 @@ package flaskspring.demo.departure.service;
 import flaskspring.demo.departure.dto.req.ReqDeparture;
 import flaskspring.demo.departure.dto.res.ResDeparture;
 import flaskspring.demo.departure.dto.res.ResSchedulePlace;
+import flaskspring.demo.member.domain.Member;
+import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.register.service.PlaceRegisterService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +23,13 @@ class ScheduleServiceTest {
     ScheduleService scheduleService;
     @Autowired
     PlaceRegisterService placeRegisterService;
+    @Autowired
+    MemberService memberService;
 
     @Test
     void registerTest() {
-        placeRegisterService.registerPlace(1L, 41L);
+        Member member = memberService.findMemberById(1L);
+        placeRegisterService.registerPlace(member, 41L);
     }
 
     @Test

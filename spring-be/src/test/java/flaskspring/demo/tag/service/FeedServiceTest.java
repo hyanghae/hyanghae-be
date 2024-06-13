@@ -1,6 +1,7 @@
 package flaskspring.demo.tag.service;
 
 import flaskspring.demo.like.service.PlaceLikeService;
+import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpReq;
 import flaskspring.demo.member.dto.Res.GeneralSignUpRes;
 import flaskspring.demo.member.service.MemberService;
@@ -109,7 +110,8 @@ class FeedServiceTest {
     }
 
     private void createMemberTags(Long memberId, List<Long> TagIndexes) {
-        tagService.saveMemberTags(memberId, TagIndexes);
+        Member member = memberService.findMemberById(memberId);
+        tagService.saveMemberTags(member, TagIndexes);
     }
 
     private Long createMember() {

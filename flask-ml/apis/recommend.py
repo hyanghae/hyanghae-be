@@ -2,16 +2,17 @@ import logging
 from flask import Blueprint, jsonify, make_response, request
 from sklearn.neighbors import KNeighborsClassifier
 import pickle
+from collections import OrderedDict
 
 # 모델과 스케일러 로드
-with open('dataset/knn_model.pkl', 'rb') as file:
+with open('dataset/famous_place/knn_model.pkl', 'rb') as file:
     loaded_model = pickle.load(file)
 
-with open('dataset/scaler.pkl', 'rb') as file:
+with open('dataset/famous_place/scaler.pkl', 'rb') as file:
     standard_scaler = pickle.load(file)
 
 
-with open('dataset/famous_place_vector.pkl', 'rb') as file:
+with open('dataset/famous_place/famous_place_vector.pkl', 'rb') as file:
     famous_place_vector = pickle.load(file)
     print("Loaded famous place vector:")
     for i, row in enumerate(famous_place_vector, start=1):
@@ -44,6 +45,7 @@ def get_nearest_3_famous_place(test_data):
 
 
 
+
 @recommend.route("", methods=["POST"])
 def recommend_not_famous_place_by_feature():
     print("요청 들어옴")
@@ -71,3 +73,5 @@ def recommend_not_famous_place_by_feature():
     }
 
     return make_response(jsonify(response_data), 200)
+
+

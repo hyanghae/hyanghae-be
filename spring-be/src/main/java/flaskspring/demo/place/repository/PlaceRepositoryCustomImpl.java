@@ -5,11 +5,13 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import flaskspring.demo.like.domain.QPlaceLike;
 import flaskspring.demo.member.domain.Member;
-import flaskspring.demo.place.domain.Place;
+import flaskspring.demo.place.domain.QPlace;
 import flaskspring.demo.register.domain.QPlaceRegister;
 import flaskspring.demo.tag.domain.QPlaceTagLog;
 import flaskspring.demo.tag.domain.QTag;
-import flaskspring.demo.place.domain.QPlace;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -49,7 +51,6 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom {
         return tuples;
     }
 
-
     @Override
     public List<Tuple> findRisingPlaces(Member member, Long countCursor, Long placeId, int size) {
 
@@ -82,5 +83,26 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom {
                 .limit(size)
                 .fetch();
     }
+
+    @Override
+    public List<Tuple> findSimilarPlaces(Member member, List<Long> placeIds) {
+        return jpaQueryFactory
+                .select(
+                        place,
+                        Expressions.stringTemplate("group_concat({0})", tag.id).as("tagIds"),
+                        Expressions.stringTemplate("group_concat({0})", tag.tagName).as("tagNames"),
+                        placeRegister.place.isNotNull().as("isRegistered")
+                )
+                .from(place)
+                .join(placeTagLog).on(placeTagLog.place.eq(place))
+                .join(placeTagLog.tag, tag)
+                .leftJoin(placeRegister).on(placeRegister.place.eq(place).and(placeRegister.member.eq(member)))
+                .where(
+                        place.id.in(placeIds)
+                )
+                .groupBy(place.id) //그루핑
+                .fetch();
+    }
+
 
 }

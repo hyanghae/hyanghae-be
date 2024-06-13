@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FamousPlaceTagLog {
+public class FamousPlaceTagLog extends BaseTagLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

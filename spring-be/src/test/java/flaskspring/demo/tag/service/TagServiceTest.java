@@ -1,5 +1,6 @@
 package flaskspring.demo.tag.service;
 
+import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpReq;
 import flaskspring.demo.member.dto.Res.GeneralSignUpRes;
 import flaskspring.demo.member.service.MemberService;
@@ -153,11 +154,12 @@ class TagServiceTest {
     @Test
     void modifyMemberTags() {
         Long savedMemberId = createMember(1);
-        tagService.saveMemberTags(savedMemberId, List.of(1L, 2L, 3L));
+        Member member = memberService.findMemberById(savedMemberId);
+        tagService.saveMemberTags(member, List.of(1L, 2L, 3L));
 
         tagService.modifyMemberTags(savedMemberId, List.of(4L, 5L, 6L));
 
-        List<ResRegisteredTag> registeredTag = tagService.getRegisteredTag(savedMemberId);
+        List<ResRegisteredTag> registeredTag = tagService.getRegisteredTag(member);
         List<Long> registeredTagIds = registeredTag.stream().map(ResRegisteredTag::getTagId).collect(Collectors.toList());
         assertThat(registeredTagIds).isEqualTo(List.of(4L, 5L, 6L));
     }
@@ -165,8 +167,9 @@ class TagServiceTest {
     @Test
     void saveMemberTags() {
         Long savedMemberId = createMember(1);
-        tagService.saveMemberTags(savedMemberId, List.of(1L, 2L, 3L));
-        List<ResRegisteredTag> registeredTag = tagService.getRegisteredTag(savedMemberId);
+        Member member = memberService.findMemberById(savedMemberId);
+        tagService.saveMemberTags(member, List.of(1L, 2L, 3L));
+        List<ResRegisteredTag> registeredTag = tagService.getRegisteredTag(member);
 
         List<Long> registeredTagIds = registeredTag.stream().map(ResRegisteredTag::getTagId).collect(Collectors.toList());
         assertThat(registeredTagIds).isEqualTo(List.of(1L, 2L, 3L));

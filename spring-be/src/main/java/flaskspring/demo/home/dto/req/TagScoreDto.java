@@ -1,5 +1,6 @@
 package flaskspring.demo.home.dto.req;
 
+import flaskspring.demo.tag.domain.BaseTagLog;
 import flaskspring.demo.tag.domain.PlaceTagLog;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,8 +39,10 @@ public class TagScoreDto {
     Integer tag23 = 0;
     Integer tag24 = 0;
 
-    public TagScoreDto(List<PlaceTagLog> tagLogs) {
-        for (PlaceTagLog tagLog : tagLogs) {
+
+    // 공통 로직을 처리하는 private 메서드
+    private void processTagLogs(List<? extends BaseTagLog> tagLogs) {
+        for (BaseTagLog tagLog : tagLogs) {
             switch (tagLog.getTag().getTagName()) {
                 case 액티비티:
                     this.tag1 = tagLog.getTagScore();
@@ -119,5 +122,12 @@ public class TagScoreDto {
             }
         }
     }
+
+
+    // PlaceTagLog를 처리하는 생성자
+    public TagScoreDto(List<? extends BaseTagLog> baseTagLogs) {
+        processTagLogs(baseTagLogs);
+    }
 }
+
 

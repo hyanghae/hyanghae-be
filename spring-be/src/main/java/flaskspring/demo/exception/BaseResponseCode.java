@@ -31,6 +31,7 @@ public enum BaseResponseCode {
     NO_DEPARTURE_EXCEPTION(HttpStatus.BAD_REQUEST, "등록된 출발지가 없습니다."),
     NO_IMAGE_EXCEPTION(HttpStatus.BAD_REQUEST, "등록된 이미지가 없습니다."),
     INVALID_CITY_FILTER(HttpStatus.BAD_REQUEST, "유효하지 않은 지역 필터입니다"),
+    INVALID_CURSOR(HttpStatus.BAD_REQUEST, "유효하지 않은 커서 값입니다"),
     MISSING_PREFERENCES_FOR_RECOMMENDATION(HttpStatus.BAD_REQUEST, "추천을 하기 위한 취향 설정이 없습니다"),
     PREFERENCE_NOT_APPLIED(HttpStatus.BAD_REQUEST, "아직 취향 설정이 반영되지 않았습니다"),
 

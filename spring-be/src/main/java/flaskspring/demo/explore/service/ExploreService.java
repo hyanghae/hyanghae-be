@@ -9,7 +9,6 @@ import flaskspring.demo.home.dto.res.ResPlaceBrief;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.SortedPlaceNameRepository;
 import flaskspring.demo.member.service.MemberService;
-import flaskspring.demo.member.setting.SettingService;
 import flaskspring.demo.place.domain.Place;
 import flaskspring.demo.recommend.dto.res.ResPlaceRecommendPaging;
 import flaskspring.demo.utils.cursor.ExploreCursor;

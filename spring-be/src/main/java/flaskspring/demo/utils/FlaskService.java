@@ -1,23 +1,15 @@
 package flaskspring.demo.utils;
 
-import flaskspring.demo.exception.BaseException;
-import flaskspring.demo.exception.BaseResponseCode;
-import flaskspring.demo.home.dto.res.ImgRecommendationDto;
-import flaskspring.demo.home.dto.res.ResImageStandardScore;
-import flaskspring.demo.image.service.UploadImageService;
+import flaskspring.demo.home.dto.req.TagScoreDto;
+import flaskspring.demo.home.dto.res.SimFamousPlaceDto2;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
+import java.util.LinkedHashMap;
 
 @Slf4j
 @Service
@@ -27,51 +19,40 @@ public class FlaskService {
     private final FlaskConfig flaskConfig;
     private final RestTemplate restTemplate = new RestTemplate();
 
-
-    public List<ResImageStandardScore> getResultFromFlask(MultipartFile placeImage) {
-
-        try {
-            byte[] imageBytes = convertImageToByteArray(placeImage);
-            HttpEntity<MultiValueMap<String, Object>> requestEntity = createRequestEntity(placeImage, imageBytes);
-            log.info("이미지 요청 들어옴");
-            ResponseEntity<List<ResImageStandardScore>> response = sendImageToFlask(requestEntity);
-            return response.getBody();
-        } catch (Exception e) {
-            log.error("Failed to share image: {}", e.getMessage());
-            throw new BaseException(BaseResponseCode.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    private byte[] convertImageToByteArray(MultipartFile placeImage) throws IOException {
-        return placeImage.getBytes();
-    }
-
-    private HttpEntity<MultiValueMap<String, Object>> createRequestEntity(MultipartFile placeImage, byte[] imageBytes) {
+    public SimFamousPlaceDto2 sendPostRequest(TagScoreDto tagScoreDto, String endPoint) {
+        // 요청 헤더 설정
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        ByteArrayResource contentsAsResource = new ByteArrayResource(imageBytes) {
-            @Override
-            public String getFilename() {
-                return placeImage.getOriginalFilename();
-            }
-        };
+        // 요청 본문에 데이터 설정
+        HttpEntity<TagScoreDto> requestEntity = new HttpEntity<>(tagScoreDto, headers);
 
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("photo", contentsAsResource);
-
-        return new HttpEntity<>(body, headers);
-    }
-
-    private ResponseEntity<List<ResImageStandardScore>> sendImageToFlask(HttpEntity<MultiValueMap<String, Object>> requestEntity) {
+        // POST 요청 보내기
         return restTemplate.exchange(
-
-                flaskConfig.getBaseUrl() + "/img-recommends/upload-image",
+                flaskConfig.getBaseUrl() + endPoint,
                 HttpMethod.POST,
                 requestEntity,
-                new ParameterizedTypeReference<List<ResImageStandardScore>>() {
-                }
+                SimFamousPlaceDto2.class
+        ).getBody();
+    }
+
+    public LinkedHashMap<String, String> sendPostSimilarRequest(TagScoreDto tagScoreDto, Long cursor, int size) {
+        // 요청 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // 요청 본문에 데이터 설정
+        HttpEntity<TagScoreDto> requestEntity = new HttpEntity<>(tagScoreDto, headers);
+
+        // POST 요청 보내기
+        ResponseEntity<LinkedHashMap<String, String>> response = restTemplate.exchange(
+                flaskConfig.getBaseUrl() + "similar" + "?cursor=" + cursor + "&size=" + size,
+                HttpMethod.POST,
+                requestEntity,
+                new ParameterizedTypeReference<LinkedHashMap<String, String>>() {}
         );
+
+        return response.getBody();
     }
 
 }

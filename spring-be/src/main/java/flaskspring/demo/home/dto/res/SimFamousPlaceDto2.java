@@ -5,8 +5,11 @@ import lombok.Data;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ *
+ */
 @Data
-public class SimFamousPlaceDto {
+public class SimFamousPlaceDto2 {
     private String firstPlace;
     private String secondPlace;
     private String thirdPlace;
