@@ -48,7 +48,7 @@ public class SortedPlaceNameRepositoryCustomImpl implements SortedPlaceNameRepos
                 )
                 .from(sortedPlaceName)
                 .join(place).on(place.touristSpotName.eq(sortedPlaceName.placeName))
-                .join(placeTagLog).on(placeTagLog.place.eq(place))
+                .join(placeTagLog).on(placeTagLog.place.eq(place).and(placeTagLog.tagScore.ne(0)))
                 .join(placeTagLog.tag, tag)
                 .leftJoin(placeRegister).on(placeRegister.place.eq(place).and(placeRegister.member.eq(member)))
                 .where(sortedPlaceName.member.eq(member));

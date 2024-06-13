@@ -1,12 +1,12 @@
 package flaskspring.demo.recommend.controller;
 
 import flaskspring.demo.config.auth.MemberDetails;
-import flaskspring.demo.exception.BaseExceptionResponse;
-import flaskspring.demo.exception.BaseObject;
-import flaskspring.demo.exception.BaseResponse;
-import flaskspring.demo.exception.BaseResponseCode;
+import flaskspring.demo.exception.*;
 import flaskspring.demo.home.dto.res.ResFamous;
+import flaskspring.demo.home.dto.res.ResPlaceBrief;
 import flaskspring.demo.home.dto.res.ResRisingPlacePaging;
+import flaskspring.demo.member.domain.Member;
+import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.repository.FamousPlaceRepository;
 import flaskspring.demo.place.service.FamousPlaceService;
 import flaskspring.demo.recommend.service.RecommendService;
@@ -21,10 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,6 +35,8 @@ public class RecommendController {
 
     private final RecommendService recommendService;
     private final FamousPlaceService famousPlaceService;
+
+
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
@@ -79,5 +78,25 @@ public class RecommendController {
         log.info("GET /api/recommend/famous");
         List<ResFamous> famousPlaces = famousPlaceService.get24FamousPlaces();
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(famousPlaces)));
+    }
+
+    @Operation(summary = "유명 여행지와 유사한 여행지들", description = "유명 여행지 태그 할당 점수와 유사도순")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
+            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
+    })
+    @GetMapping("/{famousPlaceId}/similar")
+    public ResponseEntity<BaseResponse<BaseObject<ResPlaceBrief>>> FeedGet(@AuthenticationPrincipal MemberDetails memberDetails,
+                                                                           @PathVariable("famousPlaceId") Long famousPlaceId,
+                                                                           @RequestParam(required = false, defaultValue = "1", name = "cursor") Long cursor,
+                                                                           @RequestParam(required = false, defaultValue = "10", name = "size") int size) {
+        if (cursor != null && cursor <= 0) {
+            throw new BaseException(BaseResponseCode.INVALID_CURSOR);
+        }
+        Long memberId = memberDetails.getMemberId();
+
+        List<ResPlaceBrief> similarPlaces = famousPlaceService.getSimilarPlaces(memberId, famousPlaceId, cursor, size);
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(similarPlaces)));
     }
 }

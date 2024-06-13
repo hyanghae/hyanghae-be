@@ -3,6 +3,7 @@ package flaskspring.demo.home.dto.req;
 import flaskspring.demo.tag.domain.BaseTagLog;
 import flaskspring.demo.tag.domain.PlaceTagLog;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,32 +13,57 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class TagScoreDto {
 
-    Integer tag1 = 0;
-    Integer tag2 = 0;
-    Integer tag3 = 0;
-    Integer tag4 = 0;
-    Integer tag5 = 0;
-    Integer tag6 = 0;
-    Integer tag7 = 0;
-    Integer tag8 = 0;
-    Integer tag9 = 0;
-    Integer tag10 = 0;
-    Integer tag11 = 0;
-    Integer tag12 = 0;
-    Integer tag13 = 0;
-    Integer tag14 = 0;
-    Integer tag15 = 0;
-    Integer tag16 = 0;
-    Integer tag17 = 0;
-    Integer tag18 = 0;
-    Integer tag19 = 0;
-    Integer tag20 = 0;
-    Integer tag21 = 0;
-    Integer tag22 = 0;
-    Integer tag23 = 0;
-    Integer tag24 = 0;
+    @Builder.Default
+    int tag1 = 0;
+    @Builder.Default
+    int tag2 = 0;
+    @Builder.Default
+    int tag3 = 0;
+    @Builder.Default
+    int tag4 = 0;
+    @Builder.Default
+    int tag5 = 0;
+    @Builder.Default
+    int tag6 = 0;
+    @Builder.Default
+    int tag7 = 0;
+    @Builder.Default
+    int tag8 = 0;
+    @Builder.Default
+    int tag9 = 0;
+    @Builder.Default
+    int tag10 = 0;
+    @Builder.Default
+    int tag11 = 0;
+    @Builder.Default
+    int tag12 = 0;
+    @Builder.Default
+    int tag13 = 0;
+    @Builder.Default
+    int tag14 = 0;
+    @Builder.Default
+    int tag15 = 0;
+    @Builder.Default
+    int tag16 = 0;
+    @Builder.Default
+    int tag17 = 0;
+    @Builder.Default
+    int tag18 = 0;
+    @Builder.Default
+    int tag19 = 0;
+    @Builder.Default
+    int tag20 = 0;
+    @Builder.Default
+    int tag21 = 0;
+    @Builder.Default
+    int tag22 = 0;
+    @Builder.Default
+    int tag23 = 0;
+    @Builder.Default
+    int tag24 = 0;
 
 
     // 공통 로직을 처리하는 private 메서드
@@ -127,6 +153,37 @@ public class TagScoreDto {
     // PlaceTagLog를 처리하는 생성자
     public TagScoreDto(List<? extends BaseTagLog> baseTagLogs) {
         processTagLogs(baseTagLogs);
+    }
+
+    public int getTagScore(int index) {
+        switch (index) {
+            case 1: return tag1;
+            case 2: return tag2;
+            case 3: return tag3;
+            case 4: return tag4;
+            case 5: return tag5;
+            case 6: return tag6;
+            case 7: return tag7;
+            case 8: return tag8;
+            case 9: return tag9;
+            case 10: return tag10;
+            case 11: return tag11;
+            case 12: return tag12;
+            case 13: return tag13;
+            case 14: return tag14;
+            case 15: return tag15;
+            case 16: return tag16;
+            case 17: return tag17;
+            case 18: return tag18;
+            case 19: return tag19;
+            case 20: return tag20;
+            case 21: return tag21;
+            case 22: return tag22;
+            case 23: return tag23;
+            case 24: return tag24;
+            default:
+                throw new IllegalArgumentException("Invalid tag index: " + index);
+        }
     }
 }
 

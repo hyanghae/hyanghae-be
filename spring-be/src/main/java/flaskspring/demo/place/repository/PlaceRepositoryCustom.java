@@ -1,6 +1,7 @@
 package flaskspring.demo.place.repository;
 
 import com.querydsl.core.Tuple;
+import flaskspring.demo.home.dto.req.TagScoreDto;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.place.domain.Place;
 import org.springframework.data.repository.query.Param;
@@ -14,5 +15,7 @@ public interface PlaceRepositoryCustom {
 
 
     List<Tuple> findSimilarPlaces(Member member, List<Long> placeIds);
+
+    List<jakarta.persistence.Tuple> findSimilarPlacesByKNN2(Member member, Long countCursor, TagScoreDto tagScoreDto, int size);
 
 }

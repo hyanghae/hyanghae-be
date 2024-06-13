@@ -40,4 +40,6 @@ public class FamousPlaceTagLogRepositoryCustomImpl implements FamousPlaceTagLogR
                 .fetchOne(); // 튜플 하나만 가져오므로 fetchOne()을 사용합니다.
     }
 
+
+
 }

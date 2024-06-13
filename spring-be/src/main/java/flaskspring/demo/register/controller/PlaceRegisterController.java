@@ -24,10 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 
-@Tag(name = "여행지 등록 기능", description = "여행지 등록 API")
+@Tag(name = "여행지 기능", description = "여행지 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/save")
+@RequestMapping("/api/place")
 public class PlaceRegisterController {
 
     private final PlaceRegisterService placeRegisterService;
@@ -45,7 +45,7 @@ public class PlaceRegisterController {
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
-    @PostMapping("/{placeId}")
+    @PostMapping("/save/{placeId}")
     public ResponseEntity<BaseResponse<Object>> register(@AuthenticationPrincipal MemberDetails memberDetails,
                                                          @PathVariable("placeId") Long placeId) {
         Long myMemberId = memberDetails.getMemberId();

@@ -1,7 +1,10 @@
 package flaskspring.demo.place.repository;
 
-import com.querydsl.core.Tuple;
+import flaskspring.demo.home.dto.req.TagScoreDto;
+import flaskspring.demo.member.domain.Member;
+import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.domain.Place;
+import jakarta.persistence.Tuple;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +22,8 @@ class PlaceRepositoryTest {
 
     @Autowired
     PlaceRepository placeRepository;
+    @Autowired
+    MemberService memberService;
 
     @Test
     void queryTest() {
@@ -27,24 +32,28 @@ class PlaceRepositoryTest {
 
     @Test
     void testFindSimilarPlacesByKNN() {
+        Member member = memberService.findMemberById(1L);
+
         Long idCursor = 0L;
-        int[] queryPoint = new int[24];
+
         int size = 10;
 
-        queryPoint[0] = 1;
-        queryPoint[1] = 1;
-        queryPoint[2] = 100;
+        TagScoreDto tagScoreDto = TagScoreDto.builder()
+                .tag1(1)
+                .tag2(5)
+                .tag3(10)
+                .build();
 
 
-        System.out.println("queryPoint = " + Arrays.toString(queryPoint));
+        List<Tuple> similarPlacesByKNN2 = placeRepository.findSimilarPlacesByKNN2(member, idCursor, tagScoreDto, size);
 
 
 
         // 반환된 리스트가 null이 아닌지 확인합니다.
-     //   assertNotNull(places);
+        //   assertNotNull(places);
 
         // 반환된 리스트가 비어있지 않은지 확인합니다.
-    //    assertFalse(places.isEmpty());
+        //    assertFalse(places.isEmpty());
 
         // 테스트에 맞게 추가적인 검증을 수행합니다.
         // 예를 들어, 반환된 장소가 특정 조건을 만족하는지를 확인할 수 있습니다.

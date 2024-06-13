@@ -8,6 +8,7 @@ import flaskspring.demo.home.dto.req.TagScoreDto;
 import flaskspring.demo.home.dto.res.ResFamous;
 import flaskspring.demo.home.dto.res.ResPlaceBrief;
 import flaskspring.demo.member.domain.Member;
+import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.domain.FamousPlace;
 import flaskspring.demo.place.domain.Place;
 import flaskspring.demo.place.dto.res.ResSimilarPlaceDto;
@@ -28,12 +29,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static flaskspring.demo.utils.ConvertUtil.convertToPlaceBriefList;
+import static flaskspring.demo.utils.ConvertUtil.convertToPlaceBriefList2;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class FamousPlaceService {
 
+    private final MemberService memberService;
     private final FamousPlaceRepository famousPlaceRepository;
     private final FamousPlaceTagLogRepository famousPlaceTagLogRepository;
     private final PlaceRepository placeRepository;
@@ -49,10 +52,28 @@ public class FamousPlaceService {
         return top24FamousPlaces.stream().map(ResFamous::new).toList();
     }
 
-    public List<ResPlaceBrief> getSimilarPlaces(Member member, Long famousPlaceId, Long cursor, int size) {
+    public List<ResPlaceBrief> getSimilarPlaces(Long memberId, Long famousPlaceId, Long cursor, int size) {
+        Member member = memberService.findMemberById(memberId);
+
         FamousPlace famousPlace = findByFamousPlaceId(famousPlaceId);
         List<FamousPlaceTagLog> tagsByFamousPlace = famousPlaceTagLogRepository.findTagsByFamousPlace(famousPlace);
         TagScoreDto tagScoreDto = new TagScoreDto(tagsByFamousPlace);
+        System.out.println("tagScoreDto = " + tagScoreDto);
+        List<jakarta.persistence.Tuple> similarPlacesByKNN2 = placeRepository.findSimilarPlacesByKNN2(member, cursor, tagScoreDto, size);
+
+
+        return convertToPlaceBriefList2(similarPlacesByKNN2);
+    }
+
+    public List<ResPlaceBrief> getSimilarPlacesDeprecated(Long memberId, Long famousPlaceId, Long cursor, int size) {
+        Member member = memberService.findMemberById(memberId);
+
+        FamousPlace famousPlace = findByFamousPlaceId(famousPlaceId);
+        List<FamousPlaceTagLog> tagsByFamousPlace = famousPlaceTagLogRepository.findTagsByFamousPlace(famousPlace);
+        TagScoreDto tagScoreDto = new TagScoreDto(tagsByFamousPlace);
+
+        List<jakarta.persistence.Tuple> similarPlacesByKNN2 = placeRepository.findSimilarPlacesByKNN2(member, cursor, tagScoreDto, size);
+
 
         LinkedHashMap<String, String> stringStringMap = flaskService.sendPostSimilarRequest(tagScoreDto, cursor, size);
         List<Long> placeIds = extractPlaceIds(stringStringMap);

@@ -52,6 +52,25 @@ public class ResPlaceBrief {
         this.isSaved = isRegistered;
     }
 
+    public ResPlaceBrief(jakarta.persistence.Tuple tuple) {
+        Place place = tuple.get(0, Place.class);
+        String tagIdsString = tuple.get(1, String.class);
+        String tagNamesString = tuple.get(2, String.class); // 두 번째 항목인 String을 가져옵니다.
+        Boolean isRegistered = tuple.get(3, Boolean.class); // Boolean으로 가져옵니다.
+
+        if (place == null || tagIdsString == null || tagNamesString == null ) {
+            throw new BaseException(BaseResponseCode.DATABASE_ERROR);
+        }
+
+        this.placeId = place.getId();
+        this.region = place.getCity() + " " + place.getRegion();
+        this.touristSpotName = place.getTouristSpotName();
+        this.placeImgUrl = place.getImagePath();
+
+        this.tags = createResTags(tagIdsString, tagNamesString);
+        this.isSaved = isRegistered;
+    }
+
 
     private List<ResTag> createResTags(String tagIdsString, String tagNamesString) {
         List<ResTag> resTags = new ArrayList<>();
