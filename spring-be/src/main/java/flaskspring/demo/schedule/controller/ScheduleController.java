@@ -2,6 +2,7 @@ package flaskspring.demo.schedule.controller;
 
 import flaskspring.demo.departure.service.ScheduleService;
 import flaskspring.demo.exception.BaseExceptionResponse;
+import flaskspring.demo.exception.BaseObject;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.home.dto.res.ResUpcomingSchedule;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Tag(name = "스케쥴 기능", description = "스케쥴 API")
@@ -42,16 +44,27 @@ public class ScheduleController {
     @Operation(summary = "홈화면 스케쥴 API", description = "홈화면 스케쥴 API" +
             "<br> 스케쥴 없을 경우 data : null 리턴")
     @GetMapping("/schedule")
-    public ResponseEntity<BaseResponse<ResUpcomingSchedule>> homeSchedule() {
+    public ResponseEntity<BaseResponse<BaseObject<ResUpcomingSchedule>>> homeSchedule() {
         log.info("GET /api/schedule");
 
-        ResUpcomingSchedule resUpcomingSchedule = ResUpcomingSchedule.builder()
+        ResUpcomingSchedule resUpcomingSchedule1 = ResUpcomingSchedule.builder()
+                .scheduleId(1L)
                 .scheduleName("강원 강릉")
                 .DDay(3)
                 .startDate(LocalDate.of(2024, 8, 22))
                 .endDate(LocalDate.of(2024, 8, 24))
                 .build();
 
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, resUpcomingSchedule));
+        ResUpcomingSchedule resUpcomingSchedule2 = ResUpcomingSchedule.builder()
+                .scheduleId(2L)
+                .scheduleName("서울 강남")
+                .DDay(3)
+                .startDate(LocalDate.of(2024, 8, 24))
+                .endDate(LocalDate.of(2024, 8, 30))
+                .build();
+
+        List<ResUpcomingSchedule> resUpcomingSchedule = List.of(resUpcomingSchedule1, resUpcomingSchedule2);
+
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(resUpcomingSchedule)));
     }
 }

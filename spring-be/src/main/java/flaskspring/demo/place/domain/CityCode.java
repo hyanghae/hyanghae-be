@@ -1,5 +1,7 @@
 package flaskspring.demo.place.domain;
 
+import flaskspring.demo.exception.BaseException;
+import flaskspring.demo.exception.BaseResponseCode;
 import lombok.Getter;
 
 @Getter
@@ -30,7 +32,7 @@ public enum CityCode {
     }
 
     public static CityCode fromCityName(String cityName) {
-        if ("ALL".equals(cityName)) {
+        if ("ALL".equalsIgnoreCase(cityName)) {
             return null;
         }
         for (CityCode code : values()) {
@@ -38,6 +40,6 @@ public enum CityCode {
                 return code;
             }
         }
-        throw new IllegalArgumentException("Invalid city name: " + cityName);
+        throw new BaseException(BaseResponseCode.INVALID_CITY_FILTER);
     }
 }

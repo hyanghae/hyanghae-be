@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
 @Builder
 public class ResUpcomingSchedule {
 
+    @Schema(description = "스케쥴 ID", example = "1")
+    private Long scheduleId;
+
     @Schema(description = "스케쥴명", example = "강원 강릉")
     private String scheduleName;
 
