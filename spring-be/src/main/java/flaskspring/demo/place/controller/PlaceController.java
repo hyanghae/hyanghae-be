@@ -123,8 +123,8 @@ public class PlaceController {
             @PathVariable("famousPlaceId") Long famousPlaceId
     ) {
         Long myMemberId = memberDetails.getMemberId();
-
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, null));
+        ResSimilarity similarity = placeService.getSimilarity(placeId, famousPlaceId);
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, similarity));
     }
 
 }

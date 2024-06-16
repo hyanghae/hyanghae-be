@@ -103,4 +103,6 @@ public class FamousPlaceService {
         return famousPlaceRepository.findById(famousPlaceId)
                 .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
     }
+
+
 }

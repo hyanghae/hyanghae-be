@@ -42,6 +42,7 @@ public class PlaceService {
     private final FamousPlaceTagLogRepository famousPlaceTagLogRepository;
     private final PlaceTagLogRepository placeTagLogRepository;
     private final FamousPlaceRepository famousPlaceRepository;
+    private final FamousPlaceService famousPlaceService;
     private final FlaskService flaskService;
 
     public ResPlaceDetail getPlaceDetail(Member member, Long placeId) {
@@ -59,23 +60,17 @@ public class PlaceService {
         List<Long> tagIds = placeTagLogRepository.findTagsByPlace(place).stream()
                 .map(placeTagLog -> placeTagLog.getTag().getId()).toList();
 
-
         List<ResFamous> resFamous = famousPlaceRepository.findSimilarFamousPlaces(filter, tagIds).stream()
                 .map(ResFamous::new)
                 .toList();
         return resFamous;
     }
 
-    public ResSimilarity getSimilarity(Long placeId) {
+    public ResSimilarity getSimilarity(Long placeId, Long famousPlaceId) {
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
         List<PlaceTagLog> tagsByPlace = placeTagLogRepository.findTagsByPlace(place);
 
-        // 요청 본문으로 전송할 데이터 설정
-        TagScoreDto tagScoreDto = new TagScoreDto(tagsByPlace);
-        //flask서버로 부터 가장 유사한 인기여행지 얻기
-        SimFamousPlaceDto2 famousPlaceDto = flaskService.sendPostRequest(tagScoreDto, "recommends");
-        FamousPlace famousPlace = famousPlaceRepository.findById(famousPlaceDto.getFirstPlaceId())
-                .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
+        FamousPlace famousPlace = famousPlaceService.findByFamousPlaceId(famousPlaceId);
         List<FamousPlaceTagLog> tagsByFamousPlace = famousPlaceTagLogRepository.findTagsByFamousPlace(famousPlace);
 
         List<ResTagSim> resTagSims = calculateTagSimilarity(tagsByPlace, tagsByFamousPlace);
@@ -84,7 +79,7 @@ public class PlaceService {
         return new ResSimilarity(totalSimScore, resTagSims);
     }
 
-    public int getTotalSimScore(List<ResTagSim> resTagSims, int totalFamousPlaceTagCount) {
+    private int getTotalSimScore(List<ResTagSim> resTagSims, int totalFamousPlaceTagCount) {
         double scorePerEach = (double) 1 / totalFamousPlaceTagCount;
         double sum = resTagSims.stream()
                 .mapToDouble(resTagSim -> (double) resTagSim.getSimScore() / 100)
@@ -94,7 +89,7 @@ public class PlaceService {
         return (int) totalSimScore;
     }
 
-    public List<ResTagSim> calculateTagSimilarity(List<PlaceTagLog> tagsByPlace, List<FamousPlaceTagLog> tagsByFamousPlace) {
+    private List<ResTagSim> calculateTagSimilarity(List<PlaceTagLog> tagsByPlace, List<FamousPlaceTagLog> tagsByFamousPlace) {
         return tagsByPlace.stream()
                 .flatMap(placeTagLog ->
                         tagsByFamousPlace.stream()

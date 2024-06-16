@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface FamousPlaceTagLogRepository extends JpaRepository<FamousPlaceTagLog, Long>, FamousPlaceTagLogRepositoryCustom {
 
-    @Query("SELECT fptl FROM FamousPlaceTagLog fptl JOIN FETCH fptl.tag WHERE fptl.famousPlace = :famousPlace")
+    @Query("SELECT fptl FROM FamousPlaceTagLog fptl JOIN FETCH fptl.tag WHERE fptl.famousPlace = :famousPlace AND fptl.tagScore <> 0")
     List<FamousPlaceTagLog> findTagsByFamousPlace(@Param("famousPlace") FamousPlace famousPlace);
 
 
