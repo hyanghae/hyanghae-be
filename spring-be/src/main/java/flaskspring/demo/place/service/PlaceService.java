@@ -1,9 +1,13 @@
 package flaskspring.demo.place.service;
 
+import com.querydsl.core.Tuple;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.home.dto.req.TagScoreDto;
+import flaskspring.demo.home.dto.res.ResFamous;
+import flaskspring.demo.home.dto.res.ResPlaceBrief;
 import flaskspring.demo.home.dto.res.SimFamousPlaceDto2;
+import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.place.domain.FamousPlace;
 import flaskspring.demo.place.domain.Place;
 import flaskspring.demo.place.dto.res.ResPlaceDetail;
@@ -18,6 +22,7 @@ import flaskspring.demo.tag.repository.FamousPlaceTagLogRepository;
 import flaskspring.demo.tag.repository.PlaceTagLogRepository;
 import flaskspring.demo.utils.FlaskConfig;
 import flaskspring.demo.utils.FlaskService;
+import flaskspring.demo.utils.filter.ExploreFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static flaskspring.demo.utils.ConvertUtil.convertToPlaceBriefList;
 
 @Service
 @Transactional
@@ -37,17 +44,29 @@ public class PlaceService {
     private final FamousPlaceRepository famousPlaceRepository;
     private final FlaskService flaskService;
 
-    public ResPlaceDetail getPlaceDetail(Long placeId) {
-        Place place = placeRepository.findById(placeId).orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
-        List<PlaceTagLog> tagsByPlace = placeTagLogRepository.findTagsByPlace(place);
+    public ResPlaceDetail getPlaceDetail(Member member, Long placeId) {
+        Tuple placeDetailTuple = placeRepository.findPlaceDetail(member, placeId);
+        Place place = findPlaceById(placeId);
+        List<Tuple> nearbyPlaces = placeRepository.findNearbyPlaces(member, place);
+        List<ResPlaceBrief> nearbyPlacesDto = convertToPlaceBriefList(nearbyPlaces);
 
-
-
-        return new ResPlaceDetail(place);
+        return new ResPlaceDetail(placeDetailTuple, nearbyPlacesDto);
     }
 
 
-    public ResSimilarity getPlaceDetail2(Long placeId) {
+    public List<ResFamous> getSimilarFamousPlace(ExploreFilter filter, Long placeId) {
+        Place place = findPlaceById(placeId);
+        List<Long> tagIds = placeTagLogRepository.findTagsByPlace(place).stream()
+                .map(placeTagLog -> placeTagLog.getTag().getId()).toList();
+
+
+        List<ResFamous> resFamous = famousPlaceRepository.findSimilarFamousPlaces(filter, tagIds).stream()
+                .map(ResFamous::new)
+                .toList();
+        return resFamous;
+    }
+
+    public ResSimilarity getSimilarity(Long placeId) {
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
         List<PlaceTagLog> tagsByPlace = placeTagLogRepository.findTagsByPlace(place);
 

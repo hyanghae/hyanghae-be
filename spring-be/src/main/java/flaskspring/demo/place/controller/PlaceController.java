@@ -8,11 +8,13 @@ import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.home.dto.res.ResFamous;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.service.MemberService;
+import flaskspring.demo.place.domain.CityCode;
 import flaskspring.demo.place.dto.res.ResPlaceDetail;
 import flaskspring.demo.place.dto.res.ResSimilarity;
 import flaskspring.demo.place.register.service.PlaceRegisterService;
 import flaskspring.demo.place.service.PlaceService;
 import flaskspring.demo.utils.MessageUtils;
+import flaskspring.demo.utils.filter.ExploreFilter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,6 +27,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 @Tag(name = "여행지 기능", description = "여행지 API")
 @RestController
@@ -73,10 +76,11 @@ public class PlaceController {
     })
     @GetMapping("detail/{placeId}")
     public ResponseEntity<BaseResponse<ResPlaceDetail>> placeDetailGet(@AuthenticationPrincipal MemberDetails memberDetails,
-                                                                    @PathVariable("placeId") Long placeId) {
+                                                                       @PathVariable("placeId") Long placeId) {
         Long myMemberId = memberDetails.getMemberId();
+        Member member = memberService.findMemberById(myMemberId);
 
-        ResPlaceDetail placeDetail = placeService.getPlaceDetail(placeId);
+        ResPlaceDetail placeDetail = placeService.getPlaceDetail(member, placeId);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, placeDetail));
     }
 
@@ -98,8 +102,9 @@ public class PlaceController {
             @RequestParam(required = false, defaultValue = "ALL", name = "city") String cityFilter
     ) {
         Long myMemberId = memberDetails.getMemberId();
-
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(null)));
+        ExploreFilter filter = new ExploreFilter("alpha", CityCode.fromCityName(cityFilter));
+        List<ResFamous> similarFamousPlace = placeService.getSimilarFamousPlace(filter, placeId);
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(similarFamousPlace)));
     }
 
 

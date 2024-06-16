@@ -19,7 +19,7 @@ public interface PlaceTagLogRepository extends JpaRepository<PlaceTagLog, Long>,
             "GROUP BY p")
     List<Object[]> getFeedByTags(@Param("tags") List<Tag> tags);*/
 
-    @Query("SELECT ptl FROM PlaceTagLog ptl JOIN FETCH ptl.tag WHERE ptl.place = :place")
+    @Query("SELECT ptl FROM PlaceTagLog ptl JOIN FETCH ptl.tag WHERE ptl.place = :place AND ptl.tagScore <> 0")
     List<PlaceTagLog> findTagsByPlace(@Param("place") Place place);
 
 }

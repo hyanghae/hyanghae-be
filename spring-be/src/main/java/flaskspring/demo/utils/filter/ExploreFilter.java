@@ -4,7 +4,6 @@ import flaskspring.demo.place.domain.CityCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
 public class ExploreFilter {
     private String sort;

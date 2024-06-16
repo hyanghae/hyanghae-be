@@ -2,10 +2,12 @@ package flaskspring.demo.place.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.ToString;
 
 
 @Entity
 @Getter
+@ToString
 public class FamousPlace {
 
     @Id

@@ -45,9 +45,6 @@ class PlaceRepositoryTest {
                 .build();
 
 
-        List<Tuple> similarPlacesByKNN2 = placeRepository.findSimilarPlacesByKNN2(member, idCursor, tagScoreDto, size);
-
-
 
         // 반환된 리스트가 null이 아닌지 확인합니다.
         //   assertNotNull(places);

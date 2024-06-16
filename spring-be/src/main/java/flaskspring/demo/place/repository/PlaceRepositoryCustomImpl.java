@@ -2,10 +2,12 @@ package flaskspring.demo.place.repository;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import flaskspring.demo.home.dto.req.TagScoreDto;
 import flaskspring.demo.like.domain.QPlaceLike;
 import flaskspring.demo.member.domain.Member;
+import flaskspring.demo.place.domain.Place;
 import flaskspring.demo.place.domain.QPlace;
 import flaskspring.demo.place.register.domain.QPlaceRegister;
 import flaskspring.demo.tag.domain.QPlaceTagLog;
@@ -53,6 +55,57 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom {
                 .fetch();
 
         return tuples;
+    }
+
+    @Override
+    public Tuple findPlaceDetail(Member member, Long placeId) {
+
+        return jpaQueryFactory
+                .select(
+                        place,
+                        Expressions.stringTemplate("group_concat({0})", tag.id).as("tagIds"),
+                        Expressions.stringTemplate("group_concat({0})", tag.tagName).as("tagNames"),
+                        placeRegister.place.isNotNull().as("isRegistered")
+                )
+                .from(place)
+                .join(placeTagLog).on(placeTagLog.place.eq(place).and(placeTagLog.tagScore.ne(0)))
+                .join(placeTagLog.tag, tag)
+                .leftJoin(placeRegister).on(placeRegister.place.eq(place).and(placeRegister.member.eq(member)))
+                .where(
+                        place.id.eq(placeId)
+                )
+                .groupBy(place.id) //그루핑
+                .fetchFirst();
+    }
+
+    @Override
+    public List<Tuple> findNearbyPlaces(Member member,  Place targetPlace) {
+
+        double mapX = targetPlace.getLocation().getMapX();
+        double mapY = targetPlace.getLocation().getMapY();
+
+
+        NumberExpression<Double> distanceExpression = Expressions.numberTemplate(Double.class,
+                "6371 * acos(cos(radians({0})) * cos(radians({1})) * cos(radians({2}) - radians({3})) + sin(radians({0})) * sin(radians({1})))",
+                mapY, place.location.mapY, place.location.mapX, mapX);
+
+        return jpaQueryFactory
+                .select(
+                        place,
+                        Expressions.stringTemplate("group_concat({0})", tag.id).as("tagIds"),
+                        Expressions.stringTemplate("group_concat({0})", tag.tagName).as("tagNames"),
+                        placeRegister.place.isNotNull().as("isRegistered"),
+                        distanceExpression.as("distance")
+                )
+                .from(place)
+                .join(placeTagLog).on(placeTagLog.place.eq(place).and(placeTagLog.tagScore.ne(0)))
+                .join(placeTagLog.tag, tag)
+                .leftJoin(placeRegister).on(placeRegister.place.eq(place).and(placeRegister.member.eq(member)))
+                .orderBy(distanceExpression.asc()) // 가까운 거리 순으로 정렬
+                .offset(1) // 첫 번째 결과를 건너뛰기
+                .limit(3) // 두 번째부터 네 번째까지 선택
+                .groupBy(place.id) // 그룹화
+                .fetch();
     }
 
     @Override
@@ -107,45 +160,6 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom {
                 .groupBy(place.id) // 그루핑
                 .fetch();
     }
-
-
-    public List<Tuple> findSimilarPlacesByKNN(Member member, Long countCursor, int[] queryPoint, int size) {
-        if (queryPoint.length != 24) {
-            throw new IllegalArgumentException("The length of queryPoint must be 24.");
-        }
-
-        // Create a template for the distance calculation expression
-        String distanceCalculation = IntStream.range(0, 24)
-                .mapToObj(i -> String.format(
-                        "POW(CASE WHEN tag.id = %d THEN (placeTagLog.tagScore - %d) ELSE 0 END, 2)",
-                        i + 1, queryPoint[i])
-                )
-                .collect(Collectors.joining(" + "));
-
-        // Create the final distance expression
-        String distanceExpression = String.format("SQRT(SUM(%s))", distanceCalculation);
-
-        // Construct the query
-        List<Tuple> result = jpaQueryFactory
-                .select(place,
-                        Expressions.stringTemplate("group_concat({0})", tag.id).as("tagIds"),
-                        Expressions.stringTemplate("group_concat({0})", tag.tagName).as("tagNames"),
-                        placeRegister.place.isNotNull().as("isRegistered"),
-                        Expressions.numberTemplate(Double.class, distanceExpression).as("distance"))
-                .from(place)
-                .join(placeTagLog).on(placeTagLog.place.eq(place))
-                .join(placeTagLog.tag, tag)
-                .leftJoin(placeRegister).on(placeRegister.place.eq(place).and(placeRegister.member.eq(member)))
-                .where(place.id.gt(countCursor))
-                .groupBy(place.id)
-                .orderBy(Expressions.numberTemplate(Double.class, distanceExpression).asc(), place.registerCount.desc(), place.id.asc())
-                .limit(size)
-                .fetch();
-
-        return result;
-    }
-
-
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -206,7 +220,6 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom {
         // 쿼리 실행 및 결과 반환
         return query.getResultList();
     }
-
 
 
 }
