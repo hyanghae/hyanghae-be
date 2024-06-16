@@ -9,6 +9,7 @@ import flaskspring.demo.home.dto.res.ResFamous;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.dto.res.ResPlaceDetail;
+import flaskspring.demo.place.dto.res.ResSimilarity;
 import flaskspring.demo.place.register.service.PlaceRegisterService;
 import flaskspring.demo.place.service.PlaceService;
 import flaskspring.demo.utils.MessageUtils;
@@ -62,7 +63,7 @@ public class PlaceController {
     }
 
 
-    @Operation(summary = "여행지 소개", description = "여행지 소개 api" )
+    @Operation(summary = "여행지 소개", description = "여행지 소개 api")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
             @ApiResponse(responseCode = "400", description = MessageUtils.BAD_REQUEST,
@@ -71,7 +72,7 @@ public class PlaceController {
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
     @GetMapping("detail/{placeId}")
-    public ResponseEntity<BaseResponse<ResPlaceDetail>> placeDetail(@AuthenticationPrincipal MemberDetails memberDetails,
+    public ResponseEntity<BaseResponse<ResPlaceDetail>> placeDetailGet(@AuthenticationPrincipal MemberDetails memberDetails,
                                                                     @PathVariable("placeId") Long placeId) {
         Long myMemberId = memberDetails.getMemberId();
 
@@ -82,7 +83,7 @@ public class PlaceController {
 
     @Operation(summary = "여행지와 유사한 유명여행지", description = "유사 유명여행지 api" +
             "<br> city :" +
-            "<br> 'SEOUL', 'BUSAN', 'DAEGU', 'INCHEON', 'GWANGJU', 'DAEJEON', 'ULSAN', 'GYEONGGI', 'GANGWON', 'CHUNGBUK', 'CHUNGNAM', 'JEONBUK', 'JEONNAM', 'GYEONGBUK', 'GYEONGNAM', 'JEJU')" )
+            "<br> 'SEOUL', 'BUSAN', 'DAEGU', 'INCHEON', 'GWANGJU', 'DAEJEON', 'ULSAN', 'GYEONGGI', 'GANGWON', 'CHUNGBUK', 'CHUNGNAM', 'JEONBUK', 'JEONNAM', 'GYEONGBUK', 'GYEONGNAM', 'JEJU')")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
             @ApiResponse(responseCode = "400", description = MessageUtils.BAD_REQUEST,
@@ -99,6 +100,26 @@ public class PlaceController {
         Long myMemberId = memberDetails.getMemberId();
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(null)));
+    }
+
+
+    @Operation(summary = "여행지와 유사한 유명여행지 유사도", description = "유사 유명여행지 유사도 api")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
+            @ApiResponse(responseCode = "400", description = MessageUtils.BAD_REQUEST,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
+            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
+    })
+    @GetMapping("detail/{placeId}/similar/{famousPlaceId}")
+    public ResponseEntity<BaseResponse<ResSimilarity>> SimilarityDetailGet(
+            @AuthenticationPrincipal MemberDetails memberDetails,
+            @PathVariable("placeId") Long placeId,
+            @PathVariable("famousPlaceId") Long famousPlaceId
+    ) {
+        Long myMemberId = memberDetails.getMemberId();
+
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, null));
     }
 
 }

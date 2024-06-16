@@ -11,8 +11,6 @@ import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.domain.FamousPlace;
 import flaskspring.demo.place.domain.Place;
-import flaskspring.demo.place.dto.res.ResSimilarPlaceDto;
-import flaskspring.demo.place.dto.res.SimFamousPlaceDto;
 import flaskspring.demo.place.repository.FamousPlaceRepository;
 import flaskspring.demo.place.repository.PlaceRepository;
 import flaskspring.demo.recommend.dto.res.ResPlaceRecommendPaging;

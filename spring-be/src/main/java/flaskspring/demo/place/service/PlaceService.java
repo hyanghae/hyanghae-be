@@ -7,6 +7,7 @@ import flaskspring.demo.home.dto.res.SimFamousPlaceDto2;
 import flaskspring.demo.place.domain.FamousPlace;
 import flaskspring.demo.place.domain.Place;
 import flaskspring.demo.place.dto.res.ResPlaceDetail;
+import flaskspring.demo.place.dto.res.ResSimilarity;
 import flaskspring.demo.place.dto.res.ResTagSim;
 import flaskspring.demo.place.repository.FamousPlaceRepository;
 import flaskspring.demo.place.repository.PlaceRepository;
@@ -40,14 +41,13 @@ public class PlaceService {
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
         List<PlaceTagLog> tagsByPlace = placeTagLogRepository.findTagsByPlace(place);
 
-        // 요청 본문으로 전송할 데이터 설정
-        TagScoreDto tagScoreDto = new TagScoreDto(tagsByPlace);
+
 
         return new ResPlaceDetail(place);
     }
 
 
-    public ResPlaceDetail getPlaceDetail2(Long placeId) {
+    public ResSimilarity getPlaceDetail2(Long placeId) {
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
         List<PlaceTagLog> tagsByPlace = placeTagLogRepository.findTagsByPlace(place);
 
@@ -62,7 +62,7 @@ public class PlaceService {
         List<ResTagSim> resTagSims = calculateTagSimilarity(tagsByPlace, tagsByFamousPlace);
         int totalSimScore = getTotalSimScore(resTagSims, tagsByFamousPlace.size());
 
-        return new ResPlaceDetail(place);
+        return new ResSimilarity(totalSimScore, resTagSims);
     }
 
     public int getTotalSimScore(List<ResTagSim> resTagSims, int totalFamousPlaceTagCount) {
