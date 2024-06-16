@@ -1,10 +1,10 @@
-package flaskspring.demo.explore.service;
+package flaskspring.demo.recommend.explore.service;
 
 
 import com.querydsl.core.Tuple;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
-import flaskspring.demo.explore.repository.ExploreRepository;
+import flaskspring.demo.recommend.explore.repository.ExploreRepository;
 import flaskspring.demo.home.dto.res.ResPlaceBrief;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.SortedPlaceNameRepository;

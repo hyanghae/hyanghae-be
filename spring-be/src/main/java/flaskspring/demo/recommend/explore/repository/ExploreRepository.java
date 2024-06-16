@@ -1,4 +1,4 @@
-package flaskspring.demo.explore.repository;
+package flaskspring.demo.recommend.explore.repository;
 
 import com.querydsl.core.Tuple;
 import flaskspring.demo.member.domain.Member;

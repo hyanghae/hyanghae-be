@@ -1,4 +1,4 @@
-package flaskspring.demo.explore.repository;
+package flaskspring.demo.recommend.explore.repository;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.CaseBuilder;
@@ -10,11 +10,9 @@ import flaskspring.demo.like.domain.QPlaceLike;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.place.domain.Place;
 import flaskspring.demo.place.domain.QPlace;
-import flaskspring.demo.place.dto.res.ResPlace;
 import flaskspring.demo.register.domain.QPlaceRegister;
 import flaskspring.demo.tag.domain.QPlaceTagLog;
 import flaskspring.demo.tag.domain.QTag;
-import flaskspring.demo.tag.domain.Tag;
 import flaskspring.demo.utils.cursor.ExploreCursor;
 import flaskspring.demo.utils.filter.ExploreFilter;
 import lombok.RequiredArgsConstructor;
