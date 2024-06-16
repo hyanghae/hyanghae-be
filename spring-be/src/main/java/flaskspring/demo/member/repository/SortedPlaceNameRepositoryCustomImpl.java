@@ -4,15 +4,13 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import flaskspring.demo.like.domain.QPlaceLike;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.domain.QSortedPlaceName;
 import flaskspring.demo.member.domain.SortedPlaceName;
 import flaskspring.demo.place.domain.QPlace;
-import flaskspring.demo.register.domain.QPlaceRegister;
+import flaskspring.demo.place.register.domain.QPlaceRegister;
 import flaskspring.demo.tag.domain.QPlaceTagLog;
 import flaskspring.demo.tag.domain.QTag;
-import flaskspring.demo.tag.domain.Tag;
 import flaskspring.demo.utils.cursor.ExploreCursor;
 import flaskspring.demo.utils.filter.ExploreFilter;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +21,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class SortedPlaceNameRepositoryCustomImpl implements SortedPlaceNameRepositoryCustom {

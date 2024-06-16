@@ -1,4 +1,4 @@
-package flaskspring.demo.register.domain;
+package flaskspring.demo.place.register.domain;
 
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.place.domain.Place;

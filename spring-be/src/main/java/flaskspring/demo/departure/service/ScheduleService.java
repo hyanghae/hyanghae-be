@@ -4,23 +4,18 @@ import com.querydsl.core.Tuple;
 import flaskspring.demo.departure.domain.DeparturePoint;
 import flaskspring.demo.departure.dto.req.ReqDeparture;
 import flaskspring.demo.departure.dto.res.ResDeparture;
-import flaskspring.demo.departure.dto.res.ResLocation;
 import flaskspring.demo.departure.dto.res.ResSchedulePlace;
 import flaskspring.demo.departure.repository.DepartureRepository;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.MemberRepository;
-import flaskspring.demo.register.repository.PlaceRegisterRepository;
+import flaskspring.demo.place.register.repository.PlaceRegisterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
-import static flaskspring.demo.departure.domain.QDeparturePoint.departurePoint;
 
 @Service
 @Transactional

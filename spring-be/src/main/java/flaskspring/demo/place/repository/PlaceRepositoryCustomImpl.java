@@ -1,18 +1,13 @@
 package flaskspring.demo.place.repository;
 
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberExpression;
-import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import flaskspring.demo.home.dto.req.TagScoreDto;
 import flaskspring.demo.like.domain.QPlaceLike;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.place.domain.QPlace;
-import flaskspring.demo.register.domain.QPlaceRegister;
+import flaskspring.demo.place.register.domain.QPlaceRegister;
 import flaskspring.demo.tag.domain.QPlaceTagLog;
 import flaskspring.demo.tag.domain.QTag;
 import flaskspring.demo.utils.filter.ExploreFilter;
@@ -20,7 +15,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Optional;

@@ -5,7 +5,7 @@ import flaskspring.demo.departure.dto.res.ResDeparture;
 import flaskspring.demo.departure.dto.res.ResSchedulePlace;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.service.MemberService;
-import flaskspring.demo.register.service.PlaceRegisterService;
+import flaskspring.demo.place.register.service.PlaceRegisterService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -4,6 +4,7 @@ import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.MemberRepository;
 import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.domain.Place;
+import flaskspring.demo.place.register.service.PlaceRegisterService;
 import flaskspring.demo.place.repository.PlaceRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

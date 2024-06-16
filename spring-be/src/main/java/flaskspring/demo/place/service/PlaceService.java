@@ -36,7 +36,6 @@ public class PlaceService {
     private final FamousPlaceRepository famousPlaceRepository;
     private final FlaskService flaskService;
 
-
     public ResPlaceDetail getPlaceDetail(Long placeId) {
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
         List<PlaceTagLog> tagsByPlace = placeTagLogRepository.findTagsByPlace(place);
@@ -44,10 +43,18 @@ public class PlaceService {
         // 요청 본문으로 전송할 데이터 설정
         TagScoreDto tagScoreDto = new TagScoreDto(tagsByPlace);
 
+        return new ResPlaceDetail(place);
+    }
 
+
+    public ResPlaceDetail getPlaceDetail2(Long placeId) {
+        Place place = placeRepository.findById(placeId).orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
+        List<PlaceTagLog> tagsByPlace = placeTagLogRepository.findTagsByPlace(place);
+
+        // 요청 본문으로 전송할 데이터 설정
+        TagScoreDto tagScoreDto = new TagScoreDto(tagsByPlace);
         //flask서버로 부터 가장 유사한 인기여행지 얻기
         SimFamousPlaceDto2 famousPlaceDto = flaskService.sendPostRequest(tagScoreDto, "recommends");
-
         FamousPlace famousPlace = famousPlaceRepository.findById(famousPlaceDto.getFirstPlaceId())
                 .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
         List<FamousPlaceTagLog> tagsByFamousPlace = famousPlaceTagLogRepository.findTagsByFamousPlace(famousPlace);
@@ -55,7 +62,7 @@ public class PlaceService {
         List<ResTagSim> resTagSims = calculateTagSimilarity(tagsByPlace, tagsByFamousPlace);
         int totalSimScore = getTotalSimScore(resTagSims, tagsByFamousPlace.size());
 
-        return new ResPlaceDetail(place, famousPlace, totalSimScore, resTagSims);
+        return new ResPlaceDetail(place);
     }
 
     public int getTotalSimScore(List<ResTagSim> resTagSims, int totalFamousPlaceTagCount) {

@@ -3,17 +3,10 @@ package flaskspring.demo.tag.repository;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import flaskspring.demo.like.domain.QPlaceLike;
-import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.place.domain.QFamousPlace;
-import flaskspring.demo.place.domain.QPlace;
-import flaskspring.demo.register.domain.QPlaceRegister;
 import flaskspring.demo.tag.domain.QFamousPlaceTagLog;
-import flaskspring.demo.tag.domain.QPlaceTagLog;
 import flaskspring.demo.tag.domain.QTag;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 public class FamousPlaceTagLogRepositoryCustomImpl implements FamousPlaceTagLogRepositoryCustom {

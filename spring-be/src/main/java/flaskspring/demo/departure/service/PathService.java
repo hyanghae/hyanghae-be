@@ -1,6 +1,5 @@
 package flaskspring.demo.departure.service;
 
-import com.amazonaws.services.s3.transfer.Copy;
 import com.querydsl.core.Tuple;
 import flaskspring.demo.departure.domain.DeparturePoint;
 import flaskspring.demo.departure.dto.res.ResLocation;
@@ -12,7 +11,7 @@ import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.MemberRepository;
-import flaskspring.demo.register.repository.PlaceRegisterRepository;
+import flaskspring.demo.place.register.repository.PlaceRegisterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

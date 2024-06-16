@@ -1,14 +1,14 @@
-package flaskspring.demo.register.repository;
+package flaskspring.demo.place.register.repository;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import flaskspring.demo.like.domain.QPlaceLike;
 import flaskspring.demo.member.domain.Member;
-import flaskspring.demo.register.domain.QPlaceRegister;
+import flaskspring.demo.place.domain.QPlace;
+import flaskspring.demo.place.register.domain.QPlaceRegister;
 import flaskspring.demo.tag.domain.QPlaceTagLog;
 import flaskspring.demo.tag.domain.QTag;
-import flaskspring.demo.place.domain.QPlace;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;

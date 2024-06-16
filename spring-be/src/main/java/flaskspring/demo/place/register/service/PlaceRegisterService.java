@@ -1,15 +1,12 @@
-package flaskspring.demo.register.service;
+package flaskspring.demo.place.register.service;
 
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.Member;
-import flaskspring.demo.member.repository.MemberRepository;
-import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.service.PlaceService;
-import flaskspring.demo.register.domain.PlaceRegister;
-import flaskspring.demo.register.repository.PlaceRegisterRepository;
+import flaskspring.demo.place.register.domain.PlaceRegister;
+import flaskspring.demo.place.register.repository.PlaceRegisterRepository;
 import flaskspring.demo.place.domain.Place;
-import flaskspring.demo.place.repository.PlaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

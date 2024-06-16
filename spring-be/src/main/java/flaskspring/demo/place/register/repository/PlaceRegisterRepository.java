@@ -1,7 +1,7 @@
-package flaskspring.demo.register.repository;
+package flaskspring.demo.place.register.repository;
 
 import flaskspring.demo.member.domain.Member;
-import flaskspring.demo.register.domain.PlaceRegister;
+import flaskspring.demo.place.register.domain.PlaceRegister;
 import flaskspring.demo.place.domain.Place;
 import org.springframework.data.jpa.repository.JpaRepository;
 
