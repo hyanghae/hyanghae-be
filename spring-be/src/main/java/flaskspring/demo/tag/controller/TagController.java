@@ -1,6 +1,7 @@
 package flaskspring.demo.tag.controller;
 
 import flaskspring.demo.config.auth.MemberDetails;
+import flaskspring.demo.config.cache.RedisCacheable;
 import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseObject;
 import flaskspring.demo.exception.BaseResponse;
@@ -20,7 +21,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -59,10 +59,10 @@ public class TagController {
     @Operation(summary = "등록한 태그 조회", description = "유저가 등록한 태그를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "등록된 태그 조회 성공"),
-            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
-    //@GetMapping("")
+    @GetMapping("")
     public ResponseEntity<BaseResponse<BaseObject<ResRegisteredTag>>> registeredTagGet(@AuthenticationPrincipal MemberDetails memberDetails) {
         log.info("GET /api/tag");
 
@@ -80,12 +80,13 @@ public class TagController {
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
-    //@PutMapping("")
+    @PutMapping("")
     public ResponseEntity<BaseResponse<Object>> TagsModify(@AuthenticationPrincipal MemberDetails memberDetails, @RequestBody ReqTagIndexes request) {
         log.info("PUT /api/tag");
 
         Long myMemberId = memberDetails.getMemberId();
-        tagService.modifyMemberTags(myMemberId, request.getTagIndexes()); // 수정하는 서비스 메서드로 변경
+        Member member = memberService.findMemberById(myMemberId);
+        tagService.modifyMemberTags(member, request.getTagIndexes()); // 수정하는 서비스 메서드로 변경
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>())); // 응답 메시지에 따라 변경
     }
 
