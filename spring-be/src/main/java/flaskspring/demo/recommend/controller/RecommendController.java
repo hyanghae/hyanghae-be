@@ -27,6 +27,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Tag(name = "여행지 추천", description = "유저 공통 여행지 추천 API")
@@ -55,15 +56,15 @@ public class RecommendController {
     @GetMapping("/rising")
     public ResponseEntity<BaseResponse<ResRisingPlacePaging>> homeRisingGet(
             @AuthenticationPrincipal MemberDetails memberDetails,
-            @RequestParam(required = false, name = "countCursor") Long countCursor,
-            @RequestParam(required = false, name = "idCursor") Long idCursor,
+            @RequestParam(required = false, name = "countCursor") String countCursor,
+            @RequestParam(required = false, name = "idCursor") String idCursor,
             @RequestParam(required = false, defaultValue = "10", name = "size") int size
     ) {
         log.info("GET /api/recommend/rising");
 
         Long memberId = memberDetails.getMemberId();
-
-        ResRisingPlacePaging response = recommendService.getRisingPlaces(memberId, countCursor, idCursor, size);
+        ExploreCursor exploreCursor = new ExploreCursor(countCursor, null, idCursor);
+        ResRisingPlacePaging response = recommendService.getRisingPlaces(memberId,exploreCursor, size);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, response));
     }
 
@@ -84,6 +85,7 @@ public class RecommendController {
     }
 
     @Operation(summary = "유명 여행지와 유사한 여행지들", description = "유명 여행지 태그 할당 점수와 유사도순" +
+            " <br> 처음 cursor : null 또는 1" +
             " <br> city : " +
             " <br> 'SEOUL', 'BUSAN', 'DAEGU', 'INCHEON', 'GWANGJU', 'DAEJEON', 'ULSAN', 'GYEONGGI', 'GANGWON', 'CHUNGBUK', 'CHUNGNAM', 'JEONBUK', 'JEONNAM', 'GYEONGBUK', 'GYEONGNAM', 'JEJU')")
     @ApiResponses(value = {
@@ -95,18 +97,18 @@ public class RecommendController {
     public ResponseEntity<BaseResponse<ResPlaceRecommendPaging>> similarPlacesGet(@AuthenticationPrincipal MemberDetails memberDetails,
                                                                                   @PathVariable("famousPlaceId") Long famousPlaceId,
                                                                                   @RequestParam(required = false, defaultValue = "ALL", name = "city") String cityFilter,
-                                                                                  @RequestParam(required = false, defaultValue = "1", name = "cursor") Long cursor,
+                                                                                  @RequestParam(required = false, defaultValue = "1", name = "countCursor") String countCursor,
                                                                                   @RequestParam(required = false, defaultValue = "10", name = "size") int size) {
         log.info("GET /api/recommend/{famousPlaceId}/similar");
 
-        if (cursor != null && cursor <= 0) {
-            throw new BaseException(BaseResponseCode.INVALID_CURSOR);
-        }
+        ExploreCursor exploreCursor = new ExploreCursor(countCursor, null, null);
+
         Long memberId = memberDetails.getMemberId();
 
         ExploreFilter filter = new ExploreFilter(null, CityCode.fromCityName(cityFilter));
 
-        ResPlaceRecommendPaging similarPlaces = famousPlaceService.getSimilarPlaces(memberId, filter, famousPlaceId, cursor, size);
+        //디폴트 카운트 커서 : 1
+        ResPlaceRecommendPaging similarPlaces = famousPlaceService.getSimilarPlaces(memberId, filter, famousPlaceId, Optional.ofNullable(exploreCursor.getCountCursor()).orElse(1L), size);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, similarPlaces));
     }
 

@@ -12,6 +12,7 @@ import flaskspring.demo.place.domain.QPlace;
 import flaskspring.demo.place.register.domain.QPlaceRegister;
 import flaskspring.demo.tag.domain.QPlaceTagLog;
 import flaskspring.demo.tag.domain.QTag;
+import flaskspring.demo.utils.cursor.ExploreCursor;
 import flaskspring.demo.utils.filter.ExploreFilter;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -109,11 +110,11 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom {
     }
 
     @Override
-    public List<Tuple> findRisingPlaces(Member member, Long countCursor, Long placeId, int size) {
+    public List<Tuple> findRisingPlaces(Member member, ExploreCursor exploreCursor, int size) {
 
         // Null 체크 후 Optional로 감싸기
-        Optional<Long> optionalCountCursor = Optional.ofNullable(countCursor);
-        Optional<Long> optionalPlaceId = Optional.ofNullable(placeId);
+        Optional<Long> optionalCountCursor = Optional.ofNullable(exploreCursor.getCountCursor());
+        Optional<Long> optionalPlaceId = Optional.ofNullable(exploreCursor.getIdCursor());
 
         // Null일 경우 기본값 설정
         Long effectiveCountCursor = optionalCountCursor.orElse(0L);

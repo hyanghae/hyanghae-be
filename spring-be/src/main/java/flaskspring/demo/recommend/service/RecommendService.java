@@ -11,6 +11,7 @@ import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.domain.Place;
 import flaskspring.demo.place.dto.res.ResPlaceWithSim;
 import flaskspring.demo.place.repository.PlaceRepository;
+import flaskspring.demo.utils.cursor.ExploreCursor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,9 +29,9 @@ public class RecommendService {
     private final PlaceRepository placeRepository;
     private final MemberService memberService;
 
-    public ResRisingPlacePaging getRisingPlaces(Long memberId, Long countCursor, Long placeId, int size) {
+    public ResRisingPlacePaging getRisingPlaces(Long memberId, ExploreCursor exploreCursor, int size) {
         Member member = memberService.findMemberById(memberId);
-        List<Tuple> places = placeRepository.findRisingPlaces(member, countCursor, placeId, size);
+        List<Tuple> places = placeRepository.findRisingPlaces(member, exploreCursor, size);
 
         Long nextCountCursor = null;
         Long nextIdCursor = null;
@@ -47,8 +48,6 @@ public class RecommendService {
         List<ResPlaceBrief> placeDto = convertToPlaceBriefList(places);
         return new ResRisingPlacePaging(placeDto, nextCountCursor, nextIdCursor);
     }
-
-
 
 
 }

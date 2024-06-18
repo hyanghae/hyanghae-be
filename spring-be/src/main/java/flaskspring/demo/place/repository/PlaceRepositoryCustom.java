@@ -4,6 +4,7 @@ import com.querydsl.core.Tuple;
 import flaskspring.demo.home.dto.req.TagScoreDto;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.place.domain.Place;
+import flaskspring.demo.utils.cursor.ExploreCursor;
 import flaskspring.demo.utils.filter.ExploreFilter;
 import org.springframework.data.repository.query.Param;
 
@@ -12,7 +13,7 @@ import java.util.List;
 public interface PlaceRepositoryCustom {
     List<Tuple> getFeedByPlaceNames(List<String> placeNames, Member member);
 
-    List<Tuple> findRisingPlaces(Member member, @Param("countCursor") Long countCursor, @Param("placeId") Long placeId, @Param("size") int size);
+    List<Tuple> findRisingPlaces(Member member, ExploreCursor exploreCursor, @Param("size") int size);
 
     Tuple findPlaceDetail(Member member, Long placeId);
 
