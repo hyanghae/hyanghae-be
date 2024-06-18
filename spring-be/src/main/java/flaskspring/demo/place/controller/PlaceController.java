@@ -9,7 +9,9 @@ import flaskspring.demo.home.dto.res.ResFamous;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.domain.CityCode;
+import flaskspring.demo.place.dto.req.ReqPlaceRegister;
 import flaskspring.demo.place.dto.res.ResPlaceDetail;
+import flaskspring.demo.place.dto.res.ResPlaceRegister;
 import flaskspring.demo.place.dto.res.ResSimilarity;
 import flaskspring.demo.place.register.service.PlaceRegisterService;
 import flaskspring.demo.place.service.PlaceService;
@@ -40,29 +42,27 @@ public class PlaceController {
     private final PlaceService placeService;
 
     @Operation(summary = "여행지 등록", description = "여행지를 등록합니다" +
-            "<br> 200 : 여행지 등록 취소" +
-            "<br> 201 : 여행지 등록 성공" +
+            "<br> 200 : 여행지 등록/해제, 등록 : true, 해제 : false" +
             "<br> 400 : 여행지 등록 개수 초과")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "등록 성공"),
-            @ApiResponse(responseCode = "200", description = "등록 해제"),
+            @ApiResponse(responseCode = "200", description = "등록 : true, 해제 : false"),
             @ApiResponse(responseCode = "400", description = "여행지 등록 개수 초과",
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
-            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
-    @PostMapping("/save/{placeId}")
-    public ResponseEntity<BaseResponse<Object>> register(@AuthenticationPrincipal MemberDetails memberDetails,
-                                                         @PathVariable("placeId") Long placeId) {
+    @PostMapping("/save")
+    public ResponseEntity<BaseResponse<ResPlaceRegister>> register(
+            @AuthenticationPrincipal MemberDetails memberDetails,
+            @RequestBody ReqPlaceRegister reqPlaceRegister) {
+
         Long myMemberId = memberDetails.getMemberId();
         Member member = memberService.findMemberById(myMemberId);
 
-        boolean isRegisterAction = placeRegisterService.registerPlace(member, placeId);
+        ResPlaceRegister resPlaceRegister = placeRegisterService.registerPlace(member, reqPlaceRegister.getPlaceId());
 
-        // 등록 경우 : 201 CREATED, 등록 해제의 경우 : 200 OK
-        BaseResponseCode baseResponseCode = isRegisterAction ? BaseResponseCode.OK_REGISTER : BaseResponseCode.OK_UNREGISTER;
-        BaseResponse<Object> response = new BaseResponse<>(baseResponseCode, new HashMap<>());
-        return ResponseEntity.ok(response);
+
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, resPlaceRegister));
     }
 
 
