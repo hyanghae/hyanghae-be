@@ -131,9 +131,9 @@ public class RecommendController {
             @AuthenticationPrincipal MemberDetails memberDetails,
             @RequestParam(required = false, defaultValue = "recommend", name = "sort") String sort,
             @RequestParam(required = false, defaultValue = "ALL", name = "city") String cityFilter,
-            @RequestParam(required = false, name = "countCursor") Long countCursor,
+            @RequestParam(required = false, name = "countCursor") String countCursor,
             @RequestParam(required = false, name = "nameCursor") String nameCursor,
-            @RequestParam(required = false, name = "idCursor") Long idCursor,
+            @RequestParam(required = false, name = "idCursor") String idCursor,
             @RequestParam(required = false, defaultValue = "10", name = "size") int size
     ) {
         log.info("GET /api/recommend/explore");
