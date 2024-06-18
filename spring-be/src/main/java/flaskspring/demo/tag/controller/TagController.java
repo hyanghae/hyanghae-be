@@ -61,7 +61,7 @@ public class TagController {
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
-    @GetMapping("")
+   // @GetMapping("")
     public ResponseEntity<BaseResponse<BaseObject<ResRegisteredTag>>> registeredTagGet(@AuthenticationPrincipal MemberDetails memberDetails) {
         log.info("GET /api/tag");
 
@@ -79,7 +79,7 @@ public class TagController {
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
-    @PutMapping("")
+  //  @PutMapping("")
     public ResponseEntity<BaseResponse<Object>> TagsModify(@AuthenticationPrincipal MemberDetails memberDetails, @RequestBody ReqTagIndexes request) {
         log.info("PUT /api/tag");
 
