@@ -46,7 +46,7 @@ dependencies {
 
     // aop 관련
     implementation 'org.springframework.boot:spring-boot-starter-aop:2.3.1.RELEASE'
-
+    implementation 'org.aspectj:aspectjweaver'
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

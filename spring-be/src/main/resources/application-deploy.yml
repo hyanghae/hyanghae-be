@@ -40,7 +40,7 @@ security:
     token:
       secret-key: "remoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoa"
       expiration-minutes: 30    # 3시간 -> 30분
-      refresh-expiration-hours: 24    # 리프레시 토큰 유효시간은 24시간
+      refresh-expiration-hours: 4    # 리프레시 토큰 유효시간은 24시간
 
 flask:
   base-url: http://flask:5000/ml/api/  # 로컬 프로파일용 Flask URL

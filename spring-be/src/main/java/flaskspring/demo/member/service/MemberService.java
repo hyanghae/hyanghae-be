@@ -1,8 +1,8 @@
 package flaskspring.demo.member.service;
 
 import flaskspring.demo.config.jwt.JwtTokenProvider;
-import flaskspring.demo.config.jwt.auth.MemberRefreshToken;
-import flaskspring.demo.config.jwt.auth.MemberRefreshTokenRepository;
+import flaskspring.demo.config.jwt.auth.RefreshToken;
+import flaskspring.demo.config.jwt.auth.RefreshTokenRepository;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.Member;
@@ -35,8 +35,9 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
     private final PasswordEncoder bCryptPasswordEncoder;
-    private final MemberRefreshTokenRepository memberRefreshTokenRepository;
+   // private final MemberRefreshTokenRepository memberRefreshTokenRepository;
     private final MemberTagLogRepository memberTagLogRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public List<Member> getAllMembers() {
         return memberRepository.findAll();
@@ -76,12 +77,16 @@ public class MemberService {
     }
 
     private void updateRefreshToken(Member member, String refreshToken) {
-        memberRefreshTokenRepository.findById(member.getMemberId())
+        refreshTokenRepository.findById(member.getAccount())
                 .ifPresentOrElse(
-                        it -> it.updateRefreshToken(refreshToken),
-                        () -> memberRefreshTokenRepository.save(new MemberRefreshToken(member, refreshToken))
+                        it -> {
+                            it.updateRefreshToken(refreshToken);
+                            refreshTokenRepository.save(it); // 업데이트 후 명시적으로 저장, 이전 데이터는 덮어써짐
+                        },
+                        () -> refreshTokenRepository.save(new RefreshToken(member.getAccount(), refreshToken))
                 );
     }
+
 
     @Transactional
     public GeneralSignUpRes generalSignUp(GeneralSignUpReq signUpReq) {

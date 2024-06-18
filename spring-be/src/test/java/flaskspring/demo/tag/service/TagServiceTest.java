@@ -157,7 +157,7 @@ class TagServiceTest {
         Member member = memberService.findMemberById(savedMemberId);
         tagService.saveMemberTags(member, List.of(1L, 2L, 3L));
 
-        tagService.modifyMemberTags(savedMemberId, List.of(4L, 5L, 6L));
+        tagService.modifyMemberTags(member, List.of(4L, 5L, 6L));
 
         List<ResRegisteredTag> registeredTag = tagService.getRegisteredTag(member);
         List<Long> registeredTagIds = registeredTag.stream().map(ResRegisteredTag::getTagId).collect(Collectors.toList());

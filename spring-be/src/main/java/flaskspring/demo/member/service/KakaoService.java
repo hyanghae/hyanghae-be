@@ -1,8 +1,8 @@
 package flaskspring.demo.member.service;
 
 import flaskspring.demo.config.jwt.JwtTokenProvider;
-import flaskspring.demo.config.jwt.auth.MemberRefreshToken;
-import flaskspring.demo.config.jwt.auth.MemberRefreshTokenRepository;
+import flaskspring.demo.config.jwt.auth.RefreshToken;
+import flaskspring.demo.config.jwt.auth.RefreshTokenRepository;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.dto.Req.KakaoLoginRequestDto;
 import flaskspring.demo.member.dto.Req.ReqKakaoAccessToken;
@@ -26,7 +26,7 @@ public class KakaoService {
 
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final MemberRefreshTokenRepository memberRefreshTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public KakaoLoginResponseDto kakaoLogin(ReqKakaoAccessToken reqKakaoAccessToken) {
         KakaoProfile kakaoProfile = getKakaoProfile(reqKakaoAccessToken.getAccessToken());
@@ -56,11 +56,11 @@ public class KakaoService {
     }
 
     private void updateRefreshToken(Member member, String refreshToken) {
-        memberRefreshTokenRepository.findById(member.getMemberId())
-                .ifPresentOrElse(
-                        it -> it.updateRefreshToken(refreshToken),
-                        () -> memberRefreshTokenRepository.save(new MemberRefreshToken(member, refreshToken))
-                );
+        RefreshToken refreshTokenObj = refreshTokenRepository.findById(member.getAccount())
+                .orElseGet(() -> new RefreshToken(member.getAccount(), refreshToken));
+
+        refreshTokenObj.updateRefreshToken(refreshToken);
+        refreshTokenRepository.save(refreshTokenObj);
     }
 
 

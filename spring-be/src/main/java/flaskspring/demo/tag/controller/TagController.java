@@ -1,7 +1,6 @@
 package flaskspring.demo.tag.controller;
 
 import flaskspring.demo.config.auth.MemberDetails;
-import flaskspring.demo.config.cache.RedisCacheable;
 import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseObject;
 import flaskspring.demo.exception.BaseResponse;

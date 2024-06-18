@@ -2,19 +2,17 @@ package flaskspring.demo.member.service;
 
 
 import flaskspring.demo.config.jwt.JwtTokenProvider;
+import flaskspring.demo.config.jwt.auth.RefreshTokenRepository;
+import flaskspring.demo.config.redis.RedisUtils;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
-import flaskspring.demo.member.domain.AccessToken;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.dto.Res.ResReIssue;
-import flaskspring.demo.member.repository.AccessTokenRepository;
 import flaskspring.demo.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,23 +24,22 @@ import java.util.Optional;
 public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
-    private final AccessTokenRepository accessTokenRepository;
+    // private final AccessTokenRepository accessTokenRepository;
+    private final RedisUtils redisUtils;
+    private final RefreshTokenRepository refreshTokenRepository;
 
 
     public void logout(HttpServletRequest request) {
         String accessToken = jwtTokenProvider.resolveToken(request);
-
         String account = getAccountFromAccessToken(accessToken);
-        Member member = findMemberByAccount(account);
+        //해당 액세스 토큰의 남은 유효 시간
+        long time = jwtTokenProvider.getAccessTokenExpirationDate(accessToken).getTime() - System.currentTimeMillis();
 
-        // AccessToken을 블랙리스트에 추가
-        AccessToken blacklistedToken = AccessToken.builder()
-                .token(accessToken)
-                .member(member)
-                .expirationDate(jwtTokenProvider.getAccessTokenExpirationDate(accessToken))
-                .blacklisted(true)
-                .build();
-        accessTokenRepository.save(blacklistedToken);
+        // AccessToken을 블랙리스트에 추가, 남은 유효시간만큼만 블랙리스트에 저장
+        redisUtils.setBlackList(accessToken, account, time);
+        // 리프레시 토큰도 무효화
+        refreshTokenRepository.deleteById(account);
+
     }
 
     private String getAccountFromAccessToken(String accessToken) {

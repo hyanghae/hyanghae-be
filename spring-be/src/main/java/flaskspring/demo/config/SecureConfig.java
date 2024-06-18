@@ -4,8 +4,8 @@ import flaskspring.demo.config.jwt.CustomAuthenticationEntryPoint;
 import flaskspring.demo.config.jwt.JwtAccessDeniedHandler;
 import flaskspring.demo.config.jwt.JwtAuthenticationFilter;
 import flaskspring.demo.config.jwt.JwtTokenProvider;
+import flaskspring.demo.config.redis.RedisUtils;
 import flaskspring.demo.member.domain.Role;
-import flaskspring.demo.member.repository.AccessTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +31,8 @@ public class SecureConfig {
 
     private final CorsFilter corsFilter;
     private final JwtTokenProvider jwtTokenProvider;
-    private final AccessTokenRepository accessTokenRepository;
+   // private final AccessTokenRepository accessTokenRepository;
+    private final RedisUtils redisUtils;
 
 
     @Bean
@@ -66,7 +67,7 @@ public class SecureConfig {
          인증이 되지않은 유저가 요청을 했을때 동작함
          */
 
-        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider,accessTokenRepository), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisUtils), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

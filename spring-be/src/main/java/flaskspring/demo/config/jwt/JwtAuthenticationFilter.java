@@ -1,6 +1,6 @@
 package flaskspring.demo.config.jwt;
 
-import flaskspring.demo.member.repository.AccessTokenRepository;
+import flaskspring.demo.config.redis.RedisUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,7 +30,8 @@ import java.util.Optional;
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final AccessTokenRepository accessTokenRepository;
+   // private final AccessTokenRepository accessTokenRepository;
+    private final RedisUtils redisUtils;
 
     // Request로 들어오는 Jwt Token의 유효성을 검증하는 filter를 filterChain에 등록합니다.
     @Override
@@ -52,10 +53,10 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                 }
             }
         } catch (ExpiredJwtException e) {
-          //  log.info("토큰이 있지만 기간이 만료 됨, 리프레시 토큰을 통한 액세스 토큰 재발급");
+            //  log.info("토큰이 있지만 기간이 만료 됨, 리프레시 토큰을 통한 액세스 토큰 재발급");
             log.info("토큰이 있지만 기간이 만료 됨");
             servletRequest.setAttribute(JwtProperties.HEADER_STRING, "토큰이 만료되었습니다.");
-      //      reissueAccessToken((HttpServletRequest)servletRequest, (HttpServletResponse)servletResponse, e);
+            //      reissueAccessToken((HttpServletRequest)servletRequest, (HttpServletResponse)servletResponse, e);
         } catch (Exception e) {
             log.info("토큰이 있지만 유효하지 않음, 인증 필요한 api 접근시 예외 발생");
             servletRequest.setAttribute(JwtProperties.HEADER_STRING, "유효하지 않은 토큰입니다.");
@@ -73,6 +74,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                 .orElse(null);
     }
 
+    @Deprecated
     private void reissueAccessToken(HttpServletRequest request, HttpServletResponse response, Exception exception) {
         System.out.println("reissueAccessToken 진입");
         try {
@@ -89,7 +91,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             SecurityContextHolder.getContext().setAuthentication(auth);
 
 
-
             response.setHeader("New-Access-Token", newAccessToken);
         } catch (Exception e) {
             request.setAttribute("exception", "새 토큰 재발급 실패");
@@ -97,6 +98,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     }
 
     private boolean doNotLogout(String accessToken) {
-        return accessTokenRepository.findByToken(accessToken).isEmpty();
+        //블랙리스트에 해당 토큰이 없으면 로그아웃 하지 않은 토큰
+        return !redisUtils.hasKeyBlackList(accessToken);
     }
 }

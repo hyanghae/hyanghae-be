@@ -1,3 +1,4 @@
+/*
 package flaskspring.demo.member.domain;
 
 import jakarta.persistence.*;
@@ -25,4 +26,4 @@ public class AccessToken {
     private boolean blacklisted;
 
     // Getters and setters
-}
+}*/

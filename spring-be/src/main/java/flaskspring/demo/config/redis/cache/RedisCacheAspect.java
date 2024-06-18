@@ -1,6 +1,5 @@
-package flaskspring.demo.config.cache;
+package flaskspring.demo.config.redis.cache;
 
-import flaskspring.demo.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -44,7 +43,7 @@ public class RedisCacheAspect {
             // 캐시에 데이터를 저장했음을 로그로 출력
             log.info("Storing data in cache: {}", cacheKey);
         } else {
-            redisTemplate.opsForValue().set(cacheKey, methodReturnValue, cacheTTL, TimeUnit.SECONDS);
+            redisTemplate.opsForValue().set(cacheKey, methodReturnValue, cacheTTL, TimeUnit.MINUTES);
             // 캐시에 데이터를 저장했음을 로그로 출력
             log.info("Storing data in cache: {}, TTL: {} seconds", cacheKey, cacheTTL);
         }

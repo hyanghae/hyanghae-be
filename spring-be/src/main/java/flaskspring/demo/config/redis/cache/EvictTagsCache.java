@@ -1,4 +1,4 @@
-package flaskspring.demo.config.cache;
+package flaskspring.demo.config.redis.cache;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

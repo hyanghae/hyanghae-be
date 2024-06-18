@@ -6,10 +6,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+/*@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
 public class MemberRefreshToken {
+
     @Id
     private Long memberId;
 
@@ -41,4 +42,4 @@ public class MemberRefreshToken {
     public void increaseReissueCount() {
         reissueCount++;
     }
-}
+}*/

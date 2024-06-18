@@ -3,8 +3,8 @@ package flaskspring.demo.config.jwt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import flaskspring.demo.config.auth.MemberDetailsService;
-import flaskspring.demo.config.jwt.auth.MemberRefreshToken;
-import flaskspring.demo.config.jwt.auth.MemberRefreshTokenRepository;
+import flaskspring.demo.config.jwt.auth.RefreshToken;
+import flaskspring.demo.config.jwt.auth.RefreshTokenRepository;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import io.jsonwebtoken.*;
@@ -22,6 +22,7 @@ import org.springframework.util.StringUtils;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -33,22 +34,22 @@ public class JwtTokenProvider {
     private final long expirationMinutes; //millisecond
     private final long refreshExpirationHours;
     private final MemberDetailsService memberDetailsService;
-    private final MemberRefreshTokenRepository memberRefreshTokenRepository;
-    private int reissueCount = 10;
+    private final RefreshTokenRepository refreshTokenRepository;
 
 
     public JwtTokenProvider(@Value("${security.jwt.token.secret-key}") String secretKey,
                             @Value("${security.jwt.token.expiration-minutes}") long expirationMinutes,    // hours -> minutes
                             @Value("${security.jwt.token.refresh-expiration-hours}") long refreshExpirationHours,    // 추가
                             MemberDetailsService memberDetailsService,
-                            MemberRefreshTokenRepository memberRefreshTokenRepository) {
+                            RefreshTokenRepository refreshTokenRepository) {
 
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.expirationMinutes = expirationMinutes;
         this.refreshExpirationHours = refreshExpirationHours;
         this.memberDetailsService = memberDetailsService;
-        this.memberRefreshTokenRepository = memberRefreshTokenRepository;
+        //    this.memberRefreshTokenRepository = memberRefreshTokenRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     public String createToken(String account) { //email 받음
@@ -94,9 +95,9 @@ public class JwtTokenProvider {
             throw new BaseException(BaseResponseCode.BAD_REQUEST);
         }
         String account = getUserAccountFromOldToken(oldAccessToken);
-        memberRefreshTokenRepository.findByAccountAndReissueCountLessThan(account, reissueCount)
+        refreshTokenRepository.findById(account)
                 .ifPresentOrElse(
-                        MemberRefreshToken::increaseReissueCount,
+                        RefreshToken::increaseReissueCount,
                         () -> {
                             throw new ExpiredJwtException(null, null, "Refresh token expired.");
                         }
@@ -106,15 +107,31 @@ public class JwtTokenProvider {
 
     @Transactional(readOnly = true)
     public void validateRefreshToken(String refreshToken, String oldAccessToken) throws JsonProcessingException {
-        if (oldAccessToken == null) {
-            throw new BaseException(BaseResponseCode.BAD_REQUEST);
+        try {
+            log.debug("Validating refresh token: {}", refreshToken);
+            validateToken(refreshToken);
+            log.debug("Extracting account from old access token: {}", oldAccessToken);
+            String account = getUserAccountFromOldToken(oldAccessToken);
+            log.debug("Finding refresh token for account: {}", account);
+            Optional<RefreshToken> byAccount = refreshTokenRepository.findById(account);
+
+            log.debug("Validating refresh token for account: {}", account);
+            Optional<RefreshToken> refreshToken1 = byAccount.filter(memberRefreshToken -> memberRefreshToken.validateRefreshToken(refreshToken));
+
+            log.debug("Checking if refresh token is valid for account: {}", account);
+            refreshToken1.orElseThrow(() -> new ExpiredJwtException(null, null, "Refresh token expired."));
+        } catch (BaseException e) {
+            log.error("BaseException: {}", e.getMessage(), e);
+            throw e;
+        } catch (ExpiredJwtException e) {
+            log.error("ExpiredJwtException: {}", e.getMessage(), e);
+            throw e;
+        } catch (Exception e) {
+            log.error("Unexpected Exception: {}", e.getMessage(), e);
+            throw new BaseException(BaseResponseCode.INTERNAL_SERVER_ERROR);
         }
-        validateToken(refreshToken);
-        String account = getUserAccountFromOldToken(oldAccessToken);
-        memberRefreshTokenRepository.findByAccountAndReissueCountLessThan(account, reissueCount)
-                .filter(memberRefreshToken -> memberRefreshToken.validateRefreshToken(refreshToken))
-                .orElseThrow(() -> new ExpiredJwtException(null, null, "Refresh token expired."));
     }
+
 
     public Long getSubject(String token) {
         return Long.valueOf(Jwts.parserBuilder()

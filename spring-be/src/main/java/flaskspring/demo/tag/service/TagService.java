@@ -1,7 +1,7 @@
 package flaskspring.demo.tag.service;
 
-import flaskspring.demo.config.cache.EvictTagsCache;
-import flaskspring.demo.config.cache.RedisCacheable;
+import flaskspring.demo.config.redis.cache.EvictTagsCache;
+import flaskspring.demo.config.redis.cache.RedisCacheable;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.Member;
@@ -15,7 +15,6 @@ import flaskspring.demo.tag.dto.res.ResRegisteredTag;
 import flaskspring.demo.place.repository.MemberTagLogRepository;
 import flaskspring.demo.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,7 +48,7 @@ public class TagService {
         return resCategoryTags;
     }
 
-    @RedisCacheable(cacheName = "registeredTags", key = "#member.memberId")
+    @RedisCacheable(cacheName = "registeredTags", expireTime = 30, key = "#member.memberId")
     public List<ResRegisteredTag> getRegisteredTag(Member member) {
 
         return memberService.getRegisteredTag(member)
