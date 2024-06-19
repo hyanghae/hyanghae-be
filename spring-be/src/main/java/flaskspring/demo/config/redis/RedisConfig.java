@@ -44,7 +44,7 @@ import java.util.stream.Stream;
 @EnableAspectJAutoProxy
 public class RedisConfig implements CachingConfigurer {
 
-    private final RedisInfo redisInfo;
+    //private final RedisInfo redisInfo;
 
   /*  @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
@@ -65,6 +65,7 @@ public class RedisConfig implements CachingConfigurer {
 
         return new LettuceConnectionFactory(clusterConfiguration, clientConfiguration);
     }*/
+/*
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
@@ -81,6 +82,7 @@ public class RedisConfig implements CachingConfigurer {
 
         return new LettuceConnectionFactory(redisClusterConfiguration, clientConfiguration);
     }
+*/
 
 
     //JSON 직렬화/역직렬화 관련
@@ -100,13 +102,13 @@ public class RedisConfig implements CachingConfigurer {
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
+    public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
         final RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper()));
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(RedisSerializer.java());
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setConnectionFactory(lettuceConnectionFactory); // 자동 주입된 LettuceConnectionFactory 사용
         return redisTemplate;
     }
 
@@ -122,10 +124,9 @@ public class RedisConfig implements CachingConfigurer {
                 ));
     }
 
-    @Override
     @Bean
-    public CacheManager cacheManager() {
-        return RedisCacheManager.builder(this.redisConnectionFactory())
+    public CacheManager cacheManager(LettuceConnectionFactory lettuceConnectionFactory) {
+        return RedisCacheManager.builder(lettuceConnectionFactory) // 자동 주입된 LettuceConnectionFactory 사용
                 .cacheDefaults(this.cacheConfiguration())
                 .build();
     }

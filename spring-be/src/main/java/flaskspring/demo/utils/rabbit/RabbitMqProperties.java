@@ -17,6 +17,6 @@ public class RabbitMqProperties {
 
     @PostConstruct
     void test(){
-        System.out.println("host = " + host);
+        System.out.println("RabbitMQ host = " + host);
     }
 }

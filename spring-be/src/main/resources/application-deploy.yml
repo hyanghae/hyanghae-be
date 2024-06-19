@@ -22,11 +22,20 @@ spring:
     port: ${RABBITMQ_PORT} # RabbitMQ port
     username: ${RABBITMQ_USERNAME} # RabbitMQ 웹 관리 콘솔 아이디
     password: ${RABBITMQ_PASSWORD} # RabbitMQ 웹 관리 콘솔 비밀번호
-  redis:
-    cluster:
-      nodes: ${REDIS_CLUSTER_NODES}
-      client-name: ${REDIS_CLUSTER_CLIENT_NAME}
-      max-redirects: ${REDIS_CLUSTER_MAX_REDIRECTS}
+  data:
+    redis:
+      host: ${REDIS_CLUSTER_IP}
+      port: ${REDIS_CLUSTER_PORT}
+      lettuce:
+        pool:
+          max-active: 8 # 풀에 할당할 수 있는 최대 연결 수
+          max-idle: 8 # 풀에서 유지할 수 있는 최대 유휴 연결 수
+          min-idle: 0 # 풀에서 유지할 수 있는 최소 유휴 연결 수 (0으로 유휴 연결을 완전히 제거하지 않음)
+      cluster:
+        refresh:
+          period: 2s # 토폴로지 새로고침 기간
+        max-redirects: 3 # 클러스터 토폴로지 재구축 시 최대 리디렉션 수
+      read-from: replica_preferred
 
 
 
@@ -40,7 +49,9 @@ rabbitmq:
 
 logging:
   level:
-    org.hibernate.SQL: debug
+    org:
+      hibernate.SQL: debug
+      springframework.data.redis: DEBUG
 
 security:
   jwt:

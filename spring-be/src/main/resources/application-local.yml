@@ -21,11 +21,20 @@ spring:
     port: 5672 # RabbitMQ port
     username : guest # RabbitMQ 웹 관리 콘솔 아이디
     password: guest # RabbitMQ 웹 관리 콘솔 비밀번호
-  redis:
-    cluster:
-      nodes: 13.124.46.151:6379,13.124.46.151:6380,13.124.46.151:6381
-      client-name: clientName
-      max-redirects: 3
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      lettuce:
+        pool:
+          max-active: 8 # 풀에 할당할 수 있는 최대 연결 수
+          max-idle: 8 # 풀에서 유지할 수 있는 최대 유휴 연결 수
+          min-idle: 0 # 풀에서 유지할 수 있는 최소 유휴 연결 수 (0으로 유휴 연결을 완전히 제거하지 않음)
+      cluster:
+        refresh:
+          period: 2s # 토폴로지 새로고침 기간
+        max-redirects: 3 # 클러스터 토폴로지 재구축 시 최대 리디렉션 수
+      read-from: replica_preferredd
 
 
 
