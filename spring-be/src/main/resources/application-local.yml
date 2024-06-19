@@ -24,10 +24,9 @@ spring:
   data:
     redis:
       cluster:
-        nodes: 127.0.0.1:6379, 127.0.0.1:6380, 127.0.0.1:6381
-        client-name: yourClientName
-        max-redirects: 3
-        password: qwer
+        nodes: ${REDIS_CLUSTER_NODES}
+        client-name: ${REDIS_CLUSTER_CLIENT_NAME}
+        max-redirects: ${REDIS_CLUSTER_MAX_REDIRECTS}
 
 
 
