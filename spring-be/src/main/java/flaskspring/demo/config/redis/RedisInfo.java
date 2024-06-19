@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,20 +14,12 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "spring.data.redis.cluster")
 @Configuration
 public class RedisInfo {
-    private List<String> nodes;
-   // private String password;
-    private int maxRedirects;
 
-   /* @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ClusterInfo {
-        private String nodes;
-        private String clientName;
-        private int maxRedirects;
-    }*/
+    @Value("${spring.data.redis.cluster.nodes}")
+    private List<String> nodes;
+
+    @Value("${spring.data.redis.cluster.max-redirects}")
+    private int maxRedirects;
 }
