@@ -22,6 +22,14 @@ spring:
     port: ${RABBITMQ_PORT} # RabbitMQ port
     username: ${RABBITMQ_USERNAME} # RabbitMQ 웹 관리 콘솔 아이디
     password: ${RABBITMQ_PASSWORD} # RabbitMQ 웹 관리 콘솔 비밀번호
+  data:
+    redis:
+      cluster:
+        nodes: ${REDIS_CLUSTER_NODES}
+        client-name: ${REDIS_CLUSTER_CLIENT_NAME}
+        max-redirects: ${REDIS_CLUSTER_MAX_REDIRECTS}
+
+
 
 rabbitmq:
   queue:

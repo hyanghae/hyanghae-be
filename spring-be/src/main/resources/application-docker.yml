@@ -22,6 +22,12 @@ spring:
     port: 5672 # RabbitMQ port
     username : guest # RabbitMQ 웹 관리 콘솔 아이디
     password: guest # RabbitMQ 웹 관리 콘솔 비밀번호
+  data:
+    redis:
+      cluster:
+        nodes: ${REDIS_CLUSTER_NODES}
+        client-name: ${REDIS_CLUSTER_CLIENT_NAME}
+        max-redirects: ${REDIS_CLUSTER_MAX_REDIRECTS}
 
 rabbitmq:
   queue:

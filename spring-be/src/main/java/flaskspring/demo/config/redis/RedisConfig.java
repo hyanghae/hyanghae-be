@@ -21,6 +21,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
+import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -42,26 +43,38 @@ public class RedisConfig implements CachingConfigurer {
 
     private final RedisInfo redisInfo;
 
+  /*  @Bean
+    public LettuceConnectionFactory redisConnectionFactory() {
+        // Cluster nodes configuration
+        Set<String> nodes = new HashSet<>();
+        for (String node : StringUtils.commaDelimitedListToStringArray(redisInfo.getCluster().getNodes())) {
+            nodes.add(node.trim());
+        }
+
+        RedisClusterConfiguration clusterConfiguration = new RedisClusterConfiguration(nodes);
+        clusterConfiguration.setPassword(RedisPassword.of(redisInfo.getPassword()));
+
+        // Client configuration
+        LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder()
+                .readFrom(ReadFrom.REPLICA_PREFERRED)
+                .clientName(redisInfo.getCluster().ge())
+                .build();
+
+        return new LettuceConnectionFactory(clusterConfiguration, clientConfiguration);
+    }*/
+
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
-        // ip,port 등 서버 구성 관련 속성
-        Set<String> nodes = new HashSet<String>();
-        for (String node : StringUtils.commaDelimitedListToStringArray(redisInfo.getCluster().getNodes())) {
-            try {
-                nodes.add(node.trim());
-            } catch (RuntimeException ex) {
-                throw new IllegalStateException("Invalid redis sentinel" + "property" + node + "",ex);
-            }
-        }
-        RedisClusterConfiguration clusterConfiguration = new RedisClusterConfiguration(nodes);
-
+        RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(redisInfo.getNodes());
+       // redisClusterConfiguration.setPassword(redisInfo.getPassword());
+        redisClusterConfiguration.setMaxRedirects(redisInfo.getMaxRedirects());
 
         // clientname,readfrom등 클라이언트 관련 속성
         LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder()
                 .readFrom(ReadFrom.REPLICA_PREFERRED)
                 .build();
 
-        return new LettuceConnectionFactory(clusterConfiguration,clientConfiguration);
+        return new LettuceConnectionFactory(redisClusterConfiguration,clientConfiguration);
     }
 
 

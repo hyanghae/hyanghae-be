@@ -27,6 +27,7 @@ spring:
         nodes: 127.0.0.1:6379, 127.0.0.1:6380, 127.0.0.1:6381
         client-name: yourClientName
         max-redirects: 3
+        password: qwer
 
 
 
