@@ -21,12 +21,11 @@ spring:
     port: 5672 # RabbitMQ port
     username : guest # RabbitMQ 웹 관리 콘솔 아이디
     password: guest # RabbitMQ 웹 관리 콘솔 비밀번호
-  data:
-    redis:
-      cluster:
-        nodes: 13.124.46.151:6379, 13.124.46.151:6380, 13.124.46.151:6381
-        client-name: yourClientName
-        max-redirects: 3
+  redis:
+    cluster:
+      nodes: 13.124.46.151:6379,13.124.46.151:6380,13.124.46.151:6381
+      client-name: clientName
+      max-redirects: 3
 
 
 
@@ -46,6 +45,8 @@ logging:
     org:
       hibernate.SQL: debug
       springframework.cache: TRACE
+      springframework.data.redis: DEBUG
+    #io.lettuce.core: DEBUG
 
 security:
   jwt:

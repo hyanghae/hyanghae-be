@@ -17,9 +17,9 @@ import java.util.List;
 @Configuration
 public class RedisInfo {
 
-    @Value("${spring.data.redis.cluster.nodes}")
-    private List<String> nodes;
+    @Value("${spring.redis.cluster.nodes}")
+    private String nodes;
 
-    @Value("${spring.data.redis.cluster.max-redirects}")
+    @Value("${spring.redis.cluster.max-redirects}")
     private int maxRedirects;
 }

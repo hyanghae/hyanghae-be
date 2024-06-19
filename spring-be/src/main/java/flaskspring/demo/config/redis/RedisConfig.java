@@ -34,6 +34,8 @@ import org.springframework.util.StringUtils;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @EnableCaching
@@ -66,21 +68,19 @@ public class RedisConfig implements CachingConfigurer {
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
-        List<String> nodes = redisInfo.getNodes();
-        System.out.println("nodes = " + nodes);
-        RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(nodes);
+        List<String> nodeList = Stream.of(redisInfo.getNodes().split(","))
+                .map(String::trim)
+                .collect(Collectors.toList());
 
-       // redisClusterConfiguration.setPassword(redisInfo.getPassword());
+        RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(nodeList);
         redisClusterConfiguration.setMaxRedirects(redisInfo.getMaxRedirects());
 
-        // clientname,readfrom등 클라이언트 관련 속성
         LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder()
                 .readFrom(ReadFrom.REPLICA_PREFERRED)
                 .build();
 
-        return new LettuceConnectionFactory(redisClusterConfiguration,clientConfiguration);
+        return new LettuceConnectionFactory(redisClusterConfiguration, clientConfiguration);
     }
-
 
 
     //JSON 직렬화/역직렬화 관련
