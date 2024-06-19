@@ -24,9 +24,10 @@ spring:
   data:
     redis:
       cluster:
-        nodes: ${REDIS_CLUSTER_NODES}
-        client-name: ${REDIS_CLUSTER_CLIENT_NAME}
-        max-redirects: ${REDIS_CLUSTER_MAX_REDIRECTS}
+        nodes: 13.124.46.151:6379, 13.124.46.151:6380, 13.124.46.151:6381
+        client-name: yourClientName
+        max-redirects: 3
+
 
 
 
