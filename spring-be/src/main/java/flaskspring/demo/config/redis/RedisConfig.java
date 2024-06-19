@@ -32,6 +32,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -65,7 +66,10 @@ public class RedisConfig implements CachingConfigurer {
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
-        RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(redisInfo.getNodes());
+        List<String> nodes = redisInfo.getNodes();
+        System.out.println("nodes = " + nodes);
+        RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(nodes);
+
        // redisClusterConfiguration.setPassword(redisInfo.getPassword());
         redisClusterConfiguration.setMaxRedirects(redisInfo.getMaxRedirects());
 
