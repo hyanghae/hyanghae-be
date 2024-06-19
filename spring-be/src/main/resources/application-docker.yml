@@ -31,11 +31,7 @@ spring:
           max-active: 8 # 풀에 할당할 수 있는 최대 연결 수
           max-idle: 8 # 풀에서 유지할 수 있는 최대 유휴 연결 수
           min-idle: 0 # 풀에서 유지할 수 있는 최소 유휴 연결 수 (0으로 유휴 연결을 완전히 제거하지 않음)
-      cluster:
-        refresh:
-          period: 2s # 토폴로지 새로고침 기간
-        max-redirects: 3 # 클러스터 토폴로지 재구축 시 최대 리디렉션 수
-      read-from: replica_preferred
+
 
 rabbitmq:
   queue:
