@@ -98,7 +98,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     }
 
     private boolean doNotLogout(String accessToken) {
-        //블랙리스트에 해당 토큰이 없으면 로그아웃 하지 않은 토큰
+        //블랙리스트에 해당 토큰이 없으면 로그아웃 하지 않은 토큰 -> 레디스 활용
         return !redisUtils.hasKeyBlackList(accessToken);
     }
 }

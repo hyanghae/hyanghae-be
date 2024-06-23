@@ -8,7 +8,6 @@ import flaskspring.demo.member.repository.MemberRepository;
 import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.dto.res.ResPlaceWithSim;
 import flaskspring.demo.home.dto.res.ImgRecommendationDto;
-import flaskspring.demo.tag.domain.MemberTagLog;
 import flaskspring.demo.tag.domain.Tag;
 import flaskspring.demo.place.repository.MemberTagLogRepository;
 import flaskspring.demo.tag.repository.PlaceTagLogRepository;

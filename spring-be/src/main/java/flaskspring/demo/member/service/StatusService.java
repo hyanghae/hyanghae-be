@@ -4,7 +4,6 @@ import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.image.repository.UploadImageRepository;
 import flaskspring.demo.member.domain.Member;
-import flaskspring.demo.member.dto.Res.UserStatus;
 import flaskspring.demo.member.repository.MemberRepository;
 import flaskspring.demo.place.repository.MemberTagLogRepository;
 import lombok.RequiredArgsConstructor;

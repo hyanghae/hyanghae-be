@@ -1,6 +1,7 @@
 package flaskspring.demo.recommend.service;
 
 import flaskspring.demo.home.dto.res.ResRisingPlacePaging;
+import flaskspring.demo.utils.cursor.ExploreCursor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +19,8 @@ class RecommendServiceTest {
     @Test
     void getRisingPlacesTest() {
 
-        ResRisingPlacePaging risingPlaces = recommendService.getRisingPlaces(1L, 0L, 10L, 10);
+        ExploreCursor exploreCursor = new ExploreCursor("1", null, "1");
+        ResRisingPlacePaging risingPlaces = recommendService.getRisingPlaces(1L,exploreCursor , 10);
         System.out.println("risingPlaces = " + risingPlaces);
     }
 }

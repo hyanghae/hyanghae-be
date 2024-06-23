@@ -39,14 +39,6 @@ public class MemberService {
     private final MemberTagLogRepository memberTagLogRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public List<Member> getAllMembers() {
-        return memberRepository.findAll();
-    }
-
-    public Member getMemberById(Long id) {
-        return memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found with id: " + id));
-    }
 
     @Transactional
     public GeneralLoginRes generalLogin(GeneralLoginReq loginReq) {

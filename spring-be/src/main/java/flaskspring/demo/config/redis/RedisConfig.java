@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import flaskspring.demo.tag.dto.res.ResRegisteredTag;
 import io.lettuce.core.ReadFrom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,14 +22,12 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.serializer.*;
 import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
@@ -86,7 +85,7 @@ public class RedisConfig implements CachingConfigurer {
 
 
     //JSON 직렬화/역직렬화 관련
-    private ObjectMapper objectMapper() {
+    private ObjectMapper redisObjectMapper() {
         PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator
                 .builder()
                 .allowIfSubType(Object.class)
@@ -101,14 +100,49 @@ public class RedisConfig implements CachingConfigurer {
                 .activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL);
     }
 
+//    @Bean
+//    public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
+//        final RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+//        redisTemplate.setKeySerializer(new StringRedisSerializer());
+//        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper()));
+//        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+//        redisTemplate.setHashValueSerializer(RedisSerializer.java());
+//        redisTemplate.setConnectionFactory(lettuceConnectionFactory); // 자동 주입된 LettuceConnectionFactory 사용
+//        return redisTemplate;
+//    }
+
+//    @Bean
+//    public RedisTemplate<?, ?> redisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
+//        RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
+//        redisTemplate.setConnectionFactory(lettuceConnectionFactory);
+//       // redisTemplate.setEnableTransactionSupport(true);
+//
+//        redisTemplate.setKeySerializer(new StringRedisSerializer());
+//        redisTemplate.setValueSerializer(new StringRedisSerializer());
+//
+//        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+//        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+//        return redisTemplate;
+//    }
+
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
-        final RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<?, ?> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+
+        // JSON 직렬화 설정
+        GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(redisObjectMapper());
+
+
+        // Key는 String, Value는 ResRegisteredTag로 설정
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper()));
+        redisTemplate.setValueSerializer(serializer);
+
+        // Hash 데이터 구조를 위한 설정 (필요에 따라 추가)
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(RedisSerializer.java());
-        redisTemplate.setConnectionFactory(lettuceConnectionFactory); // 자동 주입된 LettuceConnectionFactory 사용
+        redisTemplate.setHashValueSerializer(serializer);
+
+        redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
 
@@ -120,7 +154,7 @@ public class RedisConfig implements CachingConfigurer {
                 .computePrefixWith(cacheName -> cacheName.concat(":"))
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
-                        new GenericJackson2JsonRedisSerializer(objectMapper())
+                        new GenericJackson2JsonRedisSerializer(redisObjectMapper())
                 ));
     }
 

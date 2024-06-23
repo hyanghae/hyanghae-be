@@ -48,7 +48,7 @@ public class TagService {
         return resCategoryTags;
     }
 
-    @RedisCacheable(cacheName = "registeredTags", expireTime = 30, key = "#member.memberId")
+    @RedisCacheable(cacheName = "registeredTags", expireTime = 30, key = "#member.memberId") //캐시 활용
     public List<ResRegisteredTag> getRegisteredTag(Member member) {
 
         return memberService.getRegisteredTag(member)
@@ -57,7 +57,7 @@ public class TagService {
                 .collect(Collectors.toList());
     }
 
-    @EvictTagsCache(cacheName = "registeredTags", key = "#member.memberId")
+    @EvictTagsCache(cacheName = "registeredTags", key = "#member.memberId") //캐시 삭제
     public void modifyMemberTags(Member member, List<Long> modifyTagIds) {
         // 기존에 등록된 태그 삭제
         memberTagLogRepository.deleteByMember(member);

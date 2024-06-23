@@ -5,14 +5,8 @@ import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseObject;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
-import flaskspring.demo.home.dto.res.ResImageStandardScore;
-import flaskspring.demo.image.service.UploadImageService;
-import flaskspring.demo.member.domain.Member;
-import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.dto.res.ResPlace;
-import flaskspring.demo.place.dto.res.ResPlaceWithSim;
 import flaskspring.demo.tag.service.FeedService;
-import flaskspring.demo.utils.FlaskService;
 import flaskspring.demo.utils.MessageUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,10 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 

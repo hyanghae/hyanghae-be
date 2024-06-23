@@ -4,9 +4,11 @@ import flaskspring.demo.tag.domain.Tag;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
-public class ResRegisteredTag {
+public class ResRegisteredTag implements Serializable {
     private Long tagId;
     private String tagName;
 

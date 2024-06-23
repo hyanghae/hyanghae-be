@@ -1,6 +1,5 @@
 package flaskspring.demo.place.repository;
 
-import com.querydsl.core.Tuple;
 import flaskspring.demo.place.domain.FamousPlace;
 import flaskspring.demo.utils.filter.ExploreFilter;
 

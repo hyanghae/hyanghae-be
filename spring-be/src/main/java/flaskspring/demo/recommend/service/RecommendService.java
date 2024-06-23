@@ -6,10 +6,8 @@ import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.home.dto.res.ResPlaceBrief;
 import flaskspring.demo.home.dto.res.ResRisingPlacePaging;
 import flaskspring.demo.member.domain.Member;
-import flaskspring.demo.member.repository.MemberRepository;
 import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.domain.Place;
-import flaskspring.demo.place.dto.res.ResPlaceWithSim;
 import flaskspring.demo.place.repository.PlaceRepository;
 import flaskspring.demo.utils.cursor.ExploreCursor;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static flaskspring.demo.utils.ConvertUtil.convertToPlaceBriefList;
 

@@ -2,7 +2,6 @@ package flaskspring.demo.tag.domain;
 
 
 import flaskspring.demo.place.domain.FamousPlace;
-import flaskspring.demo.place.domain.Place;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

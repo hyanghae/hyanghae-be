@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -22,6 +23,39 @@ public class RedisCacheAspect {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
+
+//    @Around("@annotation(RedisCacheable)")
+//    public Object cacheableProcess(ProceedingJoinPoint joinPoint) throws Throwable {
+//        RedisCacheable redisCacheable = getCacheable(joinPoint);
+//        final String cacheKey = generateKey(joinPoint);
+//
+//        if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)) && !confirmBypass()) {
+//            // 캐시에서 데이터를 가져왔음을 로그로 출력
+//            log.info("Getting data from cache: {}", cacheKey);
+//            List<String> cachedList = redisTemplate.opsForList().range(cacheKey, 0, -1);
+//            System.out.println("cachedList = " + cachedList);
+//            return cachedList;
+//        }
+//
+//        // 캐시에 없어서 메서드를 실행했음을 로그로 출력
+//        log.info("Cache miss for key: {}, executing method", cacheKey);
+//        final List<String> methodReturnValue = (List<String>) joinPoint.proceed();
+//        final long cacheTTL = redisCacheable.expireTime();
+//
+//        if (cacheTTL < 0) {
+//            redisTemplate.opsForList().rightPushAll(cacheKey, methodReturnValue);
+//            // 캐시에 데이터를 저장했음을 로그로 출력
+//            log.info("Storing data in cache: {}", cacheKey);
+//        } else {
+//            redisTemplate.opsForList().rightPushAll(cacheKey, methodReturnValue);
+//            redisTemplate.expire(cacheKey, cacheTTL, TimeUnit.MINUTES);
+//            // 캐시에 데이터를 저장했음을 로그로 출력
+//            log.info("Storing data in cache: {}, TTL: {} seconds", cacheKey, cacheTTL);
+//        }
+//
+//        return methodReturnValue;
+//    }
+
     @Around("@annotation(RedisCacheable)")
     public Object cacheableProcess(ProceedingJoinPoint joinPoint) throws Throwable {
         RedisCacheable redisCacheable = getCacheable(joinPoint);
@@ -30,7 +64,9 @@ public class RedisCacheAspect {
         if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)) && !confirmBypass()) {
             // 캐시에서 데이터를 가져왔음을 로그로 출력
             log.info("Getting data from cache: {}", cacheKey);
-            return redisTemplate.opsForValue().get(cacheKey);
+            Object o = redisTemplate.opsForValue().get(cacheKey);
+            System.out.println("o = " + o);
+            return o;
         }
 
         // 캐시에 없어서 메서드를 실행했음을 로그로 출력
@@ -52,15 +88,12 @@ public class RedisCacheAspect {
     }
 
 
-
-
     private RedisCacheable getCacheable(ProceedingJoinPoint joinPoint) {
         final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         final Method method = signature.getMethod();
 
         return AnnotationUtils.getAnnotation(method, RedisCacheable.class);
     }
-
 
 
     private String generateKey(ProceedingJoinPoint joinPoint) {

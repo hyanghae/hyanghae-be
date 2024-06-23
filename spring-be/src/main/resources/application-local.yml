@@ -23,8 +23,10 @@ spring:
     password: guest # RabbitMQ 웹 관리 콘솔 비밀번호
   data:
     redis:
-      host: localhost
+      host: 127.0.0.1
       port: 6379
+      cluster:
+        nodes: 127.0.0.1:6379,127.0.0.1:6380,127.0.0.1:6381
       lettuce:
         pool:
           max-active: 8 # 풀에 할당할 수 있는 최대 연결 수

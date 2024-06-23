@@ -2,8 +2,8 @@ package flaskspring.demo.place.dto.res;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.querydsl.core.Tuple;
-import flaskspring.demo.tag.dto.res.ResTag;
 import flaskspring.demo.place.domain.Place;
+import flaskspring.demo.tag.dto.res.ResTag;
 import lombok.Data;
 
 import java.util.*;

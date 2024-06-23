@@ -1,15 +1,11 @@
 package flaskspring.demo.place.dto.res;
 
 import com.querydsl.core.Tuple;
-import flaskspring.demo.departure.dto.res.ResSchedulePlace;
-import flaskspring.demo.home.dto.res.ResFamous;
 import flaskspring.demo.home.dto.res.ResPlaceBrief;
-import flaskspring.demo.place.domain.FamousPlace;
 import flaskspring.demo.place.domain.Place;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data

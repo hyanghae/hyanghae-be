@@ -1,7 +1,6 @@
 package flaskspring.demo.utils.filter;
 
 import flaskspring.demo.place.domain.CityCode;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter

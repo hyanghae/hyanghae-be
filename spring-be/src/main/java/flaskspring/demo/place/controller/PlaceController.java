@@ -8,12 +8,12 @@ import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.home.dto.res.ResFamous;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.service.MemberService;
-import flaskspring.demo.place.domain.CityCode;
 import flaskspring.demo.place.dto.req.ReqPlaceRegister;
+import flaskspring.demo.place.register.service.PlaceRegisterService;
+import flaskspring.demo.place.domain.CityCode;
 import flaskspring.demo.place.dto.res.ResPlaceDetail;
 import flaskspring.demo.place.dto.res.ResPlaceRegister;
 import flaskspring.demo.place.dto.res.ResSimilarity;
-import flaskspring.demo.place.register.service.PlaceRegisterService;
 import flaskspring.demo.place.service.PlaceService;
 import flaskspring.demo.utils.MessageUtils;
 import flaskspring.demo.utils.filter.ExploreFilter;
@@ -28,7 +28,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 
 @Tag(name = "여행지 기능", description = "여행지 API")

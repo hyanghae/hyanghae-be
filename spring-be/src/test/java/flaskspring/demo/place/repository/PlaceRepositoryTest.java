@@ -3,15 +3,10 @@ package flaskspring.demo.place.repository;
 import flaskspring.demo.home.dto.req.TagScoreDto;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.service.MemberService;
-import flaskspring.demo.place.domain.Place;
-import jakarta.persistence.Tuple;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;

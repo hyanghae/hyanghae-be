@@ -26,6 +26,8 @@ spring:
     redis:
       host: ${REDIS_CLUSTER_IP}
       port: ${REDIS_CLUSTER_PORT}
+      cluster:
+        nodes: ${REDIS_CLUSTER_NODES}
       lettuce:
         pool:
           max-active: 8 # 풀에 할당할 수 있는 최대 연결 수
