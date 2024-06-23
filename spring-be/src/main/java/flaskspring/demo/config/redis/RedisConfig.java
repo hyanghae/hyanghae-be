@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import flaskspring.demo.tag.dto.res.ResRegisteredTag;
 import io.lettuce.core.ReadFrom;
+import io.lettuce.core.cluster.ClusterClientOptions;
+import io.lettuce.core.cluster.ClusterTopologyRefreshOptions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
@@ -73,13 +75,28 @@ public class RedisConfig implements CachingConfigurer {
         RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(nodeList);
         redisClusterConfiguration.setMaxRedirects(redisInfo.getMaxRedirects());
 
+        ClusterTopologyRefreshOptions topologyRefreshOptions = ClusterTopologyRefreshOptions
+                .builder()
+                .enableAllAdaptiveRefreshTriggers()
+                .enablePeriodicRefresh()
+                .dynamicRefreshSources(false)
+                .build();
+
+        ClusterClientOptions clusterClientOptions = ClusterClientOptions.builder()
+                .autoReconnect(true)
+                .topologyRefreshOptions(topologyRefreshOptions)
+                .validateClusterNodeMembership(false)
+                .build();
+
+
+
         LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder()
                 .readFrom(ReadFrom.REPLICA_PREFERRED)
+                .clientOptions(clusterClientOptions)
                 .build();
 
         return new LettuceConnectionFactory(redisClusterConfiguration, clientConfiguration);
     }
-
 
 
     //JSON 직렬화/역직렬화 관련

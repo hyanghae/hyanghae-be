@@ -21,14 +21,13 @@ spring:
     port: 5672 # RabbitMQ port
     username : guest # RabbitMQ 웹 관리 콘솔 아이디
     password: guest # RabbitMQ 웹 관리 콘솔 비밀번호
-#  data:
-#    redis:
-#      host: 127.0.0.1
-#      port: 6379
-redis:
-  cluster:
-    nodes: 127.0.0.1:6379,127.0.0.1:6380,127.0.0.1:6381
-    max-redirects: 3
+  redis:
+    host: 127.0.0.1
+    port: 6379
+#redis:
+#  cluster:
+#    nodes: 127.0.0.1:6379,127.0.0.1:6380,127.0.0.1:6381
+#    max-redirects: 3
 
 
 
