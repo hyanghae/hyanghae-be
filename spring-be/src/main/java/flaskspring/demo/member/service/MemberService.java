@@ -2,7 +2,7 @@ package flaskspring.demo.member.service;
 
 import flaskspring.demo.config.jwt.JwtTokenProvider;
 import flaskspring.demo.config.jwt.auth.RefreshToken;
-import flaskspring.demo.config.jwt.auth.RefreshTokenRepository;
+import flaskspring.demo.config.redis.RedisUtils;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.Member;
@@ -17,12 +17,14 @@ import flaskspring.demo.tag.domain.MemberTagLog;
 import flaskspring.demo.tag.domain.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -35,10 +37,11 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
     private final PasswordEncoder bCryptPasswordEncoder;
-   // private final MemberRefreshTokenRepository memberRefreshTokenRepository;
+    // private final MemberRefreshTokenRepository memberRefreshTokenRepository;
     private final MemberTagLogRepository memberTagLogRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
-
+    //  private final RefreshTokenRepository refreshTokenRepository;
+    //   private final RedisUtils redisUtils;
+    private final RedisTemplate<Object, Object> redisTemplate;
 
     @Transactional
     public GeneralLoginRes generalLogin(GeneralLoginReq loginReq) {
@@ -48,6 +51,7 @@ public class MemberService {
         String token = jwtTokenProvider.createToken(member.getAccount());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getAccount());
         log.info("refreshToken : {}", refreshToken);
+
 
         updateRefreshToken(member, refreshToken);
 
@@ -68,15 +72,20 @@ public class MemberService {
         }
     }
 
-    private void updateRefreshToken(Member member, String refreshToken) {
-        refreshTokenRepository.findById(member.getAccount())
-                .ifPresentOrElse(
-                        it -> {
-                            it.updateRefreshToken(refreshToken);
-                            refreshTokenRepository.save(it); // 업데이트 후 명시적으로 저장, 이전 데이터는 덮어써짐
-                        },
-                        () -> refreshTokenRepository.save(new RefreshToken(member.getAccount(), refreshToken))
-                );
+//    private void updateRefreshToken(Member member, String refreshToken) {
+//        refreshTokenRepository.findById(member.getAccount())
+//                .ifPresentOrElse(
+//                        it -> {
+//                            it.updateRefreshToken(refreshToken);
+//                            refreshTokenRepository.save(it); // 업데이트 후 명시적으로 저장, 이전 데이터는 덮어써짐
+//                        },
+//                        () -> refreshTokenRepository.save(new RefreshToken(member.getAccount(), refreshToken))
+//                );
+//    }
+
+    public void updateRefreshToken(Member member, String refreshToken) {
+        RefreshToken token = new RefreshToken(member.getAccount(), refreshToken);
+        redisTemplate.opsForValue().set(member.getAccount(), token, 240, TimeUnit.MINUTES); // 만료 시간을 분 단위로 설정
     }
 
 

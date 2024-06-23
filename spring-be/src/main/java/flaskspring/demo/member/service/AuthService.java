@@ -2,7 +2,6 @@ package flaskspring.demo.member.service;
 
 
 import flaskspring.demo.config.jwt.JwtTokenProvider;
-import flaskspring.demo.config.jwt.auth.RefreshTokenRepository;
 import flaskspring.demo.config.redis.RedisUtils;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
@@ -24,9 +23,8 @@ import java.util.Optional;
 public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
-    // private final AccessTokenRepository accessTokenRepository;
     private final RedisUtils redisUtils;
-    private final RefreshTokenRepository refreshTokenRepository;
+
 
 
     public void logout(HttpServletRequest request) {
@@ -38,8 +36,10 @@ public class AuthService {
         // AccessToken을 블랙리스트에 추가, 남은 유효시간만큼만 블랙리스트에 저장
         redisUtils.setBlackList(accessToken, account, time);
         // 리프레시 토큰도 무효화
-        refreshTokenRepository.deleteById(account);
+     //   refreshTokenRepository.deleteById(account);
 
+        // RedisUtils를 사용하여 리프레시 토큰 삭제
+        redisUtils.deleteRefreshToken(account);
     }
 
     private String getAccountFromAccessToken(String accessToken) {

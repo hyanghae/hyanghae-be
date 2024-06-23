@@ -4,7 +4,7 @@ package flaskspring.demo.config.jwt;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import flaskspring.demo.config.auth.MemberDetailsService;
 import flaskspring.demo.config.jwt.auth.RefreshToken;
-import flaskspring.demo.config.jwt.auth.RefreshTokenRepository;
+import flaskspring.demo.config.redis.RedisUtils;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import io.jsonwebtoken.*;
@@ -34,14 +34,14 @@ public class JwtTokenProvider {
     private final long expirationMinutes; //millisecond
     private final long refreshExpirationHours;
     private final MemberDetailsService memberDetailsService;
-    private final RefreshTokenRepository refreshTokenRepository;
-
+    // private final RefreshTokenRepository refreshTokenRepository;
+    private final RedisUtils redisUtils;
 
     public JwtTokenProvider(@Value("${security.jwt.token.secret-key}") String secretKey,
                             @Value("${security.jwt.token.expiration-minutes}") long expirationMinutes,    // hours -> minutes
                             @Value("${security.jwt.token.refresh-expiration-hours}") long refreshExpirationHours,    // 추가
                             MemberDetailsService memberDetailsService,
-                            RefreshTokenRepository refreshTokenRepository) {
+                            RedisUtils redisUtils) {
 
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
@@ -49,7 +49,7 @@ public class JwtTokenProvider {
         this.refreshExpirationHours = refreshExpirationHours;
         this.memberDetailsService = memberDetailsService;
         //    this.memberRefreshTokenRepository = memberRefreshTokenRepository;
-        this.refreshTokenRepository = refreshTokenRepository;
+        this.redisUtils = redisUtils;
     }
 
     public String createToken(String account) { //email 받음
@@ -95,13 +95,6 @@ public class JwtTokenProvider {
             throw new BaseException(BaseResponseCode.BAD_REQUEST);
         }
         String account = getUserAccountFromOldToken(oldAccessToken);
-        refreshTokenRepository.findById(account)
-                .ifPresentOrElse(
-                        RefreshToken::increaseReissueCount,
-                        () -> {
-                            throw new ExpiredJwtException(null, null, "Refresh token expired.");
-                        }
-                );
         return createToken(account);
     }
 
@@ -113,7 +106,7 @@ public class JwtTokenProvider {
             log.debug("Extracting account from old access token: {}", oldAccessToken);
             String account = getUserAccountFromOldToken(oldAccessToken);
             log.debug("Finding refresh token for account: {}", account);
-            Optional<RefreshToken> byAccount = refreshTokenRepository.findById(account);
+            Optional<RefreshToken> byAccount = Optional.ofNullable((RefreshToken) redisUtils.get(account));
 
             log.debug("Validating refresh token for account: {}", account);
             Optional<RefreshToken> refreshToken1 = byAccount.filter(memberRefreshToken -> memberRefreshToken.validateRefreshToken(refreshToken));

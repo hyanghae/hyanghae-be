@@ -2,7 +2,7 @@ package flaskspring.demo.member.service;
 
 import flaskspring.demo.config.jwt.JwtTokenProvider;
 import flaskspring.demo.config.jwt.auth.RefreshToken;
-import flaskspring.demo.config.jwt.auth.RefreshTokenRepository;
+import flaskspring.demo.config.redis.RedisUtils;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.dto.Req.KakaoLoginRequestDto;
 import flaskspring.demo.member.dto.Req.ReqKakaoAccessToken;
@@ -12,12 +12,15 @@ import flaskspring.demo.member.dto.kakaoLoginDto.KakaoProfile;
 import flaskspring.demo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +29,9 @@ public class KakaoService {
 
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
+    //   private final RefreshTokenRepository refreshTokenRepository;
+   // private final RedisUtils redisUtils;
+    private final RedisTemplate<Object, Object> redisTemplate;
 
     public KakaoLoginResponseDto kakaoLogin(ReqKakaoAccessToken reqKakaoAccessToken) {
         KakaoProfile kakaoProfile = getKakaoProfile(reqKakaoAccessToken.getAccessToken());
@@ -56,11 +61,9 @@ public class KakaoService {
     }
 
     private void updateRefreshToken(Member member, String refreshToken) {
-        RefreshToken refreshTokenObj = refreshTokenRepository.findById(member.getAccount())
-                .orElseGet(() -> new RefreshToken(member.getAccount(), refreshToken));
-
+        RefreshToken refreshTokenObj = (RefreshToken) redisTemplate.opsForValue().get(member.getAccount());
         refreshTokenObj.updateRefreshToken(refreshToken);
-        refreshTokenRepository.save(refreshTokenObj);
+        redisTemplate.opsForValue().set(member.getAccount(), refreshToken, 240, TimeUnit.MINUTES);
     }
 
 
