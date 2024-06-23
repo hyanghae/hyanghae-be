@@ -14,7 +14,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 @ConfigurationPropertiesScan
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = {
-		RedisAutoConfiguration.class, RedisClusterConfiguration.class
+	//	RedisAutoConfiguration.class, RedisClusterConfiguration.class
 })
 public class DemoApplication {
 

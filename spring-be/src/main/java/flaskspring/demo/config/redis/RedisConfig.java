@@ -43,7 +43,7 @@ import java.util.stream.Stream;
 @EnableAspectJAutoProxy
 public class RedisConfig implements CachingConfigurer {
 
-    private final RedisInfo redisInfo;
+   /* private final RedisInfo redisInfo;*/
 
 /*    @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
@@ -64,6 +64,7 @@ public class RedisConfig implements CachingConfigurer {
     }*/
 
 
+/*
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         List<String> nodeList = Stream.of(redisInfo.getNodes().split(","))
@@ -79,6 +80,7 @@ public class RedisConfig implements CachingConfigurer {
 
         return new LettuceConnectionFactory(redisClusterConfiguration, clientConfiguration);
     }
+*/
 
 
 
@@ -100,9 +102,9 @@ public class RedisConfig implements CachingConfigurer {
 
 
     @Bean
-    public RedisTemplate<?, ?> redisTemplate() {
+    public RedisTemplate<?, ?> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
 
         // JSON 직렬화 설정
         GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(redisObjectMapper());
