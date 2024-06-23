@@ -64,7 +64,7 @@ public class RedisConfig implements CachingConfigurer {
     }*/
 
 
-    @Bean
+    @Bean(name = "redisConnectionFactory")
     public RedisConnectionFactory redisConnectionFactory() {
         List<String> nodeList = Stream.of(redisInfo.getNodes().split(","))
                 .map(String::trim)
