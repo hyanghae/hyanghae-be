@@ -100,8 +100,8 @@ public class RedisConfig implements CachingConfigurer {
 
 
     @Bean
-    public RedisTemplate<?, ?> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
 
         // JSON 직렬화 설정

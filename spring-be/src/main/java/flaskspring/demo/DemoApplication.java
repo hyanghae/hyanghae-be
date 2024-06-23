@@ -15,7 +15,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 @ConfigurationPropertiesScan
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = {
-		RedisAutoConfiguration.class, LettuceConnectionFactory.class
+		RedisAutoConfiguration.class
 })
 public class DemoApplication {
 
