@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
-/*
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,9 +17,9 @@ import java.util.List;
 @Configuration
 public class RedisInfo {
 
-    @Value("${spring.redis.cluster.nodes}")
+    @Value("${spring.data.redis.cluster.nodes}")
     private String nodes;
 
-    @Value("${spring.redis.cluster.max-redirects}")
+    @Value("${spring.data.redis.cluster.max-redirects}")
     private int maxRedirects;
-}*/
+}

@@ -27,6 +27,7 @@ spring:
       port: 6379
       cluster:
         nodes: 127.0.0.1:6379,127.0.0.1:6380,127.0.0.1:6381
+        max-redirects: 3
       lettuce:
         pool:
           max-active: 8 # 풀에 할당할 수 있는 최대 연결 수

@@ -43,31 +43,29 @@ import java.util.stream.Stream;
 @EnableAspectJAutoProxy
 public class RedisConfig implements CachingConfigurer {
 
-    //private final RedisInfo redisInfo;
+    private final RedisInfo redisInfo;
 
-  /*  @Bean
+/*    @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
         // Cluster nodes configuration
         Set<String> nodes = new HashSet<>();
-        for (String node : StringUtils.commaDelimitedListToStringArray(redisInfo.getCluster().getNodes())) {
+        for (String node : StringUtils.commaDelimitedListToStringArray(redisInfo.getNodes())) {
             nodes.add(node.trim());
         }
 
         RedisClusterConfiguration clusterConfiguration = new RedisClusterConfiguration(nodes);
-        clusterConfiguration.setPassword(RedisPassword.of(redisInfo.getPassword()));
 
         // Client configuration
         LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder()
-                .readFrom(ReadFrom.REPLICA_PREFERRED)
-                .clientName(redisInfo.getCluster().ge())
-                .build();
+                .readFrom(ReadFrom.REPLICA_PREFERRED).build();
+
 
         return new LettuceConnectionFactory(clusterConfiguration, clientConfiguration);
     }*/
-/*
+
 
     @Bean
-    public LettuceConnectionFactory redisConnectionFactory() {
+    public RedisConnectionFactory redisConnectionFactory() {
         List<String> nodeList = Stream.of(redisInfo.getNodes().split(","))
                 .map(String::trim)
                 .collect(Collectors.toList());
@@ -81,7 +79,7 @@ public class RedisConfig implements CachingConfigurer {
 
         return new LettuceConnectionFactory(redisClusterConfiguration, clientConfiguration);
     }
-*/
+
 
 
     //JSON 직렬화/역직렬화 관련
@@ -100,30 +98,6 @@ public class RedisConfig implements CachingConfigurer {
                 .activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL);
     }
 
-//    @Bean
-//    public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
-//        final RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-//        redisTemplate.setKeySerializer(new StringRedisSerializer());
-//        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper()));
-//        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-//        redisTemplate.setHashValueSerializer(RedisSerializer.java());
-//        redisTemplate.setConnectionFactory(lettuceConnectionFactory); // 자동 주입된 LettuceConnectionFactory 사용
-//        return redisTemplate;
-//    }
-
-//    @Bean
-//    public RedisTemplate<?, ?> redisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
-//        RedisTemplate<?, ?> redisTemplate = new RedisTemplate<>();
-//        redisTemplate.setConnectionFactory(lettuceConnectionFactory);
-//       // redisTemplate.setEnableTransactionSupport(true);
-//
-//        redisTemplate.setKeySerializer(new StringRedisSerializer());
-//        redisTemplate.setValueSerializer(new StringRedisSerializer());
-//
-//        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-//        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
-//        return redisTemplate;
-//    }
 
     @Bean
     public RedisTemplate<?, ?> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
