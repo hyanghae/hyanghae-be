@@ -31,7 +31,7 @@ public class KakaoService {
     private final JwtTokenProvider jwtTokenProvider;
     //   private final RefreshTokenRepository refreshTokenRepository;
    // private final RedisUtils redisUtils;
-    private final RedisTemplate<Object, Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     public KakaoLoginResponseDto kakaoLogin(ReqKakaoAccessToken reqKakaoAccessToken) {
         KakaoProfile kakaoProfile = getKakaoProfile(reqKakaoAccessToken.getAccessToken());

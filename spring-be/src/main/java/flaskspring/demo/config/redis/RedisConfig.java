@@ -8,9 +8,14 @@ import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import flaskspring.demo.tag.dto.res.ResRegisteredTag;
+import io.lettuce.core.ClientOptions;
 import io.lettuce.core.ReadFrom;
 import io.lettuce.core.cluster.ClusterClientOptions;
 import io.lettuce.core.cluster.ClusterTopologyRefreshOptions;
+import io.lettuce.core.internal.HostAndPort;
+import io.lettuce.core.resource.ClientResources;
+import io.lettuce.core.resource.DnsResolvers;
+import io.lettuce.core.resource.MappingSocketAddressResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
@@ -29,9 +34,12 @@ import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.*;
 import org.springframework.util.StringUtils;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,57 +55,50 @@ public class RedisConfig implements CachingConfigurer {
 
     private final RedisInfo redisInfo;
 
-/*    @Bean
-    public LettuceConnectionFactory redisConnectionFactory() {
-        // Cluster nodes configuration
-        Set<String> nodes = new HashSet<>();
-        for (String node : StringUtils.commaDelimitedListToStringArray(redisInfo.getNodes())) {
-            nodes.add(node.trim());
-        }
-
-        RedisClusterConfiguration clusterConfiguration = new RedisClusterConfiguration(nodes);
-
-        // Client configuration
-        LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder()
-                .readFrom(ReadFrom.REPLICA_PREFERRED).build();
-
-
-        return new LettuceConnectionFactory(clusterConfiguration, clientConfiguration);
-    }*/
-
-
-    @Bean(name = "redisConnectionFactory")
+    @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        List<String> nodeList = Stream.of(redisInfo.getNodes().split(","))
-                .map(String::trim)
-                .collect(Collectors.toList());
+        List<String> nodes = redisInfo.getNodes();
+        String connectIp = redisInfo.getConnectIp();
+        int maxRedirects = redisInfo.getMaxRedirects();
+        System.out.println("nodes = " + nodes);
+        System.out.println("connectIp = " + connectIp);
+        System.out.println("maxRedirects = " + maxRedirects);
 
-        RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(nodeList);
+        RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration(nodes);
+
         redisClusterConfiguration.setMaxRedirects(redisInfo.getMaxRedirects());
 
-        ClusterTopologyRefreshOptions topologyRefreshOptions = ClusterTopologyRefreshOptions
-                .builder()
+        ClusterTopologyRefreshOptions clusterTopologyRefreshOptions = ClusterTopologyRefreshOptions.builder()
                 .enableAllAdaptiveRefreshTriggers()
-                .enablePeriodicRefresh()
-                .dynamicRefreshSources(false)
+                .enablePeriodicRefresh(Duration.ofHours(1L))
+                .build();
+        ClientOptions clientOptions = ClusterClientOptions.builder()
+                .topologyRefreshOptions(clusterTopologyRefreshOptions)
                 .build();
 
-        ClusterClientOptions clusterClientOptions = ClusterClientOptions.builder()
-                .autoReconnect(true)
-                .topologyRefreshOptions(topologyRefreshOptions)
-                .validateClusterNodeMembership(false)
+        MappingSocketAddressResolver resolver = MappingSocketAddressResolver.create(DnsResolvers.UNRESOLVED,
+                hostAndPort -> {
+                    HostAndPort andPort = HostAndPort.of(redisInfo.getConnectIp(), hostAndPort.getPort());
+                    return andPort;
+                }
+        );
+
+        ClientResources clientResources = ClientResources.builder()
+                .socketAddressResolver(resolver)
                 .build();
-
-
 
         LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder()
+                .commandTimeout(Duration.of(10, ChronoUnit.SECONDS))
+                .clientOptions(clientOptions)
+                .clientResources(clientResources) //<--- 추가
                 .readFrom(ReadFrom.REPLICA_PREFERRED)
-                .clientOptions(clusterClientOptions)
                 .build();
 
-        return new LettuceConnectionFactory(redisClusterConfiguration, clientConfiguration);
-    }
+        LettuceConnectionFactory connectionFactory =
+                new LettuceConnectionFactory(redisClusterConfiguration, clientConfiguration);
 
+        return connectionFactory;
+    }
 
     //JSON 직렬화/역직렬화 관련
     private ObjectMapper redisObjectMapper() {
@@ -117,9 +118,9 @@ public class RedisConfig implements CachingConfigurer {
 
 
     @Bean
-    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
+    public RedisTemplate<String, Object> redisTemplate() {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
 
         // JSON 직렬화 설정
         GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(redisObjectMapper());

@@ -13,8 +13,8 @@ import java.util.concurrent.TimeUnit;
 @Component
 @RequiredArgsConstructor
 public class RedisUtils {
-    private final RedisTemplate<Object, Object> redisTemplate;
-    private final RedisTemplate<Object, Object> redisBlackListTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisBlackListTemplate;
 
     public void set(String key, Object o, int minutes) {
         redisTemplate.opsForValue().set(key, o, minutes, TimeUnit.MINUTES);

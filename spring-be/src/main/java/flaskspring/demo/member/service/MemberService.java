@@ -41,7 +41,7 @@ public class MemberService {
     private final MemberTagLogRepository memberTagLogRepository;
     //  private final RefreshTokenRepository refreshTokenRepository;
     //   private final RedisUtils redisUtils;
-    private final RedisTemplate<Object, Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Transactional
     public GeneralLoginRes generalLogin(GeneralLoginReq loginReq) {

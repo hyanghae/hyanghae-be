@@ -13,13 +13,11 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@ConfigurationProperties(prefix = "spring.data.redis.cluster")
 @Configuration
 public class RedisInfo {
-
-    @Value("${redis.cluster.nodes}")
-    private String nodes;
-
-    @Value("${redis.cluster.max-redirects}")
     private int maxRedirects;
+    private String password;
+    private String connectIp;
+    private List<String> nodes;
 }
