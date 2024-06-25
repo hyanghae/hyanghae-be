@@ -49,7 +49,7 @@ security:
     token:
       secret-key: "remoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoa"
       expiration-minutes: 30    # 3시간 -> 30분
-      refresh-expiration-hours: 4    # 리프레시 토큰 유효시간은 24시간
+      refresh-expiration-minutes: 240    # 리프레시 토큰 유효시간은 24시간
 
 
 flask:

@@ -1,7 +1,8 @@
 package flaskspring.demo.tag.service;
 
-import flaskspring.demo.config.redis.cache.EvictTagsCache;
+import flaskspring.demo.config.redis.cache.EvictRedisCache;
 import flaskspring.demo.config.redis.cache.RedisCacheable;
+import flaskspring.demo.config.redis.cache.RedisCachedKeyParam;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.Member;
@@ -31,6 +32,8 @@ public class TagService {
     private final MemberRepository memberRepository;
     private final MemberService memberService;
 
+
+    @RedisCacheable(cacheName = "allTag", expireTime = 1440) //캐시 활용
     public List<ResCategoryTag> getAllTag() {
 
         List<Tag> allTagsWithCategory = tagRepository.findAllWithCategory();
@@ -48,8 +51,8 @@ public class TagService {
         return resCategoryTags;
     }
 
-    @RedisCacheable(cacheName = "registeredTags", expireTime = 30, key = "#member.memberId") //캐시 활용
-    public List<ResRegisteredTag> getRegisteredTag(Member member) {
+    @RedisCacheable(cacheName = "registeredTags", expireTime = 30) //캐시 활용
+    public List<ResRegisteredTag> getRegisteredTag(@RedisCachedKeyParam(key = "member", fields = "memberId") Member member) {
 
         return memberService.getRegisteredTag(member)
                 .stream()
@@ -57,8 +60,8 @@ public class TagService {
                 .collect(Collectors.toList());
     }
 
-    @EvictTagsCache(cacheName = "registeredTags", key = "#member.memberId") //캐시 삭제
-    public void modifyMemberTags(Member member, List<Long> modifyTagIds) {
+    @EvictRedisCache(cacheName = "registeredTags") //캐시 삭제
+    public void modifyMemberTags(@RedisCachedKeyParam(key = "member", fields = "memberId") Member member, List<Long> modifyTagIds) {
         // 기존에 등록된 태그 삭제
         memberTagLogRepository.deleteByMember(member);
 
@@ -76,7 +79,9 @@ public class TagService {
 
 
     @Transactional
-    public void saveMemberTags(Member member, List<Long> tagIds) {
+    @EvictRedisCache(cacheName = "registeredTags")
+    public void saveMemberTags(@RedisCachedKeyParam(key = "member", fields = "memberId")Member member,
+                               List<Long> tagIds) {
 
         member.onBoard(); // 온보딩 생애 최초
         // 변경된 태그 처리하기

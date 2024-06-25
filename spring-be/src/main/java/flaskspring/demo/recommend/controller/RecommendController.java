@@ -61,10 +61,10 @@ public class RecommendController {
             @RequestParam(required = false, defaultValue = "10", name = "size") int size
     ) {
         log.info("GET /api/recommend/rising");
-
         Long memberId = memberDetails.getMemberId();
+        Member member = memberService.findMemberById(memberId);
         ExploreCursor exploreCursor = new ExploreCursor(countCursor, null, idCursor);
-        ResRisingPlacePaging response = recommendService.getRisingPlaces(memberId,exploreCursor, size);
+        ResRisingPlacePaging response = recommendService.getRisingPlaces(member,exploreCursor, size);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, response));
     }
 
@@ -83,6 +83,7 @@ public class RecommendController {
         List<ResFamous> famousPlaces = famousPlaceService.get24FamousPlaces();
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(famousPlaces)));
     }
+
 
     @Operation(summary = "유명 여행지와 유사한 여행지들", description = "유명 여행지 태그 할당 점수와 유사도순" +
             " <br> 처음 cursor : null 또는 1" +

@@ -7,7 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EvictTagsCache {
+public @interface EvictRedisCache {
     String cacheName();
-    String key() default "";
 }

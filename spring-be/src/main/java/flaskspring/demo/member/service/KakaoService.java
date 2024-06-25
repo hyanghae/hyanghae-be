@@ -1,5 +1,6 @@
 package flaskspring.demo.member.service;
 
+import flaskspring.demo.config.auth.AuthConstant;
 import flaskspring.demo.config.jwt.JwtTokenProvider;
 import flaskspring.demo.config.jwt.auth.RefreshToken;
 import flaskspring.demo.config.redis.RedisUtils;
@@ -12,6 +13,7 @@ import flaskspring.demo.member.dto.kakaoLoginDto.KakaoProfile;
 import flaskspring.demo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,6 +28,9 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Slf4j
 public class KakaoService {
+
+    @Value("${security.jwt.token.refresh-expiration-minutes}")
+    public long refreshExpirationMinutes;
 
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -63,7 +68,7 @@ public class KakaoService {
     private void updateRefreshToken(Member member, String refreshToken) {
         RefreshToken refreshTokenObj = (RefreshToken) redisTemplate.opsForValue().get(member.getAccount());
         refreshTokenObj.updateRefreshToken(refreshToken);
-        redisTemplate.opsForValue().set(member.getAccount(), refreshToken, 240, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(member.getAccount(), refreshToken, refreshExpirationMinutes, TimeUnit.MINUTES);
     }
 
 

@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
-public class ResRegisteredTag implements Serializable {
+public class ResRegisteredTag  {
     private Long tagId;
     private String tagName;
 

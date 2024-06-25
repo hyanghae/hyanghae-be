@@ -1,6 +1,8 @@
 package flaskspring.demo.recommend.service;
 
 import com.querydsl.core.Tuple;
+import flaskspring.demo.config.redis.cache.RedisCacheable;
+import flaskspring.demo.config.redis.cache.RedisCachedKeyParam;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.home.dto.res.ResPlaceBrief;
@@ -26,8 +28,11 @@ public class RecommendService {
     private final PlaceRepository placeRepository;
     private final MemberService memberService;
 
-    public ResRisingPlacePaging getRisingPlaces(Long memberId, ExploreCursor exploreCursor, int size) {
-        Member member = memberService.findMemberById(memberId);
+    @RedisCacheable(cacheName = "risingPlaces", expireTime = 10)
+    public ResRisingPlacePaging getRisingPlaces(
+            @RedisCachedKeyParam(key = "member", fields = {"memberId"}) Member member,
+            @RedisCachedKeyParam(key = "cursor", fields = {"countCursor", "idCursor"}) ExploreCursor exploreCursor,
+            @RedisCachedKeyParam(key = "size")int size) {
         List<Tuple> places = placeRepository.findRisingPlaces(member, exploreCursor, size);
 
         Long nextCountCursor = null;

@@ -1,6 +1,11 @@
 package flaskspring.demo.config.auth;
 
+import org.springframework.beans.factory.annotation.Value;
+
 public class AuthConstant {
+
+
+
 
     // 인증이 필요하지 않은 경로
     public static final String[] AUTH_WHITELIST = {
@@ -19,7 +24,8 @@ public class AuthConstant {
             = {"/api/tag", "/api/feed/tag", "/api/departure", "/api/schedule/path", "/api/tag/all",
             "/api/mypage/main", "/api/place/detail/{placeId}", "/api/recommend/famous", "/api/recommend/rising", "/api/explore",
             "/api/recommend/{famousPlaceId}/similar", "/api/recommend/explore", "/api/place/detail/{placeId}",
-            "/api/place/detail/{placeId}/similar", "/api/place/detail/{placeId}/similar/{famousPlaceId}"};
+            "/api/place/detail/{placeId}/similar", "/api/place/detail/{placeId}/similar/{famousPlaceId}",
+            "/api/recommend/setting"};
 
     // POST 메서드에 대한 인증이 필요한 경로
     public static final String[] POST_AUTH_BLACKLIST

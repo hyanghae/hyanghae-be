@@ -2,10 +2,16 @@ package flaskspring.demo.home.dto.res;
 
 import flaskspring.demo.place.domain.FamousPlace;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Data
-public class ResFamous {
+@NoArgsConstructor
+public class ResFamous implements Serializable {
 
     @Schema(description = "지역", example = "부산 해운대구")
     Long famousPlaceId;

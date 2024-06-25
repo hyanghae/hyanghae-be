@@ -10,6 +10,5 @@ public @interface RedisCacheable {
 
     String cacheName();
     long expireTime() default -1;
-    String key() default ""; // key 속성 추가
 
 }

@@ -55,7 +55,7 @@ public class TagController {
     }
 
 
-    @Operation(summary = "등록한 태그 조회", description = "유저가 등록한 태그를 조회합니다.")
+    @Operation(summary = "등록한 태그 조회", description = "유저가 등록한 태그를 조회합니다. 벡엔드 테스트용입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "등록된 태그 조회 성공"),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
@@ -73,7 +73,7 @@ public class TagController {
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(registeredTags)));
     }
 
-    @Operation(summary = "태그 수정", description = "유저의 태그를 수정합니다.")
+    @Operation(summary = "태그 수정", description = "유저의 태그를 수정합니다. 벡엔드 테스트용입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,

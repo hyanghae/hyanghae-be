@@ -1,5 +1,8 @@
 package flaskspring.demo.image.service;
 
+import flaskspring.demo.config.redis.cache.EvictRedisCache;
+import flaskspring.demo.config.redis.cache.RedisCacheable;
+import flaskspring.demo.config.redis.cache.RedisCachedKeyParam;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.image.domain.UploadImage;
@@ -33,14 +36,16 @@ public class UploadImageService {
     private final ImageFileService imageFileService;
     private final ImageUploadUtil imageUploadUtil;
 
-    public void uploadImage(MultipartFile file, Member member) {
+    @EvictRedisCache(cacheName = "settingImageURL")
+    public void uploadImage(MultipartFile file, @RedisCachedKeyParam(key = "member", fields = "memberId")Member member) {
 
         imageUploadUtil.uploadImage(file, member);
         member.canRecommend();
         member.setRefreshNeeded();
     }
 
-    public void deleteSettingImage(Member member) {
+    @EvictRedisCache(cacheName = "settingImageURL")
+    public void deleteSettingImage(@RedisCachedKeyParam(key = "member", fields = "memberId")Member member) {
         Optional<UploadImage> uploadImage = uploadImageRepository.findByMemberAndIsSetting(member, true);
         uploadImage.ifPresent(upload -> {
             upload.deSetting();
@@ -54,7 +59,8 @@ public class UploadImageService {
         return uploadImageRepository.findByMemberAndIsSetting(member, true).isPresent();
     }
 
-    public String getSettingImageURL(Member member) {
+    @RedisCacheable(cacheName = "settingImageURL", expireTime = 30)
+    public String getSettingImageURL(@RedisCachedKeyParam(key = "member", fields = "memberId") Member member) {
         Optional<UploadImage> uploadImage = uploadImageRepository.findByMemberAndIsSetting(member, true);
         return uploadImage.map(UploadImage::getSavedImageUrl).orElse(null);
     }

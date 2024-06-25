@@ -1,5 +1,7 @@
 package flaskspring.demo.place.register.service;
 
+import flaskspring.demo.config.redis.cache.EvictRedisCache;
+import flaskspring.demo.config.redis.cache.RedisCachedKeyParam;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.Member;
@@ -24,7 +26,8 @@ public class PlaceRegisterService {
 
     private static final int MAX_REGISTRATION_COUNT = 20;
 
-    public ResPlaceRegister registerPlace(Member member, Long placeId) {
+    //@EvictRedisCache(cacheName = "risingPlaces") 좋아요 캐시 구현 고민할 것
+    public ResPlaceRegister registerPlace(@RedisCachedKeyParam(key = "member", fields = "memberId") Member member, Long placeId) {
         Place place = placeService.findPlaceById(placeId);
         // 여행지 등록 개수를 초과하는지 확인
         if (member.getRegistrationCount() >= MAX_REGISTRATION_COUNT) {

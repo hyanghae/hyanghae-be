@@ -1,5 +1,7 @@
 package flaskspring.demo.config.redis.cache;
 
+import flaskspring.demo.exception.BaseException;
+import flaskspring.demo.exception.BaseResponseCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -9,8 +11,9 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -23,125 +26,132 @@ public class RedisCacheAspect {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
-
-//    @Around("@annotation(RedisCacheable)")
-//    public Object cacheableProcess(ProceedingJoinPoint joinPoint) throws Throwable {
-//        RedisCacheable redisCacheable = getCacheable(joinPoint);
-//        final String cacheKey = generateKey(joinPoint);
-//
-//        if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)) && !confirmBypass()) {
-//            // 캐시에서 데이터를 가져왔음을 로그로 출력
-//            log.info("Getting data from cache: {}", cacheKey);
-//            List<String> cachedList = redisTemplate.opsForList().range(cacheKey, 0, -1);
-//            System.out.println("cachedList = " + cachedList);
-//            return cachedList;
-//        }
-//
-//        // 캐시에 없어서 메서드를 실행했음을 로그로 출력
-//        log.info("Cache miss for key: {}, executing method", cacheKey);
-//        final List<String> methodReturnValue = (List<String>) joinPoint.proceed();
-//        final long cacheTTL = redisCacheable.expireTime();
-//
-//        if (cacheTTL < 0) {
-//            redisTemplate.opsForList().rightPushAll(cacheKey, methodReturnValue);
-//            // 캐시에 데이터를 저장했음을 로그로 출력
-//            log.info("Storing data in cache: {}", cacheKey);
-//        } else {
-//            redisTemplate.opsForList().rightPushAll(cacheKey, methodReturnValue);
-//            redisTemplate.expire(cacheKey, cacheTTL, TimeUnit.MINUTES);
-//            // 캐시에 데이터를 저장했음을 로그로 출력
-//            log.info("Storing data in cache: {}, TTL: {} seconds", cacheKey, cacheTTL);
-//        }
-//
-//        return methodReturnValue;
-//    }
-
     @Around("@annotation(RedisCacheable)")
     public Object cacheableProcess(ProceedingJoinPoint joinPoint) throws Throwable {
-        RedisCacheable redisCacheable = getCacheable(joinPoint);
-        final String cacheKey = generateKey(joinPoint);
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+        RedisCacheable redisCacheable = getCacheableAnnotation(method);
 
-        if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)) && !confirmBypass()) {
-            // 캐시에서 데이터를 가져왔음을 로그로 출력
+        final String cacheKey = generateCacheKey(redisCacheable, method, joinPoint);
+
+        if (redisTemplate.hasKey(cacheKey) && !shouldBypassCache()) {
             log.info("Getting data from cache: {}", cacheKey);
-            Object o = redisTemplate.opsForValue().get(cacheKey);
-            System.out.println("o = " + o);
-            return o;
+            return redisTemplate.opsForValue().get(cacheKey);
         }
 
-        // 캐시에 없어서 메서드를 실행했음을 로그로 출력
         log.info("Cache miss for key: {}, executing method", cacheKey);
         final Object methodReturnValue = joinPoint.proceed();
         final long cacheTTL = redisCacheable.expireTime();
 
         if (cacheTTL < 0) {
             redisTemplate.opsForValue().set(cacheKey, methodReturnValue);
-            // 캐시에 데이터를 저장했음을 로그로 출력
             log.info("Storing data in cache: {}", cacheKey);
         } else {
             redisTemplate.opsForValue().set(cacheKey, methodReturnValue, cacheTTL, TimeUnit.MINUTES);
-            // 캐시에 데이터를 저장했음을 로그로 출력
-            log.info("Storing data in cache: {}, TTL: {} seconds", cacheKey, cacheTTL);
+            log.info("Storing data in cache: {}, TTL: {} minutes", cacheKey, cacheTTL);
         }
 
         return methodReturnValue;
     }
 
-
-    private RedisCacheable getCacheable(ProceedingJoinPoint joinPoint) {
-        final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        final Method method = signature.getMethod();
-
+    private RedisCacheable getCacheableAnnotation(Method method) {
         return AnnotationUtils.getAnnotation(method, RedisCacheable.class);
     }
 
+    private String generateCacheKey(RedisCacheable redisCacheable, Method method, ProceedingJoinPoint joinPoint) {
+        StringBuilder keyBuilder = new StringBuilder(redisCacheable.cacheName());
 
-    private String generateKey(ProceedingJoinPoint joinPoint) {
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        Method method = signature.getMethod();
-        RedisCacheable redisCacheable = AnnotationUtils.getAnnotation(method, RedisCacheable.class);
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+        Object[] args = joinPoint.getArgs();
+        boolean hasRedisCachedKeyParam = false;
 
-        StringBuilder keyBuilder = new StringBuilder();
-        keyBuilder.append(redisCacheable.cacheName());
+        for (int i = 0; i < parameterAnnotations.length; i++) {
+            for (Annotation annotation : parameterAnnotations[i]) {
+                if (annotation instanceof RedisCachedKeyParam) {
+                    hasRedisCachedKeyParam = true;
+                    RedisCachedKeyParam keyParam = (RedisCachedKeyParam) annotation;
+                    keyBuilder.append(":").append(keyParam.key()).append("=");
 
-        if (StringUtils.hasText(redisCacheable.key())) {
-            keyBuilder.append(":").append(redisCacheable.key());
-        } else {
-            keyBuilder.append(":").append(StringUtils.arrayToCommaDelimitedString(joinPoint.getArgs()));
+                    if (keyParam.fields().length > 0) {
+                        for (String field : keyParam.fields()) {
+                            keyBuilder.append(getFieldValue(args[i], field)).append(":");
+                        }
+                        // 마지막 콜론 제거
+                        if (keyBuilder.charAt(keyBuilder.length() - 1) == ':') {
+                            keyBuilder.deleteCharAt(keyBuilder.length() - 1);
+                        }
+                    } else {
+                        // 필드가 지정되지 않은 경우 매개변수 값을 직접 사용
+                        keyBuilder.append(args[i]);
+                    }
+                }
+            }
         }
-
+        if (!hasRedisCachedKeyParam) {
+            keyBuilder.append(":").append(method.getName());
+        }
         return keyBuilder.toString();
     }
 
-    @Around("@annotation(EvictTagsCache)")
-    public Object evictTagsCache(ProceedingJoinPoint joinPoint) throws Throwable {
-        Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
-        EvictTagsCache evictTagsCache = AnnotationUtils.findAnnotation(method, EvictTagsCache.class);
+    private boolean isComplexObjectType(Class<?> clazz) {
+        return !clazz.isPrimitive() && !clazz.equals(String.class) && !Number.class.isAssignableFrom(clazz);
+    }
 
-        // 캐시 제거 로직
-        String cacheKey = generateCacheKey(evictTagsCache, joinPoint);
+    private Object getFieldValue(Object obj, String fieldName) {
+        try {
+            Field field = obj.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return field.get(obj);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new BaseException(BaseResponseCode.ANNOTATION_ERROR);
+        }
+    }
+
+    private boolean shouldBypassCache() {
+        return false;  // Default implementation
+    }
+
+    @Around("@annotation(EvictRedisCache)")
+    public Object evictRedisCache(ProceedingJoinPoint joinPoint) throws Throwable {
+        Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
+        EvictRedisCache evictRedisCache = method.getAnnotation(EvictRedisCache.class);
+
+        String cacheKey = generateEvictionCacheKey(evictRedisCache, method, joinPoint);
         redisTemplate.delete(cacheKey);
         log.info("Evicted cache for key: {}", cacheKey);
 
         return joinPoint.proceed();
     }
 
-    private String generateCacheKey(EvictTagsCache evictTagsCache, ProceedingJoinPoint joinPoint) {
-        StringBuilder keyBuilder = new StringBuilder();
-        keyBuilder.append(evictTagsCache.cacheName());
+    private String generateEvictionCacheKey(EvictRedisCache evictRedisCache, Method method, ProceedingJoinPoint joinPoint) {
+        StringBuilder keyBuilder = new StringBuilder(evictRedisCache.cacheName());
 
-        if (StringUtils.hasText(evictTagsCache.key())) {
-            keyBuilder.append(":").append(evictTagsCache.key());
-        } else {
-            keyBuilder.append(":").append(StringUtils.arrayToCommaDelimitedString(joinPoint.getArgs()));
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+        Object[] args = joinPoint.getArgs();
+        boolean hasRedisCachedKeyParam = false;
+
+        for (int i = 0; i < parameterAnnotations.length; i++) {
+            for (Annotation annotation : parameterAnnotations[i]) {
+                if (annotation instanceof RedisCachedKeyParam) {
+                    hasRedisCachedKeyParam = true;
+                    RedisCachedKeyParam keyParam = (RedisCachedKeyParam) annotation;
+                    keyBuilder.append(":").append(keyParam.key()).append("=");
+
+                    for (String field : keyParam.fields()) {
+                        keyBuilder.append(getFieldValue(args[i], field)).append(":");
+                    }
+
+                    if (keyBuilder.length() > 0 && keyBuilder.charAt(keyBuilder.length() - 1) == ':') {
+                        keyBuilder.deleteCharAt(keyBuilder.length() - 1);
+                    }
+                }
+            }
+        }
+
+        if (!hasRedisCachedKeyParam) {
+            keyBuilder.append(":").append(method.getName());
         }
 
         return keyBuilder.toString();
-    }
-
-
-    private boolean confirmBypass() {
-        // Implement your logic to determine if cache should be bypassed
-        return false;  // Default implementation
     }
 }

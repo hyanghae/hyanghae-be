@@ -37,6 +37,7 @@ public enum BaseResponseCode {
 
     REGISTRATION_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "여행지 등록개수 초과하였습니다."),
 
+
     /**
      * 401
      */
@@ -58,8 +59,8 @@ public enum BaseResponseCode {
     IMAGE_PROCESSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 처리 중 오류가 발생했습니다."),
 
     DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "데이터 불러오는 도중 에러가 발생"),
-    REDIS_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "REDIS 에러 발생");
-
+    REDIS_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "REDIS 에러 발생"),
+    ANNOTATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "애노테이션 에러입니다.");
 
     private HttpStatus code;
     private String message;

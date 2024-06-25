@@ -32,21 +32,21 @@ public class JwtTokenProvider {
 
     private final Key key;
     private final long expirationMinutes; //millisecond
-    private final long refreshExpirationHours;
+    private final long refreshExpirationMinutes;
     private final MemberDetailsService memberDetailsService;
     // private final RefreshTokenRepository refreshTokenRepository;
     private final RedisUtils redisUtils;
 
     public JwtTokenProvider(@Value("${security.jwt.token.secret-key}") String secretKey,
                             @Value("${security.jwt.token.expiration-minutes}") long expirationMinutes,    // hours -> minutes
-                            @Value("${security.jwt.token.refresh-expiration-hours}") long refreshExpirationHours,    // 추가
+                            @Value("${security.jwt.token.refresh-expiration-minutes}") long refreshExpirationMinutes,    // 추가
                             MemberDetailsService memberDetailsService,
                             RedisUtils redisUtils) {
 
         byte[] keyBytes = Base64.getDecoder().decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.expirationMinutes = expirationMinutes;
-        this.refreshExpirationHours = refreshExpirationHours;
+        this.refreshExpirationMinutes = refreshExpirationMinutes;
         this.memberDetailsService = memberDetailsService;
         //    this.memberRefreshTokenRepository = memberRefreshTokenRepository;
         this.redisUtils = redisUtils;
@@ -78,7 +78,7 @@ public class JwtTokenProvider {
 
         Date now = new Date();
         // 리프레시 토큰의 만료 시간 설정 (액세스 토큰의 만료 시간보다 더 길게 설정)
-        Date validity = new Date(now.getTime() + refreshExpirationHours * 3600000); // hours -> milliseconds
+        Date validity = new Date(now.getTime() + refreshExpirationMinutes * 60000); // hours -> milliseconds
 
         return Jwts.builder()
                 .setClaims(claims)  // sub 설정 (정보 저장)

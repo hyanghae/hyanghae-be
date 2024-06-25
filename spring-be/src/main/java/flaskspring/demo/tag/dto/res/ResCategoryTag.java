@@ -4,11 +4,13 @@ import flaskspring.demo.tag.domain.Category;
 import flaskspring.demo.tag.domain.Tag;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
+@NoArgsConstructor
 public class ResCategoryTag {
 
     @Schema(description = "카테고리 ID", example = "1")

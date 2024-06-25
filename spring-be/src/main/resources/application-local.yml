@@ -25,9 +25,9 @@ spring:
     redis:
       cluster:
         max-redirects: 3
-        #password: 1111
-        connect-ip: 13.124.46.151
-        nodes: 13.124.46.151:6379, 13.124.46.151:6380, 13.124.46.151:6381
+        #password: 11111
+        connect-ip: 127.0.0.1
+        nodes: 127.0.0.1:6379, 127.0.0.1:6380, 127.0.0.1:6381
 
 
 
@@ -56,7 +56,7 @@ security:
     token:
       secret-key: "remoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoa"
       expiration-minutes: 30    # 3시간 -> 30분
-      refresh-expiration-hours: 24    # 리프레시 토큰 유효시간은 24시간
+      refresh-expiration-minutes: 240    # 분단위 -> 240
 
 
 flask:

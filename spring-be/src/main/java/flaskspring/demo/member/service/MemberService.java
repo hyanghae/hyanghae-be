@@ -1,5 +1,6 @@
 package flaskspring.demo.member.service;
 
+import flaskspring.demo.config.auth.AuthConstant;
 import flaskspring.demo.config.jwt.JwtTokenProvider;
 import flaskspring.demo.config.jwt.auth.RefreshToken;
 import flaskspring.demo.config.redis.RedisUtils;
@@ -17,6 +18,7 @@ import flaskspring.demo.tag.domain.MemberTagLog;
 import flaskspring.demo.tag.domain.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,9 @@ import java.util.concurrent.TimeUnit;
 @Transactional
 @Slf4j
 public class MemberService {
+
+    @Value("${security.jwt.token.refresh-expiration-minutes}")
+    public long refreshExpirationMinutes;
 
     private final Random random = new Random();
 
@@ -85,7 +90,7 @@ public class MemberService {
 
     public void updateRefreshToken(Member member, String refreshToken) {
         RefreshToken token = new RefreshToken(member.getAccount(), refreshToken);
-        redisTemplate.opsForValue().set(member.getAccount(), token, 240, TimeUnit.MINUTES); // 만료 시간을 분 단위로 설정
+        redisTemplate.opsForValue().set(member.getAccount(), token, refreshExpirationMinutes, TimeUnit.MINUTES); // 만료 시간을 분 단위로 설정
     }
 
 

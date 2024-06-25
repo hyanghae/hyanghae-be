@@ -3,8 +3,10 @@ package flaskspring.demo.tag.dto.res;
 import flaskspring.demo.tag.domain.Tag;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class ResTag {
 
     @Schema(description = "태그 ID", example = "4")

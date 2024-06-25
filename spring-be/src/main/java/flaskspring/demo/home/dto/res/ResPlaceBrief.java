@@ -7,11 +7,13 @@ import flaskspring.demo.place.domain.Place;
 import flaskspring.demo.tag.dto.res.ResTag;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class ResPlaceBrief {
 
 

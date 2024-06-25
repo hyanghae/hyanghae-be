@@ -2,7 +2,9 @@ package flaskspring.demo.place.service;
 
 
 import com.querydsl.core.Tuple;
+import flaskspring.demo.config.redis.cache.RedisCacheable;
 import flaskspring.demo.exception.BaseException;
+import flaskspring.demo.exception.BaseObject;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.home.dto.req.TagScoreDto;
 import flaskspring.demo.home.dto.res.ResFamous;
@@ -47,9 +49,10 @@ public class FamousPlaceService {
             21L, 22L, 23L, 24L);
     ;
 
+    @RedisCacheable(cacheName = "famousPlaces", expireTime = 60)
     public List<ResFamous> get24FamousPlaces() {
         List<FamousPlace> top24FamousPlaces = famousPlaceRepository.findByIdIn(Top24FamousPlaceIds);
-        return top24FamousPlaces.stream().map(ResFamous::new).toList();
+        return top24FamousPlaces.stream().map(ResFamous::new).collect(Collectors.toList());
     }
 
     public ResPlaceRecommendPaging getSimilarPlaces(Long memberId, ExploreFilter filter, Long famousPlaceId, Long cursor, int size) {
