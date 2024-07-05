@@ -11,8 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ResPlaceSearchPaging {
 
-
-
     List<ResPlaceBrief> searchedPlaces;
 
     @Schema(description = "카운트 커서", example = "3")
@@ -29,4 +27,7 @@ public class ResPlaceSearchPaging {
 
     @Schema(description = "검색된 유명 여행지 Id", example = "false")
     private Long famousPlaceId;
+
+    @Schema(description = "유명 여행지 도시 파라미터 명", example = "SEOUL")
+    private String cityParamName;
 }

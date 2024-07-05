@@ -101,7 +101,7 @@ public class PlaceController {
             @RequestParam(required = false, defaultValue = "ALL", name = "city") String cityFilter
     ) {
         Long myMemberId = memberDetails.getMemberId();
-        ExploreFilter filter = new ExploreFilter("alpha", CityCode.fromCityName(cityFilter));
+        ExploreFilter filter = new ExploreFilter("alpha", CityCode.fromCityParameterName(cityFilter));
         List<ResFamous> similarFamousPlace = placeService.getSimilarFamousPlace(filter, placeId);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(similarFamousPlace)));
     }

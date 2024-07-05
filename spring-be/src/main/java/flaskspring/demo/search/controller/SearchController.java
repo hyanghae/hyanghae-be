@@ -114,7 +114,7 @@ public class SearchController {
         Long memberId = memberDetails.getMemberId();
         Member member = memberService.findMemberById(memberId);
         ExploreCursor cursor = new ExploreCursor(countCursor, null, idCursor);
-        ExploreFilter filter = new ExploreFilter(sort, CityCode.fromCityName(cityFilter));
+        ExploreFilter filter = new ExploreFilter(sort, CityCode.fromCityParameterName(cityFilter));
 
         if (searchQuery != null && !searchQuery.isEmpty()) {
             try {
@@ -124,7 +124,6 @@ public class SearchController {
                 throw new BaseException(BaseResponseCode.REDIS_ERROR);
             }
         }
-
 
         Optional<FamousPlace> famousPlace = famousPlaceService.getFamousPlace(searchQuery);
         //유명여행지 중 검색어와 완전 일치하는 곳이 있는 지 검색

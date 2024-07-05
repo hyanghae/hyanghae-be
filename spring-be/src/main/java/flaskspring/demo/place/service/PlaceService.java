@@ -59,7 +59,7 @@ public class PlaceService {
             places.addAll(byRegionQuery);
             if (places.size() >= size) {
                 List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList(places.subList(0, size));
-                return new ResPlaceSearchPaging(resPlaceBriefs, cursor.getCountCursor() + size, 1L, null, false, null);
+                return new ResPlaceSearchPaging(resPlaceBriefs, cursor.getCountCursor() + size, 1L, null, false, null, null);
             }
         } else {
             String cityQuery = searchUtil.containCityQuery(searchQuery);
@@ -69,7 +69,7 @@ public class PlaceService {
                 places.addAll(byCityQuery);
                 if (places.size() >= size) {
                     List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList(places.subList(0, size));
-                    return new ResPlaceSearchPaging(resPlaceBriefs, cursor.getCountCursor() + size, 1L, null, false, null);
+                    return new ResPlaceSearchPaging(resPlaceBriefs, cursor.getCountCursor() + size, 1L, null, false, null, null);
                 }
             }
         }
@@ -85,17 +85,16 @@ public class PlaceService {
             places.addAll(byNameQuery);
             if (places.size() >= size) { // ex) 7개로 다 채운 경우
                 List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList(places);
-                return new ResPlaceSearchPaging(resPlaceBriefs, tempCursor, 2L, null, false, null);
+                return new ResPlaceSearchPaging(resPlaceBriefs, tempCursor, 2L, null, false, null, null);
             }
         } else if (cursor.getIdCursor() == 2L) {
             List<Tuple> byNameQuery = placeRepository.findPlacesByNameQuery(member, filter, searchQuery, cursor, size);
             places.addAll(byNameQuery);
             if (places.size() >= size) {
                 List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList(places);
-                return new ResPlaceSearchPaging(resPlaceBriefs, cursor.getCountCursor() + size, 2L, null, false, null);
+                return new ResPlaceSearchPaging(resPlaceBriefs, cursor.getCountCursor() + size, 2L, null, false, null, null);
             }
         }
-
 
         // 태그 검색이 가능한 경우
         log.info("tag 태그 대응 검색 가능!");
@@ -109,7 +108,7 @@ public class PlaceService {
             places.addAll(placesByTag);
             if (places.size() >= size) {
                 List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList(places);
-                return new ResPlaceSearchPaging(resPlaceBriefs, tempCursor, 3L, null, false, null);
+                return new ResPlaceSearchPaging(resPlaceBriefs, tempCursor, 3L, null, false, null, null);
             }
 
         }
@@ -118,12 +117,12 @@ public class PlaceService {
             places.addAll(placesByTag);
             if (places.size() >= size) {
                 List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList(places);
-                return new ResPlaceSearchPaging(resPlaceBriefs, cursor.getCountCursor() + size, 3L, null, false, null);
+                return new ResPlaceSearchPaging(resPlaceBriefs, cursor.getCountCursor() + size, 3L, null, false, null, null);
             }
         }
 
         List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList(places); //모든 검색 결과 10개 미만
-        return new ResPlaceSearchPaging(resPlaceBriefs, cursor.getCountCursor() + resPlaceBriefs.size(), 3L, null, false, null);
+        return new ResPlaceSearchPaging(resPlaceBriefs, cursor.getCountCursor() + resPlaceBriefs.size(), 3L, null, false, null, null);
     }
 
 

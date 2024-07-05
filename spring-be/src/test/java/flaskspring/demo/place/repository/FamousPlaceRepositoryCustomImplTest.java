@@ -20,7 +20,7 @@ class FamousPlaceRepositoryCustomImplTest {
     @Test
     void findSimilarFamousPlacesTest() {
 
-        ExploreFilter filter = new ExploreFilter(null, CityCode.fromCityName("GANGWON"));
+        ExploreFilter filter = new ExploreFilter(null, CityCode.fromCityParameterName("GANGWON"));
         List<FamousPlace> similarFamousPlaces = famousPlaceRepository.findSimilarFamousPlaces(filter, List.of(1L, 2L, 3L));
 
         System.out.println("similarFamousPlaces = " + similarFamousPlaces);

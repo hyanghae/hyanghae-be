@@ -24,21 +24,29 @@ public enum CityCode {
     JEJU("제주특별자치도", "JEJU", "제주");
 
     private final String koreanName;
-    private final String englishName;
+    private final String paramName;
     private final String shortenedName;
 
     CityCode(String koreanName, String englishName, String shortenedName) {
         this.koreanName = koreanName;
-        this.englishName = englishName;
+        this.paramName = englishName;
         this.shortenedName = shortenedName;
     }
 
-    public static CityCode fromCityName(String cityName) {
-        if ("ALL".equalsIgnoreCase(cityName)) {
+    public static CityCode fromCityParameterName(String cityParamName) {
+        if ("ALL".equalsIgnoreCase(cityParamName)) {
             return null;
         }
         for (CityCode code : values()) {
-            if (code.englishName.equalsIgnoreCase(cityName)) {
+            if (code.paramName.equalsIgnoreCase(cityParamName)) {
+                return code;
+            }
+        }
+        throw new BaseException(BaseResponseCode.INVALID_CITY_FILTER);
+    }
+    public static CityCode fromCityKoreanName(String cityKorName) {
+        for (CityCode code : values()) {
+            if (code.koreanName.equalsIgnoreCase(cityKorName)) {
                 return code;
             }
         }

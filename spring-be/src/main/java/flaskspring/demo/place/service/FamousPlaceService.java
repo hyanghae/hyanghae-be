@@ -72,8 +72,10 @@ public class FamousPlaceService {
         System.out.println("tagScoreDto = " + tagScoreDto);
         List<jakarta.persistence.Tuple> similarPlacesByKNN2 = placeRepository.findSimilarPlacesByKNN2(member, filter, cursor, tagScoreDto, size);
 
+        CityCode cityCode = CityCode.fromCityKoreanName(famousPlace.getCity());
+
         List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList2(similarPlacesByKNN2);
-        return new ResPlaceSearchPaging(resPlaceBriefs, cursor + 1, null, null, true, famousPlaceId);
+        return new ResPlaceSearchPaging(resPlaceBriefs, cursor + 1, null, null, true, famousPlaceId, cityCode.getParamName());
     } //유명 여행지와 유사한 비인기 여행지들 반환
 
     public List<ResPlaceBrief> getSimilarPlacesDeprecated(Long memberId, Long famousPlaceId, Long cursor, int size) {

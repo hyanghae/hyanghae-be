@@ -85,7 +85,7 @@ public class RecommendController {
             @RequestParam(required = false, defaultValue = "ALL", name = "city") String cityFilter) {
 
         log.info("GET /api/recommend/famous");
-        ExploreFilter filter = new ExploreFilter(null, CityCode.fromCityName(cityFilter));
+        ExploreFilter filter = new ExploreFilter(null, CityCode.fromCityParameterName(cityFilter));
         List<ResFamous> famousPlaces = null;
         if (filter.getCityFilter() == null) {
             famousPlaces = famousPlaceService.get24FamousPlaces();
@@ -128,7 +128,7 @@ public class RecommendController {
         Member member = memberService.findMemberById(memberId);
 
         // 디폴트 값 또는 "all"일 경우 필터를 적용하지 않음
-        ExploreFilter filter = new ExploreFilter(sort, CityCode.fromCityName(cityFilter));
+        ExploreFilter filter = new ExploreFilter(sort, CityCode.fromCityParameterName(cityFilter));
         ExploreCursor cursor = new ExploreCursor(countCursor, nameCursor, idCursor);
         ResPlaceRecommendPaging response = exploreService.getExplorePlace(member, filter, cursor, size);
 
