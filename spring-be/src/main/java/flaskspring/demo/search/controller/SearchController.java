@@ -1,7 +1,10 @@
 package flaskspring.demo.search.controller;
 
 import flaskspring.demo.config.auth.MemberDetails;
-import flaskspring.demo.exception.*;
+import flaskspring.demo.exception.BaseExceptionResponse;
+import flaskspring.demo.exception.BaseObject;
+import flaskspring.demo.exception.BaseResponse;
+import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.domain.CityCode;
@@ -23,19 +26,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "여행지 검색", description = "검색어로 검색하는 기능 API")
 @RestController
@@ -48,18 +48,38 @@ public class SearchController {
     private final PlaceService placeService;
     private final MemberService memberService;
     private final SearchService searchService;
-    private final RedisTemplate<String, Object> redisTemplate;
 
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
+            @ApiResponse(responseCode = "400", description = MessageUtils.ERROR,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
+            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
+    })
+    @Operation(summary = "인기 검색어", description = "최근 24시간 검색 빈도 순")
     @GetMapping("/search/rank")
     public ResponseEntity<BaseResponse<BaseObject<ResSearchRankDto>>> getPopularSearches() {
         List<ResSearchRankDto> topSearches = searchService.getPopularSearches();
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(topSearches)));
     }
 
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
+            @ApiResponse(responseCode = "400", description = MessageUtils.ERROR,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
+            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
+    })
+    @Operation(summary = "여행지 검색", description = "1.유명 여행지와 유사검색 : 검색어 완전 일치할 경우 : countCursor 사용" +
+            "<br> 2.일반 검색 : 그 외 경우 : countCursor, idCursor 사용" +
+            "<br> 초기값: countCursor : null 또는 1 , countCursor : idCursor 또는 1 " +
+            "<br> 스크롤: 반환되는 nextCountCursor, nextIdCursor 사용")
     @GetMapping("/search")
     public ResponseEntity<BaseResponse<ResPlaceSearchPaging>> searchPlacesGet(
             @AuthenticationPrincipal MemberDetails memberDetails,
-            @RequestParam(required = false, defaultValue = "recommend", name = "sort") String sort,
+            @RequestParam(required = false, defaultValue = "accuracy", name = "sort") String sort,
             @RequestParam(required = false, defaultValue = "ALL", name = "city") String cityFilter,
             @RequestParam(required = false, defaultValue = "") String searchQuery,
             @RequestParam(required = false, defaultValue = "1", name = "countCursor") String countCursor,
@@ -100,7 +120,7 @@ public class SearchController {
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
     })
-    @Operation(summary = "지역 목록", description = "도 단위 목록")
+    @Operation(summary = "지역 목록", description = "행정구역 단위 목록 : ex) 서울특별시 -> //정식 명칭: 서울특별시, paramName: SEOUL, 줄임말: 서울//")
     @GetMapping("/search/city")
     public ResponseEntity<BaseResponse<BaseObject<ResCity>>> allCityGet() {
         log.info("GET /api/search/city");
