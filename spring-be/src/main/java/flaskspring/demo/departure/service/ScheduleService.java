@@ -12,6 +12,8 @@ import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.MemberRepository;
 import flaskspring.demo.place.register.repository.PlaceRegisterRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +53,7 @@ public class ScheduleService {
                 .orElseThrow(() -> new BaseException(BaseResponseCode.NO_ID_EXCEPTION));
 
         Optional<DeparturePoint> departure = departureRepository.findFirstByMemberOrderByCreatedTimeDesc(member);
-        List<Tuple> registeredPlaces = placeRegisterRepository.findScheduleByMember(member);
+        List<Tuple> registeredPlaces = placeRegisterRepository.findSavedPlacesByMember(member, Pageable.unpaged());
         List<ResSchedulePlace> schedulePlaces = registeredPlaces.stream().map(ResSchedulePlace::new).toList();
 
         if (departure.isPresent()) {

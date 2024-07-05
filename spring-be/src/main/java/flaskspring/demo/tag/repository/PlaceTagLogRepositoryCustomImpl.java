@@ -5,7 +5,6 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import flaskspring.demo.like.domain.QPlaceLike;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.place.domain.QPlace;
 import flaskspring.demo.place.register.domain.QPlaceRegister;
@@ -25,11 +24,10 @@ public class PlaceTagLogRepositoryCustomImpl implements PlaceTagLogRepositoryCus
 
     private final JPAQueryFactory jpaQueryFactory;
 
-
     QPlaceTagLog placeTagLog = QPlaceTagLog.placeTagLog;
     QTag tag = QTag.tag;
     QPlace place = QPlace.place;
-    QPlaceLike placeLike = QPlaceLike.placeLike;
+
     QPlaceRegister placeRegister = QPlaceRegister.placeRegister;
 
     public List<Tuple> getFeedByTags(List<Tag> tags, String sort, Member member) {
@@ -42,13 +40,11 @@ public class PlaceTagLogRepositoryCustomImpl implements PlaceTagLogRepositoryCus
                         Expressions.stringTemplate("group_concat({0})", tag.id).as("tagIds"), // tagId를 모음
                         Expressions.stringTemplate("group_concat({0})", tag.tagName).as("tagNames"),
                         Expressions.stringTemplate("count({0})", tag.tagName).as("sameTagCount"),
-                        placeLike.place.isNotNull().as("isLiked"),
                         placeRegister.place.isNotNull().as("isRegistered")
                 )
                 .from(placeTagLog)
                 .join(placeTagLog.tag, tag)
                 .join(placeTagLog.place, place)
-                .leftJoin(placeLike).on(placeLike.place.eq(place).and(placeLike.member.eq(member))) // 회원의 좋아요 정보를 확인하기 위한 조인.
                 .leftJoin(placeRegister).on(placeRegister.place.eq(place).and(placeRegister.member.eq(member))) // 여행지 등록 정보를 확인하기 위한 조인.
                 .where(placeTagLog.tag.id.in(tagIds)) //제공된 TagId를 기반으로
                 .groupBy(place.id)

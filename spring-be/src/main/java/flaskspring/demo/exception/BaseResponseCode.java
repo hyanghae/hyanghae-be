@@ -36,6 +36,7 @@ public enum BaseResponseCode {
     PREFERENCE_NOT_APPLIED(HttpStatus.BAD_REQUEST, "아직 취향 설정이 반영되지 않았습니다"),
 
     REGISTRATION_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "여행지 등록개수 초과하였습니다."),
+    INVALID_PAGE_NUMBER(HttpStatus.BAD_REQUEST, "페이지 번호가 잘못되었습니다."),
 
 
     /**

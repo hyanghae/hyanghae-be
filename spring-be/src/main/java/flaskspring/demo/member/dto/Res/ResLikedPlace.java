@@ -1,4 +1,4 @@
-package flaskspring.demo.myPage.dto.res;
+package flaskspring.demo.member.dto.Res;
 
 import com.querydsl.core.Tuple;
 import flaskspring.demo.tag.dto.res.ResTag;

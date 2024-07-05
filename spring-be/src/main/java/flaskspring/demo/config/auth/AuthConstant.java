@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Value;
 public class AuthConstant {
 
 
-
-
     // 인증이 필요하지 않은 경로
     public static final String[] AUTH_WHITELIST = {
             "/api/**", "/graphiql", "/graphql",
@@ -25,7 +23,8 @@ public class AuthConstant {
             "/api/mypage/main", "/api/place/detail/{placeId}", "/api/recommend/famous", "/api/recommend/rising", "/api/explore",
             "/api/recommend/{famousPlaceId}/similar", "/api/recommend/explore", "/api/place/detail/{placeId}",
             "/api/place/detail/{placeId}/similar", "/api/place/detail/{placeId}/similar/{famousPlaceId}",
-            "/api/recommend/setting", "/api/search", "/search/city", "/api/search", "/api/search/rank", "/api/search/city"};
+            "/api/recommend/setting", "/api/search", "/search/city", "/api/search", "/api/search/rank", "/api/search/city",
+            "/api/member/upload-image", "/api/member/saved"};
 
     // POST 메서드에 대한 인증이 필요한 경로
     public static final String[] POST_AUTH_BLACKLIST

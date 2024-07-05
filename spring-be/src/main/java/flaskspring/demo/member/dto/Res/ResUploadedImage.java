@@ -1,4 +1,4 @@
-package flaskspring.demo.myPage.dto.res;
+package flaskspring.demo.member.dto.Res;
 
 import flaskspring.demo.image.domain.UploadImage;
 import io.swagger.v3.oas.annotations.media.Schema;

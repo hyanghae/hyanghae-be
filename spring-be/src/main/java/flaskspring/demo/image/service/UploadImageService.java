@@ -7,23 +7,21 @@ import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.image.domain.UploadImage;
 import flaskspring.demo.image.repository.UploadImageRepository;
-import flaskspring.demo.image.util.CustomMultipartFile;
 import flaskspring.demo.image.util.ImageUploadUtil;
 import flaskspring.demo.member.domain.Member;
-import flaskspring.demo.member.repository.MemberRepository;
-import flaskspring.demo.member.service.MemberService;
+import flaskspring.demo.member.dto.Res.ResUploadedImage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.file.Files;
+import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,12 +30,11 @@ import java.util.Optional;
 public class UploadImageService {
 
     private final UploadImageRepository uploadImageRepository;
-
     private final ImageFileService imageFileService;
     private final ImageUploadUtil imageUploadUtil;
 
     @EvictRedisCache(cacheName = "settingImageURL")
-    public void uploadImage(MultipartFile file, @RedisCachedKeyParam(key = "member", fields = "memberId")Member member) {
+    public void uploadImage(MultipartFile file, @RedisCachedKeyParam(key = "member", fields = "memberId") Member member) {
 
         imageUploadUtil.uploadImage(file, member);
         member.canRecommend();
@@ -45,7 +42,7 @@ public class UploadImageService {
     }
 
     @EvictRedisCache(cacheName = "settingImageURL")
-    public void deleteSettingImage(@RedisCachedKeyParam(key = "member", fields = "memberId")Member member) {
+    public void deleteSettingImage(@RedisCachedKeyParam(key = "member", fields = "memberId") Member member) {
         Optional<UploadImage> uploadImage = uploadImageRepository.findByMemberAndIsSetting(member, true);
         uploadImage.ifPresent(upload -> {
             upload.deSetting();
@@ -53,6 +50,18 @@ public class UploadImageService {
         });
     }
 
+    public List<ResUploadedImage> getLatestUploadedImage(Member member, Integer limit) {
+        List<UploadImage> uploadImages = null;
+        if (limit == null) {
+            uploadImages = uploadImageRepository.findByMemberOrderByCreatedTimeDesc(member, Pageable.unpaged());
+        } else {
+            if(limit < 1L){
+                throw new BaseException(BaseResponseCode.INVALID_PAGE_NUMBER);
+            }
+            uploadImages = uploadImageRepository.findByMemberOrderByCreatedTimeDesc(member, PageRequest.of(0, limit));
+        }
+        return uploadImages.stream().map(ResUploadedImage::new).collect(Collectors.toList());
+    }
 
 
     public boolean isSettingImageExist(Member member) {

@@ -6,7 +6,6 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import flaskspring.demo.home.dto.req.TagScoreDto;
-import flaskspring.demo.like.domain.QPlaceLike;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.place.domain.Place;
 import flaskspring.demo.place.domain.QPlace;
@@ -31,7 +30,6 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom {
     QPlaceTagLog placeTagLog = QPlaceTagLog.placeTagLog;
     QTag tag = QTag.tag;
     QPlace place = QPlace.place;
-    QPlaceLike placeLike = QPlaceLike.placeLike;
     QPlaceRegister placeRegister = QPlaceRegister.placeRegister;
 
     @Override
@@ -42,13 +40,11 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom {
                         Expressions.stringTemplate("group_concat({0})", tag.id).as("tagIds"),
                         Expressions.stringTemplate("group_concat({0})", tag.tagName).as("tagNames"),
                         Expressions.stringTemplate("count({0})", tag.tagName).as("sameTagCount"),
-                        placeLike.place.isNotNull().as("isLiked"),
                         placeRegister.place.isNotNull().as("isRegistered")
                 )
                 .from(place)
                 .join(placeTagLog).on(placeTagLog.place.eq(place).and(placeTagLog.tagScore.ne(0)))
                 .join(placeTagLog.tag, tag)
-                .leftJoin(placeLike).on(placeLike.place.eq(place).and(placeLike.member.eq(member)))
                 .leftJoin(placeRegister).on(placeRegister.place.eq(place).and(placeRegister.member.eq(member)))
                 .where(place.touristSpotName.in(placeNames))
                 .groupBy(place.id)

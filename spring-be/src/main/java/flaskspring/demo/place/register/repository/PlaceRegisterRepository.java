@@ -1,10 +1,13 @@
 package flaskspring.demo.place.register.repository;
 
+import flaskspring.demo.image.domain.UploadImage;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.place.register.domain.PlaceRegister;
 import flaskspring.demo.place.domain.Place;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PlaceRegisterRepository extends JpaRepository<PlaceRegister, Long> ,PlaceRegisterRepositoryCustom {

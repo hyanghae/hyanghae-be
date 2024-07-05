@@ -6,7 +6,6 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import flaskspring.demo.like.domain.QPlaceLike;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.place.domain.Place;
 import flaskspring.demo.place.domain.QPlace;
@@ -31,7 +30,6 @@ public class ExploreRepositoryImpl implements ExploreRepository {
     QPlaceTagLog placeTagLog = QPlaceTagLog.placeTagLog;
     QTag tag = QTag.tag;
     QPlace place = QPlace.place;
-    QPlaceLike placeLike = QPlaceLike.placeLike;
     QPlaceRegister placeRegister = QPlaceRegister.placeRegister;
 
     public List<Tuple> findExplorePlaceWithoutTags(Member member, ExploreFilter filter, ExploreCursor cursor, int size) {

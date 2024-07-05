@@ -13,6 +13,8 @@ import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.MemberRepository;
 import flaskspring.demo.place.register.repository.PlaceRegisterRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -86,7 +88,7 @@ public class PathService {
     }
 
     private List<ResSchedulePlace> getSchedulePlaces(Member member) {
-        List<Tuple> registeredPlaces = placeRegisterRepository.findScheduleByMember(member);
+        List<Tuple> registeredPlaces = placeRegisterRepository.findSavedPlacesByMember(member, Pageable.unpaged());
         return registeredPlaces.stream().map(ResSchedulePlace::new).toList();
     }
 
