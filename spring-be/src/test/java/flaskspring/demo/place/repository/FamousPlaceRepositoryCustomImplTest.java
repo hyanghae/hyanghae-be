@@ -18,12 +18,14 @@ class FamousPlaceRepositoryCustomImplTest {
     FamousPlaceRepository famousPlaceRepository;
 
     @Test
-    void findSimilarFamousPlacesTest(){
+    void findSimilarFamousPlacesTest() {
 
         ExploreFilter filter = new ExploreFilter(null, CityCode.fromCityName("GANGWON"));
-        List<FamousPlace> similarFamousPlaces = famousPlaceRepository.findSimilarFamousPlaces(filter, List.of(1L,2L,3L));
+        List<FamousPlace> similarFamousPlaces = famousPlaceRepository.findSimilarFamousPlaces(filter, List.of(1L, 2L, 3L));
 
         System.out.println("similarFamousPlaces = " + similarFamousPlaces);
     }
+
+
 
 }

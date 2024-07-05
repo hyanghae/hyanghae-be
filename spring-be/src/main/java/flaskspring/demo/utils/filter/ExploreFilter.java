@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class ExploreFilter {
     private String sort;
-    private String cityFilter;
+    private String cityFilter; // 서울특별시, 인천광역시 등 정식 명칭
 
     public ExploreFilter(String sort, CityCode cityCode) {
         this.sort = sort;

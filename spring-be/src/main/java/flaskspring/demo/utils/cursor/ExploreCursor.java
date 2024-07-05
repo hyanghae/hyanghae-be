@@ -3,8 +3,10 @@ package flaskspring.demo.utils.cursor;
 import flaskspring.demo.exception.BaseException;
 import flaskspring.demo.exception.BaseResponseCode;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class ExploreCursor {
     private Long countCursor;
     private String nameCursor;

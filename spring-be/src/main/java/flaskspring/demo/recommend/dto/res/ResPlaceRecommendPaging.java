@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ResPlaceRecommendPaging {
 
-    @Schema(description = "태그, 이미지 기반 추천 여행지 목록")
+    @Schema(description = "여행지 목록")
     List<ResPlaceBrief> recommendedPlaces;
 
     @Schema(description = "카운트 커서", example = "3")

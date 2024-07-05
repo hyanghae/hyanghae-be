@@ -42,11 +42,12 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
     private final PasswordEncoder bCryptPasswordEncoder;
-    // private final MemberRefreshTokenRepository memberRefreshTokenRepository;
+
     private final MemberTagLogRepository memberTagLogRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
     //  private final RefreshTokenRepository refreshTokenRepository;
     //   private final RedisUtils redisUtils;
-    private final RedisTemplate<String, Object> redisTemplate;
+    // private final MemberRefreshTokenRepository memberRefreshTokenRepository;
 
     @Transactional
     public GeneralLoginRes generalLogin(GeneralLoginReq loginReq) {
@@ -88,9 +89,10 @@ public class MemberService {
 //                );
 //    }
 
-    public void updateRefreshToken(Member member, String refreshToken) {
-        RefreshToken token = new RefreshToken(member.getAccount(), refreshToken);
-        redisTemplate.opsForValue().set(member.getAccount(), token, refreshExpirationMinutes, TimeUnit.MINUTES); // 만료 시간을 분 단위로 설정
+    private void updateRefreshToken(Member member, String refreshToken) {
+        // 새로운 RefreshToken 객체를 생성하고 바로 저장
+        RefreshToken refreshTokenObj = new RefreshToken(member.getAccount(), refreshToken);
+        redisTemplate.opsForValue().set(member.getAccount(), refreshTokenObj, refreshExpirationMinutes, TimeUnit.MINUTES);
     }
 
 

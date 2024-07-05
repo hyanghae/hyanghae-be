@@ -25,7 +25,7 @@ public class AuthConstant {
             "/api/mypage/main", "/api/place/detail/{placeId}", "/api/recommend/famous", "/api/recommend/rising", "/api/explore",
             "/api/recommend/{famousPlaceId}/similar", "/api/recommend/explore", "/api/place/detail/{placeId}",
             "/api/place/detail/{placeId}/similar", "/api/place/detail/{placeId}/similar/{famousPlaceId}",
-            "/api/recommend/setting"};
+            "/api/recommend/setting", "/api/search", "/search/city", "/api/search", "/api/search/rank", "/api/search/city"};
 
     // POST 메서드에 대한 인증이 필요한 경로
     public static final String[] POST_AUTH_BLACKLIST

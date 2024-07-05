@@ -3,6 +3,7 @@ package flaskspring.demo.place.repository;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import flaskspring.demo.home.dto.req.TagScoreDto;
 import flaskspring.demo.like.domain.QPlaceLike;
@@ -78,7 +79,7 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom {
     }
 
     @Override
-    public List<Tuple> findNearbyPlaces(Member member,  Place targetPlace) {
+    public List<Tuple> findNearbyPlaces(Member member, Place targetPlace) {
 
         double mapX = targetPlace.getLocation().getMapX();
         double mapY = targetPlace.getLocation().getMapY();
@@ -218,6 +219,129 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom {
 
         // 쿼리 실행 및 결과 반환
         return query.getResultList();
+    }
+
+    @Override
+    public List<Tuple> findPlacesByRegionQuery(Member member, ExploreFilter filter, String regionQuery, ExploreCursor cursor, int size) {
+        Long countCursor = cursor.getCountCursor();
+
+        JPAQuery<Tuple> query = jpaQueryFactory.select(
+                        place,
+                        Expressions.stringTemplate("group_concat({0})", tag.id).as("tagIds"),
+                        Expressions.stringTemplate("group_concat({0})", tag.tagName).as("tagNames"),
+                        placeRegister.place.isNotNull().as("isRegistered")
+                )
+                .from(place)
+                .join(placeTagLog).on(placeTagLog.place.eq(place).and(placeTagLog.tagScore.ne(0)))
+                .join(placeTagLog.tag, tag)
+                .leftJoin(placeRegister).on(placeRegister.place.eq(place).and(placeRegister.member.eq(member)))
+                .where(place.region.containsIgnoreCase(regionQuery));
+
+        // 지역 필터 적용
+        if (filter.getCityFilter() != null) {
+            query.where(place.city.eq(filter.getCityFilter()));
+        }
+
+        // 커서와 사이즈를 사용하여 페이징 적용
+        query.offset(countCursor)
+                .limit(size);
+
+        return query
+                .groupBy(place.id) // 예시로 group by 추가
+                .fetch();
+    }
+
+
+    @Override
+    public List<Tuple> findPlacesByCityQuery(Member member, ExploreFilter filter, String citiQuery, ExploreCursor cursor, int size) {
+        Long countCursor = cursor.getCountCursor();
+
+        JPAQuery<Tuple> query = jpaQueryFactory.select(
+                        place,
+                        Expressions.stringTemplate("group_concat({0})", tag.id).as("tagIds"),
+                        Expressions.stringTemplate("group_concat({0})", tag.tagName).as("tagNames"),
+                        placeRegister.place.isNotNull().as("isRegistered")
+                )
+                .from(place)
+                .join(placeTagLog).on(placeTagLog.place.eq(place).and(placeTagLog.tagScore.ne(0)))
+                .join(placeTagLog.tag, tag)
+                .leftJoin(placeRegister).on(placeRegister.place.eq(place).and(placeRegister.member.eq(member)))
+                .where(place.city.containsIgnoreCase(citiQuery));
+        // 지역 필터 적용
+        if (filter.getCityFilter() != null) {
+            query.where(place.city.eq(filter.getCityFilter()));
+        }
+
+        // 커서와 사이즈를 사용하여 페이징 적용
+        query.offset(countCursor)
+                .limit(size);
+
+        return query
+                .groupBy(place.id) // 예시로 group by 추가
+                .fetch();
+    }
+
+    @Override
+    public List<Tuple> findPlacesByNameQuery(Member member, ExploreFilter filter, String nameQuery, ExploreCursor cursor, int size) {
+        Long countCursor = cursor.getCountCursor();
+
+        JPAQuery<Tuple> query = jpaQueryFactory.select(
+                        place,
+                        Expressions.stringTemplate("group_concat({0})", tag.id).as("tagIds"),
+                        Expressions.stringTemplate("group_concat({0})", tag.tagName).as("tagNames"),
+                        placeRegister.place.isNotNull().as("isRegistered")
+                )
+                .from(place)
+                .join(placeTagLog).on(placeTagLog.place.eq(place).and(placeTagLog.tagScore.ne(0)))
+                .join(placeTagLog.tag, tag)
+                .leftJoin(placeRegister).on(placeRegister.place.eq(place).and(placeRegister.member.eq(member)))
+                .where(place.touristSpotName.containsIgnoreCase(nameQuery));
+        // 지역 필터 적용
+        if (filter.getCityFilter() != null) {
+            query.where(place.city.eq(filter.getCityFilter()));
+        }
+
+        // 커서와 사이즈를 사용하여 페이징 적용
+        query.offset(countCursor)
+                .limit(size);
+
+        return query
+                .groupBy(place.id) // 예시로 group by 추가
+                .fetch();
+    }
+
+    @Override
+    public List<Tuple> findPlacesByTag(Member member, ExploreFilter filter, Long tagId, ExploreCursor cursor, int size) {
+        Long countCursor = cursor.getCountCursor();
+
+        // 서브쿼리로 해당 태그 아이디를 가진 여행지의 ID를 가져옵니다.
+        JPAQuery<Long> subQuery = jpaQueryFactory.select(place.id)
+                .from(place)
+                .join(placeTagLog).on(placeTagLog.place.eq(place).and(placeTagLog.tagScore.ne(0)))
+                .where(QPlaceTagLog.placeTagLog.tag.id.eq(tagId));
+
+        // 지역 필터 적용
+        if (filter.getCityFilter() != null) {
+            subQuery.where(place.city.eq(filter.getCityFilter()));
+        }
+
+        // 메인 쿼리에서 서브쿼리의 결과를 사용
+        JPAQuery<Tuple> query = jpaQueryFactory.select(
+                        place,
+                        Expressions.stringTemplate("group_concat({0})", tag.id).as("tagIds"),
+                        Expressions.stringTemplate("group_concat({0})", tag.tagName).as("tagNames"),
+                        placeRegister.place.isNotNull().as("isRegistered")
+                )
+                .from(place)
+                .join(placeTagLog).on(placeTagLog.place.eq(place).and(placeTagLog.tagScore.ne(0)))
+                .join(placeTagLog.tag, tag)
+                .leftJoin(placeRegister).on(placeRegister.place.eq(place).and(placeRegister.member.eq(member)))
+                .where(place.id.in(subQuery));
+
+        query.offset(countCursor)
+                .limit(size);
+
+        return query.groupBy(place.id).fetch();
     }
 
 

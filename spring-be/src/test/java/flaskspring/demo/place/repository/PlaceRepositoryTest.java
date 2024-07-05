@@ -1,5 +1,6 @@
 package flaskspring.demo.place.repository;
 
+import com.querydsl.core.Tuple;
 import flaskspring.demo.home.dto.req.TagScoreDto;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.service.MemberService;
@@ -7,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
@@ -49,5 +52,29 @@ class PlaceRepositoryTest {
 
         // 테스트에 맞게 추가적인 검증을 수행합니다.
         // 예를 들어, 반환된 장소가 특정 조건을 만족하는지를 확인할 수 있습니다.
+    }
+
+    @Test
+    void findPlaceByCityQuery() {
+        Member member = memberService.findMemberById(1L);
+        List<Tuple> 서울특별시 = placeRepository.findPlacesByCityQuery(member, "강원특별자치도");
+    }
+
+    @Test
+    void findPlaceByRegionQuery() {
+        Member member = memberService.findMemberById(1L);
+        List<Tuple> 삼척 = placeRepository.findPlacesByRegionQuery(member, "삼척");
+    }
+
+    @Test
+    void findPlaceByNameQuery() {
+        Member member = memberService.findMemberById(1L);
+        List<Tuple> 시장 = placeRepository.findPlacesByNameQuery(member, "시장");
+    }
+
+    @Test
+    void findPlaceByTag() {
+        Member member = memberService.findMemberById(1L);
+        List<Tuple> 액티비티 = placeRepository.findPlacesByTag(member, 1L);
     }
 }

@@ -11,11 +11,13 @@ import flaskspring.demo.home.dto.res.ResFamous;
 import flaskspring.demo.home.dto.res.ResPlaceBrief;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.service.MemberService;
+import flaskspring.demo.place.domain.CityCode;
 import flaskspring.demo.place.domain.Place;
 import flaskspring.demo.place.domain.FamousPlace;
 import flaskspring.demo.place.repository.FamousPlaceRepository;
 import flaskspring.demo.place.repository.PlaceRepository;
 import flaskspring.demo.recommend.dto.res.ResPlaceRecommendPaging;
+import flaskspring.demo.search.dto.res.ResPlaceSearchPaging;
 import flaskspring.demo.tag.domain.FamousPlaceTagLog;
 import flaskspring.demo.tag.repository.FamousPlaceTagLogRepository;
 import flaskspring.demo.utils.FlaskService;
@@ -24,10 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static flaskspring.demo.utils.ConvertUtil.convertToPlaceBriefList;
@@ -55,7 +54,16 @@ public class FamousPlaceService {
         return top24FamousPlaces.stream().map(ResFamous::new).collect(Collectors.toList());
     }
 
-    public ResPlaceRecommendPaging getSimilarPlaces(Long memberId, ExploreFilter filter, Long famousPlaceId, Long cursor, int size) {
+    public Optional<FamousPlace> getFamousPlace(String touristSpotName) {
+        return famousPlaceRepository.findByTouristSpotName(touristSpotName);
+    }
+
+    public List<ResFamous> getFamousPlace(ExploreFilter exploreFilter) {
+        List<FamousPlace> famousPlaces = famousPlaceRepository.findByCity(exploreFilter.getCityFilter());
+        return famousPlaces.stream().map(ResFamous::new).collect(Collectors.toList());
+    }
+
+    public ResPlaceSearchPaging getSimilarPlaces(Long memberId, ExploreFilter filter, Long famousPlaceId, Long cursor, int size) {
         Member member = memberService.findMemberById(memberId);
 
         FamousPlace famousPlace = findByFamousPlaceId(famousPlaceId);
@@ -65,8 +73,8 @@ public class FamousPlaceService {
         List<jakarta.persistence.Tuple> similarPlacesByKNN2 = placeRepository.findSimilarPlacesByKNN2(member, filter, cursor, tagScoreDto, size);
 
         List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList2(similarPlacesByKNN2);
-        return new ResPlaceRecommendPaging(resPlaceBriefs, cursor + 1, null, null);
-    }
+        return new ResPlaceSearchPaging(resPlaceBriefs, cursor + 1, null, null, true, famousPlaceId);
+    } //유명 여행지와 유사한 비인기 여행지들 반환
 
     public List<ResPlaceBrief> getSimilarPlacesDeprecated(Long memberId, Long famousPlaceId, Long cursor, int size) {
         Member member = memberService.findMemberById(memberId);

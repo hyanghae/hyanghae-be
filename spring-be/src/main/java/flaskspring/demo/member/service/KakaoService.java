@@ -66,10 +66,11 @@ public class KakaoService {
     }
 
     private void updateRefreshToken(Member member, String refreshToken) {
-        RefreshToken refreshTokenObj = (RefreshToken) redisTemplate.opsForValue().get(member.getAccount());
-        refreshTokenObj.updateRefreshToken(refreshToken);
-        redisTemplate.opsForValue().set(member.getAccount(), refreshToken, refreshExpirationMinutes, TimeUnit.MINUTES);
+        // 새로운 RefreshToken 객체를 생성하고 바로 저장
+        RefreshToken refreshTokenObj = new RefreshToken(member.getAccount(), refreshToken);
+        redisTemplate.opsForValue().set(member.getAccount(), refreshTokenObj, refreshExpirationMinutes, TimeUnit.MINUTES);
     }
+
 
 
     //(2)

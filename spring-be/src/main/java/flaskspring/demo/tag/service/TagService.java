@@ -58,7 +58,7 @@ public class TagService {
                 .stream()
                 .map(ResRegisteredTag::new)
                 .collect(Collectors.toList());
-    }
+    } // 구현체 ArrayList여야 직렬화/역직렬화시 클래스 정보를 저장하고 에러가 나지 않음
 
     @EvictRedisCache(cacheName = "registeredTags") //캐시 삭제
     public void modifyMemberTags(@RedisCachedKeyParam(key = "member", fields = "memberId") Member member, List<Long> modifyTagIds) {

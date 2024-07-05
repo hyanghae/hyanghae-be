@@ -55,6 +55,7 @@ public class AuthController {
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, resReIssue));
     }
 
+
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,

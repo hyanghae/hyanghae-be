@@ -2,6 +2,7 @@ package flaskspring.demo.recommend.controller;
 
 import flaskspring.demo.config.auth.MemberDetails;
 import flaskspring.demo.exception.*;
+import flaskspring.demo.place.domain.FamousPlace;
 import flaskspring.demo.recommend.explore.service.ExploreService;
 import flaskspring.demo.home.dto.res.ResFamous;
 import flaskspring.demo.home.dto.res.ResRisingPlacePaging;
@@ -64,7 +65,7 @@ public class RecommendController {
         Long memberId = memberDetails.getMemberId();
         Member member = memberService.findMemberById(memberId);
         ExploreCursor exploreCursor = new ExploreCursor(countCursor, null, idCursor);
-        ResRisingPlacePaging response = recommendService.getRisingPlaces(member,exploreCursor, size);
+        ResRisingPlacePaging response = recommendService.getRisingPlaces(member, exploreCursor, size);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, response));
     }
 
@@ -76,41 +77,22 @@ public class RecommendController {
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
     })
-    @Operation(summary = "유명 여행지", description = "중단 추천 : 유명 여행지 API")
-    @GetMapping("/famous")
-    public ResponseEntity<BaseResponse<BaseObject<ResFamous>>> homeSuggestionGet() {
-        log.info("GET /api/recommend/famous");
-        List<ResFamous> famousPlaces = famousPlaceService.get24FamousPlaces();
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(famousPlaces)));
-    }
-
-
-    @Operation(summary = "유명 여행지와 유사한 여행지들", description = "유명 여행지 태그 할당 점수와 유사도순" +
-            " <br> 처음 cursor : null 또는 1" +
+    @Operation(summary = "유명 여행지", description = "중단 추천 : 유명 여행지 API" +
             " <br> city : " +
             " <br> 'SEOUL', 'BUSAN', 'DAEGU', 'INCHEON', 'GWANGJU', 'DAEJEON', 'ULSAN', 'GYEONGGI', 'GANGWON', 'CHUNGBUK', 'CHUNGNAM', 'JEONBUK', 'JEONNAM', 'GYEONGBUK', 'GYEONGNAM', 'JEJU')")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
-            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
-                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
-    })
-    @GetMapping("/{famousPlaceId}/similar")
-    public ResponseEntity<BaseResponse<ResPlaceRecommendPaging>> similarPlacesGet(@AuthenticationPrincipal MemberDetails memberDetails,
-                                                                                  @PathVariable("famousPlaceId") Long famousPlaceId,
-                                                                                  @RequestParam(required = false, defaultValue = "ALL", name = "city") String cityFilter,
-                                                                                  @RequestParam(required = false, defaultValue = "1", name = "countCursor") String countCursor,
-                                                                                  @RequestParam(required = false, defaultValue = "10", name = "size") int size) {
-        log.info("GET /api/recommend/{famousPlaceId}/similar");
+    @GetMapping("/famous")
+    public ResponseEntity<BaseResponse<BaseObject<ResFamous>>> famousPlacesGet(
+            @RequestParam(required = false, defaultValue = "ALL", name = "city") String cityFilter) {
 
-        ExploreCursor exploreCursor = new ExploreCursor(countCursor, null, null);
-
-        Long memberId = memberDetails.getMemberId();
-
+        log.info("GET /api/recommend/famous");
         ExploreFilter filter = new ExploreFilter(null, CityCode.fromCityName(cityFilter));
-
-        //디폴트 카운트 커서 : 1
-        ResPlaceRecommendPaging similarPlaces = famousPlaceService.getSimilarPlaces(memberId, filter, famousPlaceId, Optional.ofNullable(exploreCursor.getCountCursor()).orElse(1L), size);
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, similarPlaces));
+        List<ResFamous> famousPlaces = null;
+        if (filter.getCityFilter() == null) {
+            famousPlaces = famousPlaceService.get24FamousPlaces();
+        } else {
+            famousPlaces = famousPlaceService.getFamousPlace(filter); // 지역 필터 적용
+        }
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(famousPlaces)));
     }
 
 

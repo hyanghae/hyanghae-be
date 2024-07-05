@@ -23,4 +23,13 @@ public interface PlaceRepositoryCustom {
 
     List<jakarta.persistence.Tuple> findSimilarPlacesByKNN2(Member member, ExploreFilter filter, Long countCursor, TagScoreDto tagScoreDto, int size);
 
+    List<Tuple> findPlacesByRegionQuery(Member member, ExploreFilter filter, String regionQuery, ExploreCursor cursor, int size);
+
+    List<Tuple> findPlacesByCityQuery(Member member, ExploreFilter filter, String cityQuery, ExploreCursor cursor, int size);
+
+    List<Tuple> findPlacesByNameQuery(Member member, ExploreFilter filter, String nameQuery, ExploreCursor cursor, int size);
+
+    List<Tuple> findPlacesByTag(Member member, ExploreFilter filter, Long tagId, ExploreCursor cursor, int size);
+
+
 }
