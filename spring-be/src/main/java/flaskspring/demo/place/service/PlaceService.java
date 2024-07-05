@@ -49,80 +49,79 @@ public class PlaceService {
 
     public ResPlaceSearchPaging getPlacesBySearching(Member member, String searchQuery, ExploreCursor cursor, ExploreFilter filter, int size) {
         List<Tuple> places = new ArrayList<>();
-        Long tempCursor;
-        // 지역 검색 가능한 경우
 
-        String regionQuery = searchUtil.containRegionQuery(searchQuery);
-        if (regionQuery != null) { // 시군구 검색 가능한 경우
-            log.info("regionQuery 시군구 검색 가능!");
-            List<Tuple> byRegionQuery = placeRepository.findPlacesByRegionQuery(member, filter, regionQuery, cursor, size);
-            places.addAll(byRegionQuery);
-            if (places.size() >= size) {
-                List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList(places.subList(0, size));
-                return new ResPlaceSearchPaging(resPlaceBriefs, cursor.getCountCursor() + size, 1L, null, false, null, null);
-            }
-        } else {
-            String cityQuery = searchUtil.containCityQuery(searchQuery);
-            if (cityQuery != null) { // 행정구역이라도 검색 가능한 경우
-                log.info("cityQuery 행정구역 검색 가능!");
-                List<Tuple> byCityQuery = placeRepository.findPlacesByCityQuery(member, filter, cityQuery, cursor, size);
-                places.addAll(byCityQuery);
-                if (places.size() >= size) {
-                    List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList(places.subList(0, size));
-                    return new ResPlaceSearchPaging(resPlaceBriefs, cursor.getCountCursor() + size, 1L, null, false, null, null);
-                }
-            }
+        // 지역 검색 가능한 경우
+        if (performRegionOrCitySearch(member, searchQuery, cursor, filter, size, places)) {
+            return createPagingResponse(places, cursor, size, 1L);
         }
 
         log.info("touristSpotName 여행지명 검색 가능!");
 
         // 검색어가 여행지명에 포함되는 경우
-        if (cursor.getIdCursor() == null || cursor.getIdCursor() < 2L) {
-            int temp1 = places.size();
-            cursor.setCountCursor(0L);
-            List<Tuple> byNameQuery = placeRepository.findPlacesByNameQuery(member, filter, searchQuery, cursor, size - temp1); //필요한 만큼만 리턴
-            tempCursor = (long) byNameQuery.size() + 1; //가져온 갯수 체크
-            places.addAll(byNameQuery);
-            if (places.size() >= size) { // ex) 7개로 다 채운 경우
-                List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList(places);
-                return new ResPlaceSearchPaging(resPlaceBriefs, tempCursor, 2L, null, false, null, null);
-            }
-        } else if (cursor.getIdCursor() == 2L) {
-            List<Tuple> byNameQuery = placeRepository.findPlacesByNameQuery(member, filter, searchQuery, cursor, size);
-            places.addAll(byNameQuery);
-            if (places.size() >= size) {
-                List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList(places);
-                return new ResPlaceSearchPaging(resPlaceBriefs, cursor.getCountCursor() + size, 2L, null, false, null, null);
-            }
+        if (performNameSearch(member, searchQuery, cursor, filter, size, places)) {
+            return createPagingResponse(places, cursor, size, 2L);
         }
 
-        // 태그 검색이 가능한 경우
-        log.info("tag 태그 대응 검색 가능!");
-        Long tagId = searchUtil.findTagBySearchQuery(searchQuery);
+        log.info("Tag 태그 연관 검색 가능!");
 
-        if (tagId != null && (cursor.getIdCursor() == null || cursor.getIdCursor() < 3L)) {
-            int temp2 = places.size();
-            cursor.setCountCursor(0L);
-            List<Tuple> placesByTag = placeRepository.findPlacesByTag(member, filter, tagId, cursor, size - temp2); //필요한 만큼
-            tempCursor = (long) placesByTag.size() + 1; //사이즈 체크
-            places.addAll(placesByTag);
-            if (places.size() >= size) {
-                List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList(places);
-                return new ResPlaceSearchPaging(resPlaceBriefs, tempCursor, 3L, null, false, null, null);
-            }
-
-        }
-        if (tagId != null && (cursor.getIdCursor() == null || cursor.getIdCursor() == 3L)) {
-            List<Tuple> placesByTag = placeRepository.findPlacesByTag(member, filter, tagId, cursor, size);
-            places.addAll(placesByTag);
-            if (places.size() >= size) {
-                List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList(places);
-                return new ResPlaceSearchPaging(resPlaceBriefs, cursor.getCountCursor() + size, 3L, null, false, null, null);
-            }
+        // 태그 검색 가능한 경우
+        if (performTagSearch(member, searchQuery, cursor, filter, size, places)) {
+            return createPagingResponse(places, cursor, size, 3L);
         }
 
-        List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList(places); //모든 검색 결과 10개 미만
+        // 모든 검색 결과가 10개 미만인 경우
+        List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList(places);
         return new ResPlaceSearchPaging(resPlaceBriefs, cursor.getCountCursor() + resPlaceBriefs.size(), 3L, null, false, null, null);
+    }
+
+    private boolean performRegionOrCitySearch(Member member, String searchQuery, ExploreCursor cursor, ExploreFilter filter, int size, List<Tuple> places) {
+        String regionQuery = searchUtil.containRegionQuery(searchQuery);
+        String cityQuery = regionQuery == null ? searchUtil.containCityQuery(searchQuery) : null;
+
+        if (cursor.getIdCursor() == null || cursor.getIdCursor() == 1L) {
+            if (regionQuery != null) {
+                log.info("regionQuery 시군구 검색 가능!");
+                places.addAll(placeRepository.findPlacesByRegionQuery(member, filter, regionQuery, cursor, size));
+            } else if (cityQuery != null) {
+                log.info("cityQuery 행정구역 검색 가능!");
+                places.addAll(placeRepository.findPlacesByCityQuery(member, filter, cityQuery, cursor, size));
+            }
+            return places.size() >= size;
+        }
+        return false;
+    }
+
+
+    private boolean performNameSearch(Member member, String searchQuery, ExploreCursor cursor, ExploreFilter filter, int size, List<Tuple> places) {
+        if (cursor.getIdCursor() == null || cursor.getIdCursor() < 2L) {
+            cursor.setCountCursor(0L);
+            places.addAll(placeRepository.findPlacesByNameQuery(member, filter, searchQuery, cursor, size - places.size()));
+            return places.size() >= size;
+        } else if (cursor.getIdCursor() == 2L) {
+            places.addAll(placeRepository.findPlacesByNameQuery(member, filter, searchQuery, cursor, size));
+            return places.size() >= size;
+        }
+        return false;
+    }
+
+    private boolean performTagSearch(Member member, String searchQuery, ExploreCursor cursor, ExploreFilter filter, int size, List<Tuple> places) {
+        Long tagId = searchUtil.findTagBySearchQuery(searchQuery);
+        if (tagId != null) {
+            if (cursor.getIdCursor() == null || cursor.getIdCursor() < 3L) {
+                cursor.setCountCursor(0L);
+                places.addAll(placeRepository.findPlacesByTag(member, filter, tagId, cursor, size - places.size()));
+                return places.size() >= size;
+            } else if (cursor.getIdCursor() == 3L) {
+                places.addAll(placeRepository.findPlacesByTag(member, filter, tagId, cursor, size));
+                return places.size() >= size;
+            }
+        }
+        return false;
+    }
+
+    private ResPlaceSearchPaging createPagingResponse(List<Tuple> places, ExploreCursor cursor, int size, Long nextIdCursor) {
+        List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList(places.subList(0, Math.min(size, places.size())));
+        return new ResPlaceSearchPaging(resPlaceBriefs, cursor.getCountCursor() + resPlaceBriefs.size(), nextIdCursor, null, false, null, null);
     }
 
 

@@ -63,8 +63,8 @@ public class FamousPlaceService {
         return famousPlaces.stream().map(ResFamous::new).collect(Collectors.toList());
     }
 
-    public ResPlaceSearchPaging getSimilarPlaces(Long memberId, ExploreFilter filter, Long famousPlaceId, Long cursor, int size) {
-        Member member = memberService.findMemberById(memberId);
+    public ResPlaceSearchPaging getSimilarPlaces(Member member, ExploreFilter filter, Long famousPlaceId, Long cursor, int size) {
+
 
         FamousPlace famousPlace = findByFamousPlaceId(famousPlaceId);
         List<FamousPlaceTagLog> tagsByFamousPlace = famousPlaceTagLogRepository.findTagsByFamousPlace(famousPlace);

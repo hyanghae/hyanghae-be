@@ -15,13 +15,13 @@ public class ResSearchRankDto {
     String keyWord;
 
     @Schema(description = "검색 횟수", example = "20")
-    double score;
+    double searchCount;
 
 
     public ResSearchRankDto(int rank, String keyWord, double score) {
         this.rank = rank;
         this.keyWord = keyWord;
-        this.score = score;
+        this.searchCount = score;
     }
     public static ResSearchRankDto convertToResponseRankingDto(ZSetOperations.TypedTuple<Object> typedTuple, int rank) {
         String keyWord = (String) typedTuple.getValue();
