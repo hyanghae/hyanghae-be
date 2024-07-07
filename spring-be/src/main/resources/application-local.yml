@@ -55,7 +55,7 @@ security:
   jwt:
     token:
       secret-key: "remoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoaremoa"
-      expiration-minutes: 30    # 3시간 -> 30분
+      expiration-minutes: 525600    # 3시간 -> 30분 (525600분 1년)
       refresh-expiration-minutes: 240    # 분단위 -> 240
 
 

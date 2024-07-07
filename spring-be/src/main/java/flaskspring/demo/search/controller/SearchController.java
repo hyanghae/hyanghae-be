@@ -121,9 +121,9 @@ public class SearchController {
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
     })
     @Operation(summary = "지역 목록", description = "행정구역 단위 목록 : ex) 서울특별시 -> //정식 명칭: 서울특별시, paramName: SEOUL, 줄임말: 서울//")
-    @GetMapping("/search/city")
+    @GetMapping("/city")
     public ResponseEntity<BaseResponse<BaseObject<ResCity>>> allCityGet() {
-        log.info("GET /api/search/city");
+        log.info("GET /api/city");
 
         CityCode[] values = CityCode.values();
         List<ResCity> resCities = Arrays.stream(values)
