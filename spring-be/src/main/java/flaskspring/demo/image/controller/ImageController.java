@@ -49,4 +49,8 @@ public class ImageController {
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>()));
     }
+
+
+
+
 }

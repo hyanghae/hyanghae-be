@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 
 @Tag(name = "인증 기능", description = "인증 API")
-
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor

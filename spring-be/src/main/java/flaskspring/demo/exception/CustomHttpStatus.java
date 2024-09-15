@@ -13,7 +13,7 @@ public enum CustomHttpStatus {
     UNAUTHORIZED(401, "Unauthorized"),
     FORBIDDEN(403, "Forbidden"),
     INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
-    REISSUE_ERROR(1000, "Reissue Error");
+    REISSUE_ERROR(600, "Reissue Error");
 
     private final int statusCode;
     private final String reasonPhrase;

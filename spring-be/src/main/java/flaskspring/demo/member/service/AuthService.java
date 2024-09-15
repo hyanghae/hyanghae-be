@@ -52,7 +52,7 @@ public class AuthService {
     }
 
     @Transactional
-    public ResReIssue reissueAccessToken(HttpServletRequest request, HttpServletResponse response) {
+    public ResReIssue reissueAccessToken(HttpServletRequest request, HttpServletResponse response){
         String newAccessToken = null;
         String refreshToken = null;
         System.out.println("reissueAccessToken 진입");
