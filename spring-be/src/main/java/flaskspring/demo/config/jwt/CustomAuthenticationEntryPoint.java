@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+import static flaskspring.demo.config.auth.AuthConstant.TOKEN_EXPIRED_MESSAGE;
+import static flaskspring.demo.config.auth.AuthConstant.TOKEN_NOT_VALID_MESSAGE;
+
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     /*
@@ -31,12 +34,12 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             return;
         }
 
-        if(exception.equals("토큰이 만료되었습니다.")) {
+        if(exception.equals(TOKEN_EXPIRED_MESSAGE)) {
             setErrorResponse(response, BaseResponseCode.TOKEN_EXPIRED);
             return;
         }
 
-        if (exception.equals("유효하지 않은 토큰입니다.")) { //토큰이 있지만, 로그인을(인증) 하지 못한 경우
+        if (exception.equals(TOKEN_NOT_VALID_MESSAGE)) { //토큰이 있지만, 로그인을(인증) 하지 못한 경우
             setErrorResponse(response, BaseResponseCode.NOT_VALID_TOKEN);
             return;
         }

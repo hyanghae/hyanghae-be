@@ -22,9 +22,9 @@ import java.util.List;
 import static flaskspring.demo.utils.ConvertUtil.convertToPlaceBriefList;
 
 @RequiredArgsConstructor
-@Service
 @Transactional
-public class ExploreService {
+@Service
+public class ExploringService {
 
 
     private final ExploreRepository exploreRepository;

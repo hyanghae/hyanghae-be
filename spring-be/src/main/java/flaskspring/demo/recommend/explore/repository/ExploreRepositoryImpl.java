@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Repository
 @RequiredArgsConstructor
+@Repository
 public class ExploreRepositoryImpl implements ExploreRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
@@ -32,6 +32,7 @@ public class ExploreRepositoryImpl implements ExploreRepository {
     QPlace place = QPlace.place;
     QPlaceRegister placeRegister = QPlaceRegister.placeRegister;
 
+    @Override
     public List<Tuple> findExplorePlaceWithoutTags(Member member, ExploreFilter filter, ExploreCursor cursor, int size) {
 
         JPAQuery<Tuple> query = jpaQueryFactory.select(
@@ -84,6 +85,7 @@ public class ExploreRepositoryImpl implements ExploreRepository {
 
 
 
+    @Override
     public List<Tuple> findExplorePlaceWithRecommend(Member member, List<String> placeNames) {
         List<Tuple> results = jpaQueryFactory
                 .select(

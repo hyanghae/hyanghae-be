@@ -28,6 +28,10 @@ spring:
         #password: 11111
         connect-ip: 127.0.0.1
         nodes: 127.0.0.1:6379, 127.0.0.1:6380, 127.0.0.1:6381
+  servlet:
+    multipart:
+      maxFileSize: 30MB # 파일 하나의 최대 크기
+      maxRequestSize: 30MB  # 한 번에 최대 업로드 가능 용량
 
 
 

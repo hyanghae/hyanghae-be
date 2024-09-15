@@ -36,6 +36,9 @@ public class Place {
     @Column(name = "tourist_spot_name", length = 100) // 적절한 길이로 설정
     private String touristSpotName;
 
+    @Column(name = "eng_city_name", length = 100) // 적절한 길이로 설정
+    private String engCityName;
+
     @Column(name = "image_path", length = 200) // 이미지 경로의 최대 길이에 맞게 지정
     private String imagePath;
 

@@ -18,6 +18,9 @@ import org.springframework.web.filter.GenericFilterBean;
 import java.io.IOException;
 import java.util.Optional;
 
+import static flaskspring.demo.config.auth.AuthConstant.TOKEN_EXPIRED_MESSAGE;
+import static flaskspring.demo.config.auth.AuthConstant.TOKEN_NOT_VALID_MESSAGE;
+
 /**
  * 만들어둔 jwt 패키지에 OncePerRequestFilter를 상속받는 유효성 체크용 필터를 만든다.
  * 해당 필터는 이름에서도 짐작 가능 하듯, 한번의 요청마다 한번씩 실행되는 필터이다. -> GenericFilterBean으로 변경
@@ -32,6 +35,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     private final JwtTokenProvider jwtTokenProvider;
    // private final AccessTokenRepository accessTokenRepository;
     private final RedisUtils redisUtils;
+
+
 
     // Request로 들어오는 Jwt Token의 유효성을 검증하는 filter를 filterChain에 등록합니다.
     @Override
@@ -55,11 +60,13 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         } catch (ExpiredJwtException e) {
             //  log.info("토큰이 있지만 기간이 만료 됨, 리프레시 토큰을 통한 액세스 토큰 재발급");
             log.info("토큰이 있지만 기간이 만료 됨");
-            servletRequest.setAttribute(JwtProperties.HEADER_STRING, "토큰이 만료되었습니다.");
+
+
+            servletRequest.setAttribute(JwtProperties.HEADER_STRING, TOKEN_EXPIRED_MESSAGE);
             //      reissueAccessToken((HttpServletRequest)servletRequest, (HttpServletResponse)servletResponse, e);
         } catch (Exception e) {
             log.info("토큰이 있지만 유효하지 않음, 인증 필요한 api 접근시 예외 발생");
-            servletRequest.setAttribute(JwtProperties.HEADER_STRING, "유효하지 않은 토큰입니다.");
+            servletRequest.setAttribute(JwtProperties.HEADER_STRING, TOKEN_NOT_VALID_MESSAGE);
         }
 
         filterChain.doFilter(servletRequest, servletResponse); //토큰이 없는 경우는 바로 다음 필터로 넘어감.

@@ -28,7 +28,7 @@ import java.util.List;
 @Tag(name = "회원 기능", description = "회원 개인 기능")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/member")
+@RequestMapping("/api")
 @Slf4j
 public class MemberController {
 
@@ -43,7 +43,7 @@ public class MemberController {
     })
     @Operation(summary = "회원이 업로드한 이미지 목록", description = "size에 따라 마이페이지 화면 활용" +
             "<br> 모두 불러오려면size 파라미터 생략")
-    @GetMapping("/upload-image")
+    @GetMapping("/member/upload-image")
     public ResponseEntity<BaseResponse<BaseObject<ResUploadedImage>>> uploadImageGet(
             @AuthenticationPrincipal MemberDetails memberDetails,
             @RequestParam(required = false, name = "size") Integer size) {
@@ -62,12 +62,12 @@ public class MemberController {
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
     @Operation(summary = "회원이 저장한 여행지 목록", description = "size에 따라 마이페이지 화면 활용, " +
-            "<br> 모두 불러오려면size 파라미터 생략")
-    @GetMapping("/saved")
+            "<br> 모두 불러오려면 size 파라미터 생략")
+    @GetMapping("/place/save")
     public ResponseEntity<BaseResponse<BaseObject<ResPlaceBrief>>> savedPlacesGet(
             @AuthenticationPrincipal MemberDetails memberDetails,
             @RequestParam(required = false, name = "size") Integer size) {
-        log.info("GET /api/member/saved");
+        log.info("GET /api/place/save");
 
         Long memberId = memberDetails.getMemberId();
         Member myMember = memberService.findMemberById(memberId);

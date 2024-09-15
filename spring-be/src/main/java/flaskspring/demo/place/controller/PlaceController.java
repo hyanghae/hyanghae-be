@@ -24,6 +24,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/place")
+@Slf4j
 public class PlaceController {
 
     private final PlaceRegisterService placeRegisterService;
@@ -51,9 +53,9 @@ public class PlaceController {
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
     @PostMapping("/save")
-    public ResponseEntity<BaseResponse<ResPlaceRegister>> register(
-            @AuthenticationPrincipal MemberDetails memberDetails,
-            @RequestBody ReqPlaceRegister reqPlaceRegister) {
+    public ResponseEntity<BaseResponse<ResPlaceRegister>> register(@AuthenticationPrincipal MemberDetails memberDetails,
+                                                                   @RequestBody ReqPlaceRegister reqPlaceRegister) {
+        log.info("POST /api/place/save");
 
         Long myMemberId = memberDetails.getMemberId();
         Member member = memberService.findMemberById(myMemberId);
@@ -73,9 +75,11 @@ public class PlaceController {
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
-    @GetMapping("detail/{placeId}")
+    @GetMapping("/detail/{placeId}")
     public ResponseEntity<BaseResponse<ResPlaceDetail>> placeDetailGet(@AuthenticationPrincipal MemberDetails memberDetails,
                                                                        @PathVariable("placeId") Long placeId) {
+        log.info("POST /api/place/detail/{placeId}");
+
         Long myMemberId = memberDetails.getMemberId();
         Member member = memberService.findMemberById(myMemberId);
 
@@ -94,12 +98,14 @@ public class PlaceController {
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
-    @GetMapping("detail/{placeId}/similar")
+    @GetMapping("/detail/{placeId}/similar")
     public ResponseEntity<BaseResponse<BaseObject<ResFamous>>> SimilarFamousPlaceGet(
             @AuthenticationPrincipal MemberDetails memberDetails,
             @PathVariable("placeId") Long placeId,
             @RequestParam(required = false, defaultValue = "ALL", name = "city") String cityFilter
     ) {
+        log.info("POST /api/place/detail/{placeId}/similar");
+
         Long myMemberId = memberDetails.getMemberId();
         ExploreFilter filter = new ExploreFilter("alpha", CityCode.fromCityParameterName(cityFilter));
         List<ResFamous> similarFamousPlace = placeService.getSimilarFamousPlace(filter, placeId);
@@ -115,12 +121,13 @@ public class PlaceController {
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
-    @GetMapping("detail/{placeId}/similar/{famousPlaceId}")
+    @GetMapping("/detail/{placeId}/similar/{famousPlaceId}")
     public ResponseEntity<BaseResponse<ResSimilarity>> SimilarityDetailGet(
             @AuthenticationPrincipal MemberDetails memberDetails,
             @PathVariable("placeId") Long placeId,
             @PathVariable("famousPlaceId") Long famousPlaceId
     ) {
+        log.info("POST /api/place/detail/{placeId}/similar/{famousPlaceId}");
         Long myMemberId = memberDetails.getMemberId();
         ResSimilarity similarity = placeService.getSimilarity(placeId, famousPlaceId);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, similarity));

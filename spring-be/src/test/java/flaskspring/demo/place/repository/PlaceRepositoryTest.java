@@ -54,27 +54,7 @@ class PlaceRepositoryTest {
         // 예를 들어, 반환된 장소가 특정 조건을 만족하는지를 확인할 수 있습니다.
     }
 
-    @Test
-    void findPlaceByCityQuery() {
-        Member member = memberService.findMemberById(1L);
-        List<Tuple> 서울특별시 = placeRepository.findPlacesByCityQuery(member, "강원특별자치도");
-    }
 
-    @Test
-    void findPlaceByRegionQuery() {
-        Member member = memberService.findMemberById(1L);
-        List<Tuple> 삼척 = placeRepository.findPlacesByRegionQuery(member, "삼척");
-    }
 
-    @Test
-    void findPlaceByNameQuery() {
-        Member member = memberService.findMemberById(1L);
-        List<Tuple> 시장 = placeRepository.findPlacesByNameQuery(member, "시장");
-    }
 
-    @Test
-    void findPlaceByTag() {
-        Member member = memberService.findMemberById(1L);
-        List<Tuple> 액티비티 = placeRepository.findPlacesByTag(member, 1L);
-    }
 }

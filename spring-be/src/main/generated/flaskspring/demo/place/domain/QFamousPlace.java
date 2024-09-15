@@ -21,6 +21,8 @@ public class QFamousPlace extends EntityPathBase<FamousPlace> {
 
     public final StringPath city = createString("city");
 
+    public final StringPath enCityName = createString("enCityName");
+
     public final NumberPath<Integer> hashTagCount = createNumber("hashTagCount", Integer.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);

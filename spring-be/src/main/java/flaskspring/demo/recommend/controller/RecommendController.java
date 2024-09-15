@@ -1,9 +1,10 @@
 package flaskspring.demo.recommend.controller;
 
 import flaskspring.demo.config.auth.MemberDetails;
-import flaskspring.demo.exception.*;
-import flaskspring.demo.place.domain.FamousPlace;
-import flaskspring.demo.recommend.explore.service.ExploreService;
+import flaskspring.demo.exception.BaseExceptionResponse;
+import flaskspring.demo.exception.BaseObject;
+import flaskspring.demo.exception.BaseResponse;
+import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.home.dto.res.ResFamous;
 import flaskspring.demo.home.dto.res.ResRisingPlacePaging;
 import flaskspring.demo.member.domain.Member;
@@ -11,6 +12,7 @@ import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.place.domain.CityCode;
 import flaskspring.demo.place.service.FamousPlaceService;
 import flaskspring.demo.recommend.dto.res.ResPlaceRecommendPaging;
+import flaskspring.demo.recommend.explore.service.ExploringService;
 import flaskspring.demo.recommend.service.RecommendService;
 import flaskspring.demo.utils.MessageUtils;
 import flaskspring.demo.utils.cursor.ExploreCursor;
@@ -25,14 +27,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Tag(name = "여행지 추천", description = "유저 공통 여행지 추천 API")
-@RestController
+
 @RequiredArgsConstructor
 @RequestMapping("/api/recommend")
 @Slf4j
@@ -41,7 +45,7 @@ public class RecommendController {
     private final RecommendService recommendService;
     private final FamousPlaceService famousPlaceService;
     private final MemberService memberService;
-    private final ExploreService exploreService;
+    private final ExploringService exploringService;
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
@@ -130,7 +134,7 @@ public class RecommendController {
         // 디폴트 값 또는 "all"일 경우 필터를 적용하지 않음
         ExploreFilter filter = new ExploreFilter(sort, CityCode.fromCityParameterName(cityFilter));
         ExploreCursor cursor = new ExploreCursor(countCursor, nameCursor, idCursor);
-        ResPlaceRecommendPaging response = exploreService.getExplorePlace(member, filter, cursor, size);
+        ResPlaceRecommendPaging response = exploringService.getExplorePlace(member, filter, cursor, size);
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, response));
     }

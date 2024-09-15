@@ -1,6 +1,6 @@
 package flaskspring.demo.tag.service;
 
-import flaskspring.demo.like.service.PlaceLikeService;
+
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.dto.GerneralLoginDto.GeneralSignUpReq;
 import flaskspring.demo.member.dto.Res.GeneralSignUpRes;
@@ -31,8 +31,6 @@ class FeedServiceTest {
     @Autowired
     FeedService feedService;
 
-    @Autowired
-    PlaceLikeService placeLikeService;
 
     Random random = new Random();
 

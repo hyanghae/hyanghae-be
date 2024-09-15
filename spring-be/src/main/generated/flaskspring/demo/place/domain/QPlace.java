@@ -24,6 +24,8 @@ public class QPlace extends EntityPathBase<Place> {
 
     public final StringPath city = createString("city");
 
+    public final StringPath engCityName = createString("engCityName");
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath imagePath = createString("imagePath");

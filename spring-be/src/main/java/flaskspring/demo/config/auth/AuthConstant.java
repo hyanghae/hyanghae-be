@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class AuthConstant {
 
+    public static final String TOKEN_EXPIRED_MESSAGE = "토큰이 만료되었습니다.";
+    public static final String TOKEN_NOT_VALID_MESSAGE = "유효하지 않은 토큰입니다.";
 
     // 인증이 필요하지 않은 경로
     public static final String[] AUTH_WHITELIST = {

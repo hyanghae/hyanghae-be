@@ -21,6 +21,7 @@ public class FamousPlace {
     private String roadAddress;
     private String subCategory;
     private String touristSpotName;
+    private String enCityName;
 
     private int hashTagCount;
     private int searchCount;

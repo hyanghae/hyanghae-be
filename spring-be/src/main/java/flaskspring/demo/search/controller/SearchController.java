@@ -81,7 +81,7 @@ public class SearchController {
             @AuthenticationPrincipal MemberDetails memberDetails,
             @RequestParam(required = false, defaultValue = "accuracy", name = "sort") String sort,
             @RequestParam(required = false, defaultValue = "ALL", name = "city") String cityFilter,
-            @RequestParam(required = false, defaultValue = "") String searchQuery,
+            @RequestParam(required = false, defaultValue = "", name= "searchQuery") String searchQuery,
             @RequestParam(required = false, defaultValue = "1", name = "countCursor") String countCursor,
             @RequestParam(required = false, defaultValue = "1", name = "idCursor") String idCursor,
             @RequestParam(required = false, defaultValue = "10", name = "size") int size) {
@@ -152,7 +152,7 @@ public class SearchController {
 //            @RequestParam(required = false, name = "nameCursor") String name,
 //            @RequestParam(required = false, defaultValue = "10", name = "size") int size
 //    ) {
-//        log.info("GET /api/search");
+//        log.info("GET /ch");
 //
 //
 //        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new ResPlaceSearchPaging()));

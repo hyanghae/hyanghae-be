@@ -1,4 +1,4 @@
-package flaskspring.demo.like.domain;
+package flaskspring.demo.place.register.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -11,16 +11,16 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QPlaceLike is a Querydsl query type for PlaceLike
+ * QPlaceRegister is a Querydsl query type for PlaceRegister
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QPlaceLike extends EntityPathBase<PlaceLike> {
+public class QPlaceRegister extends EntityPathBase<PlaceRegister> {
 
-    private static final long serialVersionUID = -504258802L;
+    private static final long serialVersionUID = 1375773863L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QPlaceLike placeLike = new QPlaceLike("placeLike");
+    public static final QPlaceRegister placeRegister = new QPlaceRegister("placeRegister");
 
     public final DateTimePath<java.time.LocalDateTime> createdTime = createDateTime("createdTime", java.time.LocalDateTime.class);
 
@@ -30,23 +30,23 @@ public class QPlaceLike extends EntityPathBase<PlaceLike> {
 
     public final flaskspring.demo.place.domain.QPlace place;
 
-    public QPlaceLike(String variable) {
-        this(PlaceLike.class, forVariable(variable), INITS);
+    public QPlaceRegister(String variable) {
+        this(PlaceRegister.class, forVariable(variable), INITS);
     }
 
-    public QPlaceLike(Path<? extends PlaceLike> path) {
+    public QPlaceRegister(Path<? extends PlaceRegister> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QPlaceLike(PathMetadata metadata) {
+    public QPlaceRegister(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QPlaceLike(PathMetadata metadata, PathInits inits) {
-        this(PlaceLike.class, metadata, inits);
+    public QPlaceRegister(PathMetadata metadata, PathInits inits) {
+        this(PlaceRegister.class, metadata, inits);
     }
 
-    public QPlaceLike(Class<? extends PlaceLike> type, PathMetadata metadata, PathInits inits) {
+    public QPlaceRegister(Class<? extends PlaceRegister> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new flaskspring.demo.member.domain.QMember(forProperty("member")) : null;
         this.place = inits.isInitialized("place") ? new flaskspring.demo.place.domain.QPlace(forProperty("place"), inits.get("place")) : null;

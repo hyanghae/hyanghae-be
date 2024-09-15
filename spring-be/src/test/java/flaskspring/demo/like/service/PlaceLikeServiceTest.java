@@ -19,8 +19,7 @@ class PlaceLikeServiceTest {
     @Autowired
     MemberService memberService;
 
-    @Autowired
-    PlaceLikeService placeLikeService;
+
 
     @Autowired
     PlaceRepository placeRepository;
@@ -31,7 +30,7 @@ class PlaceLikeServiceTest {
         Long savedMemberId = createMember();
         Long placeId = 1L;
 
-        placeLikeService.likePlace(savedMemberId, placeId);
+
         Place place = placeRepository.findById(1L).orElseThrow();
         assertThat(place.getLikeCount()).isEqualTo(1);
     }
@@ -40,8 +39,7 @@ class PlaceLikeServiceTest {
     void likeCancelTest() {
         Long savedMemberId = createMember();
         Long placeId = 1L;
-        placeLikeService.likePlace(savedMemberId, placeId);
-        placeLikeService.likePlace(savedMemberId, placeId);
+
         Place place = placeRepository.findById(1L).orElseThrow();
         assertThat(place.getLikeCount()).isEqualTo(0);
     }
