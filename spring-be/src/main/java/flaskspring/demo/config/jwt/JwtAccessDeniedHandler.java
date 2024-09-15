@@ -25,9 +25,9 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
                                    BaseResponseCode baseResponse
     ) {
         ObjectMapper objectMapper = new ObjectMapper();
-        response.setStatus(baseResponse.getCode().value());
+        response.setStatus(baseResponse.getCode().getStatusCode());
         response.setContentType("application/json;charset=UTF-8");
-        BaseExceptionResponse errorResponse = new BaseExceptionResponse(baseResponse.getCode().value(),baseResponse.getMessage());
+        BaseExceptionResponse errorResponse = new BaseExceptionResponse(baseResponse.getCode().getStatusCode(),baseResponse.getMessage());
         try {
             response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
         } catch (IOException e) {

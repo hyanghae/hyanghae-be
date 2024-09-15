@@ -21,7 +21,7 @@ public class BaseResponse<T> {
     private T data;
 
     public BaseResponse(BaseResponseCode responseCode, T data) {
-        this.code = responseCode.getCode().value();
+        this.code = responseCode.getCode().getStatusCode();
         this.message = responseCode.getMessage();
         this.data = data;
     }

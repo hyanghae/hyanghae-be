@@ -50,9 +50,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                                    BaseResponseCode errorCode
     ) {
         ObjectMapper objectMapper = new ObjectMapper();
-        response.setStatus(errorCode.getCode().value());
+        response.setStatus(errorCode.getCode().getStatusCode());
         response.setContentType("application/json;charset=UTF-8");
-        BaseExceptionResponse baseExceptionResponse = new BaseExceptionResponse(errorCode.getCode().value(), errorCode.getMessage());
+        BaseExceptionResponse baseExceptionResponse = new BaseExceptionResponse(errorCode.getCode().getStatusCode(), errorCode.getMessage());
         try {
             response.getWriter().write(objectMapper.writeValueAsString(baseExceptionResponse));
         } catch (IOException e) {

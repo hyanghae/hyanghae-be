@@ -12,8 +12,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {BaseException.class})
     protected ResponseEntity<BaseExceptionResponse> handleBaseException(BaseException e) {
-        return ResponseEntity.status(e.baseResponseCode.getCode())
-                .body(new BaseExceptionResponse(e.baseResponseCode.getCode().value(), e.baseResponseCode.getMessage()));
+        return ResponseEntity.status(e.baseResponseCode.getCode().getStatusCode())
+                .body(new BaseExceptionResponse(e.baseResponseCode.getCode().getStatusCode(), e.baseResponseCode.getMessage()));
     }
 
     @ExceptionHandler(value = {HttpClientErrorException.class})

@@ -30,16 +30,17 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 import java.util.List;
 
 
 @Tag(name = "여행지 추천", description = "유저 공통 여행지 추천 API")
-
 @RequiredArgsConstructor
 @RequestMapping("/api/recommend")
 @Slf4j
+@RestController
 public class RecommendController {
 
     private final RecommendService recommendService;
