@@ -2,11 +2,15 @@ package flaskspring.demo.config.hello.dto.res;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class ResHello {
 
     @Schema(description = "업데이트 버전", example = "1.1")

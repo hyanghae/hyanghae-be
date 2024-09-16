@@ -1,6 +1,7 @@
 package flaskspring.demo.member.service;
 
 import flaskspring.demo.config.auth.AuthConstant;
+import flaskspring.demo.config.hello.dto.req.ReqAgreement;
 import flaskspring.demo.config.jwt.JwtTokenProvider;
 import flaskspring.demo.config.jwt.auth.RefreshToken;
 import flaskspring.demo.config.redis.RedisUtils;
@@ -50,6 +51,11 @@ public class MemberService {
     // private final MemberRefreshTokenRepository memberRefreshTokenRepository;
 
     @Transactional
+    public void updateTermsAgreement(Member member, ReqAgreement reqAgreement){
+        member.updateTermsAgreement(reqAgreement);
+    }
+
+    @Transactional
     public GeneralLoginRes generalLogin(GeneralLoginReq loginReq) {
         Member member = getMemberByAccount(loginReq.getAccount());
         validatePassword(loginReq.getPassword(), member.getPassword());
@@ -57,7 +63,6 @@ public class MemberService {
         String token = jwtTokenProvider.createToken(member.getAccount());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getAccount());
         log.info("refreshToken : {}", refreshToken);
-
 
         updateRefreshToken(member, refreshToken);
 

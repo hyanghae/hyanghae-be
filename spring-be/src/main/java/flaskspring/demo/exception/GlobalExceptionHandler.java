@@ -12,7 +12,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {BaseException.class})
     protected ResponseEntity<BaseExceptionResponse> handleBaseException(BaseException e) {
-        return ResponseEntity.status(e.baseResponseCode.getCode().getStatusCode())
+        return ResponseEntity.status(e.baseResponseCode.getHttpCode())
                 .body(new BaseExceptionResponse(e.baseResponseCode.getCode().getStatusCode(), e.baseResponseCode.getMessage()));
     }
 

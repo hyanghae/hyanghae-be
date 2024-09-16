@@ -21,11 +21,17 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath account = createString("account");
 
+    public final BooleanPath ageTerms = createBoolean("ageTerms");
+
     public final StringPath email = createString("email");
 
     public final BooleanPath isOnboarded = createBoolean("isOnboarded");
 
     public final NumberPath<Long> kakaoId = createNumber("kakaoId", Long.class);
+
+    public final BooleanPath locationTerms = createBoolean("locationTerms");
+
+    public final BooleanPath marketingTerms = createBoolean("marketingTerms");
 
     public final NumberPath<Long> memberId = createNumber("memberId", Long.class);
 
@@ -34,6 +40,8 @@ public class QMember extends EntityPathBase<Member> {
     public final StringPath nickname = createString("nickname");
 
     public final StringPath password = createString("password");
+
+    public final BooleanPath privacyTerms = createBoolean("privacyTerms");
 
     public final StringPath profileImage = createString("profileImage");
 
@@ -44,6 +52,8 @@ public class QMember extends EntityPathBase<Member> {
     public final NumberPath<Integer> registrationCount = createNumber("registrationCount", Integer.class);
 
     public final EnumPath<Role> role = createEnum("role", Role.class);
+
+    public final BooleanPath serviceTerms = createBoolean("serviceTerms");
 
     public QMember(String variable) {
         super(Member.class, forVariable(variable));

@@ -7,6 +7,8 @@ import flaskspring.demo.config.hello.dto.res.ResHello;
 import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
+import flaskspring.demo.member.domain.Member;
+import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.utils.MessageUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,6 +34,8 @@ import java.util.HashMap;
 @Slf4j
 public class HelloController {
 
+    private final MemberService memberService;
+
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
             @ApiResponse(responseCode = "400", description = MessageUtils.ERROR,
@@ -45,10 +49,26 @@ public class HelloController {
             @AuthenticationPrincipal MemberDetails memberDetails
     ) {
         log.info("GET /api/hello");
-        if(memberDetails != null) {
+
+        if (memberDetails != null) {
             Long myMemberId = memberDetails.getMemberId();
+            Member member = memberService.findMemberById(myMemberId);
+            ResHello resHello = ResHello.builder()
+                    .updateVersion(1.1)
+                    .forceUpdateVersion(1.1)
+                    .needToOnboarding(!member.isOnboarded())
+                    .needToAgreement(!member.isRequiredTermsAgreed())
+                    .build();
+            return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, resHello));
+        } else {
+            ResHello resHello = ResHello.builder()
+                    .updateVersion(1.1)
+                    .forceUpdateVersion(1.1)
+                    .needToOnboarding(true)
+                    .needToAgreement(true)
+                    .build();
+            return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, resHello));
         }
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new ResHello()));
     }
 
 
@@ -67,7 +87,8 @@ public class HelloController {
     ) {
         log.info("POST /api/agree");
         Long myMemberId = memberDetails.getMemberId();
-
+        Member myMember = memberService.findMemberById(myMemberId);
+        memberService.updateTermsAgreement(myMember, reqAgreement);
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>()));
     }
 }

@@ -1,5 +1,6 @@
 package flaskspring.demo.member.domain;
 
+import flaskspring.demo.config.hello.dto.req.ReqAgreement;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,6 +36,12 @@ public class Member {
 
     private boolean refreshNeeded;
 
+    private boolean serviceTerms;
+    private boolean privacyTerms;
+    private boolean locationTerms;
+    private boolean ageTerms;
+    private boolean marketingTerms;
+
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
@@ -47,6 +54,9 @@ public class Member {
         if (this.registrationCount > 0) {
             this.registrationCount--;
         }
+    }
+    public boolean isRequiredTermsAgreed(){
+        return this.serviceTerms;
     }
 
     public void onBoard() {
@@ -68,6 +78,14 @@ public class Member {
     }
     public void setRefreshNotNeeded() {
         this.refreshNeeded = false;
+    }
+
+    public void updateTermsAgreement(ReqAgreement reqAgreement){
+        this.serviceTerms = reqAgreement.isServiceTerms();
+        this.privacyTerms = reqAgreement.isPrivacyTerms();
+        this.locationTerms = reqAgreement.isLocationTerms();
+        this.ageTerms = reqAgreement.isAgeTerms();
+        this.marketingTerms = reqAgreement.isMarketingTerms();
     }
 
 
