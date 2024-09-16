@@ -54,7 +54,8 @@ public class SettingController {
     })
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BaseResponse<Object>> recommendSetting(@AuthenticationPrincipal MemberDetails memberDetails,
-                                                                 @RequestPart(value = "data", required = false) ReqTagIndexes tagRequest,
+                                                                 @RequestPart(value = "data", required = true) ReqTagIndexes tagRequest,
+                                                                 @RequestPart(value = "isImgChanged", required = true) boolean isImgChanged,
                                                                  @RequestPart(value = "image", required = false) MultipartFile image) {
         log.info("POST /api/recommend/setting");
 
@@ -63,11 +64,13 @@ public class SettingController {
         System.out.println("image = " + image);
         Member member = memberService.findMemberById(myMemberId);
 
-        tagService.saveMemberTags(member, tagRequest.getTagIndexes()); //무조건 진입
-        if (image != null) {
-            uploadImageService.uploadImage(image, member);
-        } else {
-            uploadImageService.deleteSettingImage(member);
+        tagService.saveMemberTags(member, tagRequest.getTagIndexes()); //무조건 진입 (tagRequest 있어야 NullPointerException 안 남)
+        if (isImgChanged) { // 파일 변경 사항 있는 지 여부 (처음 설정 시에도 true, 삭제 시에도 true)
+            if (image != null) {
+                uploadImageService.uploadImage(image, member);
+            } else {
+                uploadImageService.deleteSettingImage(member);
+            }
         }
         rabbitMqService.sendMember(member);
 
