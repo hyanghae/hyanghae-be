@@ -26,12 +26,12 @@ public class AuthConstant {
             "/api/recommend/{famousPlaceId}/similar", "/api/recommend/explore", "/api/place/detail/{placeId}",
             "/api/place/detail/{placeId}/similar", "/api/place/detail/{placeId}/similar/{famousPlaceId}",
             "/api/recommend/setting", "/api/search", "/search/city", "/api/search", "/api/search/rank", "/api/search/city",
-            "/api/member/upload-image", "/api/member/saved"};
+            "/api/member/upload-image", "/api/member/saved", "/api/schedule"};
 
     // POST 메서드에 대한 인증이 필요한 경로
     public static final String[] POST_AUTH_BLACKLIST
             = {"/api/tag", "/api/like/{placeId}", "/api/departure", "/api/image", "/api/feed/image",
-            "/api/on-boarding", "/api/recommend/setting", "/api/place/save", "/api/agree"};
+            "/api/on-boarding", "/api/recommend/setting", "/api/place/save", "/api/agree", "/api/schedule"};
 
     // PUT 메서드에 대한 인증이 필요한 경로
     public static final String[] PUT_AUTH_BLACKLIST

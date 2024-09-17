@@ -48,7 +48,7 @@ public class FamousPlaceService {
             21L, 22L, 23L, 24L);
     ;
 
-    @RedisCacheable(cacheName = "famousPlaces", expireTime = 60)
+    //@RedisCacheable(cacheName = "famousPlaces", expireTime = 60)
     public List<ResFamous> get24FamousPlaces() {
         List<FamousPlace> top24FamousPlaces = famousPlaceRepository.findByIdIn(Top24FamousPlaceIds);
         return top24FamousPlaces.stream().map(ResFamous::new).collect(Collectors.toList());

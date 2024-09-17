@@ -93,7 +93,7 @@ public class RecommendController {
         ExploreFilter filter = new ExploreFilter(null, CityCode.fromCityParameterName(cityFilter));
         List<ResFamous> famousPlaces = null;
         if (filter.getCityFilter() == null) {
-            famousPlaces = famousPlaceService.get24FamousPlaces();
+            famousPlaces = famousPlaceService.get24FamousPlaces(); //24개 여행지에 대해 정의해야함
         } else {
             famousPlaces = famousPlaceService.getFamousPlace(filter); // 지역 필터 적용
         }

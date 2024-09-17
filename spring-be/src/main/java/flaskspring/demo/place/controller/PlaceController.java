@@ -78,7 +78,7 @@ public class PlaceController {
     @GetMapping("/detail/{placeId}")
     public ResponseEntity<BaseResponse<ResPlaceDetail>> placeDetailGet(@AuthenticationPrincipal MemberDetails memberDetails,
                                                                        @PathVariable("placeId") Long placeId) {
-        log.info("POST /api/place/detail/{placeId}");
+        log.info("GET /api/place/detail/{placeId}");
 
         Long myMemberId = memberDetails.getMemberId();
         Member member = memberService.findMemberById(myMemberId);

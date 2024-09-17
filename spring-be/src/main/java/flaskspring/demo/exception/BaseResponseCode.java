@@ -35,6 +35,7 @@ public enum BaseResponseCode {
     INVALID_CURSOR(HttpStatus.BAD_REQUEST,CustomHttpStatus.BAD_REQUEST, "유효하지 않은 커서 값입니다"),
     MISSING_PREFERENCES_FOR_RECOMMENDATION(HttpStatus.BAD_REQUEST,CustomHttpStatus.BAD_REQUEST, "추천을 하기 위한 취향 설정이 없습니다"),
     PREFERENCE_NOT_APPLIED(HttpStatus.BAD_REQUEST,CustomHttpStatus.BAD_REQUEST, "아직 취향 설정이 반영되지 않았습니다"),
+    INVALID_SCHEDULE(HttpStatus.BAD_REQUEST,CustomHttpStatus.BAD_REQUEST, "일정 리스트 길이와 날짜 수는 같아야 합니다"),
 
     REGISTRATION_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST,CustomHttpStatus.BAD_REQUEST, "여행지 등록개수 초과하였습니다."),
     INVALID_PAGE_NUMBER(HttpStatus.BAD_REQUEST,CustomHttpStatus.BAD_REQUEST, "페이지 번호가 잘못되었습니다."),

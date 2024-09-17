@@ -35,6 +35,12 @@ public class ResPlaceBrief {
     @Schema(description = "저장 여부", example = "false")
     private Boolean isSaved;
 
+    @Schema(description = "x좌표", example = "127.123123")
+    private double mapX;
+
+    @Schema(description = "y좌표", example = "38.12313")
+    private double mapY;
+
     public ResPlaceBrief(Tuple tuple) {
         Place place = tuple.get(0, Place.class);
         String tagIdsString = tuple.get(1, String.class);
@@ -49,7 +55,8 @@ public class ResPlaceBrief {
         this.region = createRegionString(place);
         this.touristSpotName = place.getTouristSpotName();
         this.placeImgUrl = place.getImagePath();
-
+        this.mapX = place.getLocation().getMapX();
+        this.mapY = place.getLocation().getMapY();
         this.tags = createResTags(tagIdsString, tagNamesString);
         this.isSaved = isRegistered;
     }

@@ -47,6 +47,8 @@ public class PlaceService {
     private final FamousPlaceService famousPlaceService;
     private final SearchUtil searchUtil;
 
+
+
     public ResPlaceSearchPaging getPlacesBySearching(Member member, String searchQuery, ExploreCursor cursor, ExploreFilter filter, int size) {
         List<Tuple> places = new ArrayList<>();
 

@@ -21,6 +21,7 @@ public class FamousPlace {
     private String roadAddress;
     private String subCategory;
     private String touristSpotName;
+    @Column(name = "en_city_name")
     private String enCityName;
 
     private int hashTagCount;
