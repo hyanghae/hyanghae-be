@@ -20,7 +20,7 @@ public class ResFamous implements Serializable {
     String region;
 
     @Schema(description = "파라미터 이름", example = "SEOUL")
-    private String paramName;
+    private String cityParamName;
 
     @Schema(description = "여행지명", example = "해운대")
     String touristSpotName;
@@ -28,7 +28,7 @@ public class ResFamous implements Serializable {
     public ResFamous(FamousPlace famousPlace) {
         this.famousPlaceId = famousPlace.getId();
         this.region = famousPlace.getCity() + " " + famousPlace.getRegion();
-        this.paramName = famousPlace.getEnCityName();
+        this.cityParamName = famousPlace.getEnCityName();
         this.touristSpotName = famousPlace.getTouristSpotName();
     }
 }

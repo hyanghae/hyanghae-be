@@ -66,6 +66,12 @@ security:
 flask:
   base-url: http://localhost:5000/ml/api/  # 로컬 프로파일용 Flask URL
 
+tour:
+  api:
+    key: X73S2gGZ1eqNSXScnMH%2BAzWjAGr%2F86%2FCa%2BhwHLGlBfffxF1To25%2BTjSEShocWpuUWaS7RNHY5noZChlLk9P3UQ%3D%3D
+    # 로컬 프로파일용 Flask URL
+
+
 
 
 
