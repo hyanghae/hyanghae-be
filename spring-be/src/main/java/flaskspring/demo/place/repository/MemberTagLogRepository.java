@@ -23,6 +23,10 @@ public interface MemberTagLogRepository extends JpaRepository<MemberTagLog, Long
     boolean existsByMemberAndTag(Member member, Tag tag);
 
     @Modifying
+    @Query(value = "DELETE FROM member_tag_log WHERE member_id = :memberId", nativeQuery = true)
+    void deleteByMemberHard(@Param("memberId") Long memberId);
+
+    @Modifying
     @Query("DELETE FROM MemberTagLog m WHERE m.member = :member")
     void deleteByMember(@Param("member") Member member);
 }

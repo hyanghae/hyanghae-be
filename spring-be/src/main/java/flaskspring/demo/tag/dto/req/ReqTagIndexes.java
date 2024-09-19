@@ -11,4 +11,7 @@ public class ReqTagIndexes {
 
     @Schema(description = "태그 인덱스 목록", example = "[1, 2, 3]")
     private List<Long> tagIndexes;
+
+    @Schema(description = "이미지 변경 여부", example = "true")
+    private boolean imgChanged;
 }

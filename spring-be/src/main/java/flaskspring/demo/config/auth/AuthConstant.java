@@ -41,7 +41,7 @@ public class AuthConstant {
 
     // DELETE 메서드에 대한 인증이 필요한 경로
     public static final String[] DELETE_AUTH_BLACKLIST
-            = {};
+            = {"/api/remove"};
 
     // ADMIN 역할에 대한 인증이 필요한 경로
     public static final String[] ADMIN_POST_AUTH_BLACKLIST = {};

@@ -69,5 +69,8 @@ cloud:
     stack:
       auto: false
 
+tour:
+  api:
+    key: X73S2gGZ1eqNSXScnMH%2BAzWjAGr%2F86%2FCa%2BhwHLGlBfffxF1To25%2BTjSEShocWpuUWaS7RNHY5noZChlLk9P3UQ%3D%3D
 
 

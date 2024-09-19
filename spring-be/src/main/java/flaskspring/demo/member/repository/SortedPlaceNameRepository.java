@@ -15,4 +15,10 @@ public interface SortedPlaceNameRepository extends JpaRepository<SortedPlaceName
     @Modifying
     @Query("DELETE FROM SortedPlaceName s WHERE s.member = :member")
     void deleteByMember(@Param("member")Member member);
+
+    @Modifying
+    @Query(value = "DELETE FROM sorted_place_name WHERE member_id = :memberId", nativeQuery = true)
+    void deleteByMemberHard(@Param("memberId") Long memberId);
+
+
 }

@@ -19,6 +19,10 @@ public interface UploadImageRepository extends JpaRepository<UploadImage, Long> 
     @Query("DELETE FROM UploadImage u WHERE u.member = :member")
     void deleteByMember(@Param("member") Member member); //멤버가 등록한 모든 이미지 삭제
 
+    @Modifying
+    @Query(value = "DELETE FROM upload_image WHERE member_id = :memberId", nativeQuery = true)
+    void deleteByMemberHard(@Param("memberId") Long memberId);
+
     Optional<UploadImage> findByMemberAndIsSetting(Member member, boolean isSetting);
 
 
