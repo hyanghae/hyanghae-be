@@ -4,6 +4,7 @@ package flaskspring.demo.config;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.StringSchema;
@@ -15,8 +16,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
-        info = @Info(title = "향해 API 명세서",
-                description = "향해 API 명세서입니다",
+        servers = {@Server(url = "/", description = "Default Server URL")},
+        info = @Info(
+                title = "레모아 API 명세서",
+                description = "레모아 API 명세서입니다",
                 version = "v1"))
 @Configuration
 public class SwaggerConfig {
