@@ -7,6 +7,7 @@ import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.home.dto.res.ResPlaceBrief;
 import flaskspring.demo.image.service.UploadImageService;
 import flaskspring.demo.member.domain.Member;
+import flaskspring.demo.member.dto.Res.ResMemberInfo;
 import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.member.dto.Res.ResUploadedImage;
 import flaskspring.demo.place.register.service.PlaceRegisterService;
@@ -35,6 +36,24 @@ public class MemberController {
     private final MemberService memberService;
     private final UploadImageService uploadImageService;
     private final PlaceRegisterService placeRegisterService;
+
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
+            @ApiResponse(responseCode = "400", description = MessageUtils.BAD_REQUEST,
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class)))
+    })
+    @Operation(summary = "회원 정보 조회", description = "회원 정보 조회 api")
+    @GetMapping("/member/info")
+    public ResponseEntity<BaseResponse<ResMemberInfo>> memberInfoGet(
+                                  @AuthenticationPrincipal MemberDetails memberDetails) {
+        log.info("GET /api/member/info");
+
+        Long memberId = memberDetails.getMemberId();
+        Member myMember = memberService.findMemberById(memberId);
+
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, myMember.toInfoDto()));
+    }
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),

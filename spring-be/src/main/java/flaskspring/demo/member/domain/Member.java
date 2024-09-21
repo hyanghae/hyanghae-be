@@ -1,6 +1,7 @@
 package flaskspring.demo.member.domain;
 
 import flaskspring.demo.config.hello.dto.req.ReqAgreement;
+import flaskspring.demo.member.dto.Res.ResMemberInfo;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -89,4 +90,7 @@ public class Member {
     }
 
 
+    public ResMemberInfo toInfoDto(){
+       return new ResMemberInfo(this.memberId, this.account,this.email, this.kakaoId, this.name);
+    }
 }

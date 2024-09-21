@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.youhajun.hyanghae",
+    "sha256_cert_fingerprints": [
+      "B4:DE:4A:7B:DE:59:E3:C4:C8:46:85:BE:BA:63:E9:D0:31:45:F6:87:59:FA:57:F2:8E:9F:F6:54:0C:9B:A6:D6"
+    ]
+  }
+}]

@@ -2,6 +2,7 @@ package flaskspring.demo.tour.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import flaskspring.demo.exception.BaseExceptionResponse;
+import flaskspring.demo.exception.BaseObject;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.home.dto.res.ResFamous;
@@ -45,7 +46,7 @@ public class FoodController {
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
     })
     @GetMapping("/food/{placeId}")
-    public ResponseEntity<BaseResponse<List<ResFood>>> getNearbyFoodPlaces(@PathVariable("placeId") Long placeId) throws URISyntaxException, JsonProcessingException {
+    public ResponseEntity<BaseResponse<BaseObject<ResFood>>> getNearbyFoodPlaces(@PathVariable("placeId") Long placeId) throws URISyntaxException, JsonProcessingException {
         // placeId로 Place 객체 조회 (service 등에서 구현)
         Place place = placeService.findPlaceById(placeId);
         double mapX = place.getLocation().getMapX();
@@ -63,6 +64,8 @@ public class FoodController {
                 .collect(Collectors.toList());
 
         // 반환
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, resFoods));
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(resFoods)));
     }
+
+
 }
