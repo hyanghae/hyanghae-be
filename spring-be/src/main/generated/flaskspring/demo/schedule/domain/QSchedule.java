@@ -30,6 +30,8 @@ public class QSchedule extends EntityPathBase<Schedule> {
 
     public final flaskspring.demo.member.domain.QMember member;
 
+    public final StringPath scheduleImgUrl = createString("scheduleImgUrl");
+
     public final DatePath<java.time.LocalDate> startDate = createDate("startDate", java.time.LocalDate.class);
 
     public final StringPath title = createString("title");

@@ -24,6 +24,8 @@ public class QDaySchedule extends EntityPathBase<DaySchedule> {
 
     public final DatePath<java.time.LocalDate> date = createDate("date", java.time.LocalDate.class);
 
+    public final QDeparture departure;
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final QSchedule schedule;
@@ -46,6 +48,7 @@ public class QDaySchedule extends EntityPathBase<DaySchedule> {
 
     public QDaySchedule(Class<? extends DaySchedule> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.departure = inits.isInitialized("departure") ? new QDeparture(forProperty("departure"), inits.get("departure")) : null;
         this.schedule = inits.isInitialized("schedule") ? new QSchedule(forProperty("schedule"), inits.get("schedule")) : null;
     }
 

@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface DayScheduleRepository extends JpaRepository<DaySchedule, Long> {
+public interface DayScheduleRepository extends JpaRepository<DaySchedule, Long>, DayScheduleRepositoryCustom {
 
 
 

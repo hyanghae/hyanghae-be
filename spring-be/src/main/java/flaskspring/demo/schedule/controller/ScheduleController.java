@@ -1,7 +1,8 @@
 package flaskspring.demo.schedule.controller;
 
 import flaskspring.demo.config.auth.MemberDetails;
-import flaskspring.demo.departure.service.ScheduleService;
+import flaskspring.demo.schedule.dto.res.ResScheduleDto;
+import flaskspring.demo.schedule.service.ScheduleService;
 import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseObject;
 import flaskspring.demo.exception.BaseResponse;
@@ -47,32 +48,18 @@ public class ScheduleController {
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
     })
-    @Operation(summary = "홈화면 스케쥴 API", description = "홈화면 스케쥴 API" +
+    @Operation(summary = "지난 스케쥴 목록 API", description = "지난 스케쥴 API" +
             "<br> 스케쥴 없을 경우 data : null 리턴")
-    @GetMapping("/schedule/home")
-    public ResponseEntity<BaseResponse<BaseObject<ResUpcomingSchedule>>> homeSchedule() {
-        log.info("GET /api/schedule");
+    @GetMapping("/schedule/past")
+    public ResponseEntity<BaseResponse<BaseObject<ResSchedule>>> pastScheduleGet(@AuthenticationPrincipal MemberDetails memberDetails) {
+        log.info("GET /api/schedule/past");
 
-        ResUpcomingSchedule resUpcomingSchedule1 = ResUpcomingSchedule.builder()
-                .scheduleId(1L)
-                .scheduleName("강원 강릉")
-                .DDay(3)
-                .startDate(LocalDate.of(2024, 8, 22))
-                .endDate(LocalDate.of(2024, 8, 24))
-                .build();
-
-        ResUpcomingSchedule resUpcomingSchedule2 = ResUpcomingSchedule.builder()
-                .scheduleId(2L)
-                .scheduleName("서울 강남")
-                .DDay(3)
-                .startDate(LocalDate.of(2024, 8, 24))
-                .endDate(LocalDate.of(2024, 8, 30))
-                .build();
-
-        List<ResUpcomingSchedule> resUpcomingSchedule = List.of(resUpcomingSchedule1, resUpcomingSchedule2);
-
-        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(resUpcomingSchedule)));
+        Long memberId = memberDetails.getMemberId();
+        Member member = memberService.findMemberById(memberId);
+        List<ResSchedule> schedule = scheduleService.getPastSchedule(member, LocalDate.now());
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(schedule)));
     }
+
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
@@ -81,15 +68,38 @@ public class ScheduleController {
             @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
     })
-    @Operation(summary = "등록한 스케쥴 목록", description = "등록한 스케쥴 목록 API")
+    @Operation(summary = "스케쥴 상세", description = "스케줄 상세 API API")
+    @GetMapping("/schedule/detail/{scheduleId}")
+    public ResponseEntity<BaseResponse<ResScheduleDto>> ScheduleDetailsGet(@AuthenticationPrincipal MemberDetails memberDetails,
+                                                                                    @PathVariable("scheduleId") Long scheduleId
+    ) {
+        log.info("GET /api/schedule/detail/{scheduleId}");
+
+        Long memberId = memberDetails.getMemberId();
+        Member member = memberService.findMemberById(memberId);
+        ResScheduleDto scheduleDetail = scheduleService.getScheduleDetail(member, scheduleId);
+
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, scheduleDetail));
+    }
+
+
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
+            @ApiResponse(responseCode = "400", description = MessageUtils.ERROR,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
+            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
+    })
+    @Operation(summary = "다가오는 스케쥴 목록", description = "등록한 스케쥴 목록 API")
     @GetMapping("/schedule")
-    public ResponseEntity<BaseResponse<BaseObject<ResSchedule>>> scheduleGet(@AuthenticationPrincipal MemberDetails memberDetails
+    public ResponseEntity<BaseResponse<BaseObject<ResSchedule>>> upComingScheduleGet(@AuthenticationPrincipal MemberDetails memberDetails
     ) {
         log.info("GET /api/schedule");
 
         Long memberId = memberDetails.getMemberId();
         Member member = memberService.findMemberById(memberId);
-        List<ResSchedule> schedule = scheduleService.getSchedule(member);
+        List<ResSchedule> schedule = scheduleService.getScheduleUpcoming(member, LocalDate.now());
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(schedule)));
     }

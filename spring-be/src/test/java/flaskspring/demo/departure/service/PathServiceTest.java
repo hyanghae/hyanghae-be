@@ -1,18 +1,14 @@
 package flaskspring.demo.departure.service;
 
 import flaskspring.demo.departure.dto.req.ReqDeparture;
-import flaskspring.demo.departure.dto.res.ResLocation;
 import flaskspring.demo.departure.dto.res.ResSchedule;
 import flaskspring.demo.departure.dto.res.ResSchedulePlace;
 import flaskspring.demo.exception.BaseResponse;
+import flaskspring.demo.schedule.service.ScheduleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional

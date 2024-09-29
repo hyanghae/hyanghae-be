@@ -14,6 +14,7 @@ public class ReqSchedule {
     @Schema(description = "스케줄 명", example = "강원도 여행")
     private String title;
 
+
     @Schema(description = "시작 일자", example = "2024-09-16")
     private LocalDate startDate;
 

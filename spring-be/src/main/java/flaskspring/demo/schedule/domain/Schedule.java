@@ -26,6 +26,8 @@ public class Schedule {
     private Long id;
 
     private String title;
+
+    private String scheduleImgUrl;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -36,9 +38,10 @@ public class Schedule {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    public static Schedule create(Member member, ReqSchedule reqSchedule){
+    public static Schedule create(Member member, ReqSchedule reqSchedule, String scheduleImgUrl){
         Schedule schedule = Schedule.builder()
                 .member(member)
+                .scheduleImgUrl(scheduleImgUrl)
                 .title(reqSchedule.getTitle())
                 .startDate(reqSchedule.getStartDate())
                 .endDate(reqSchedule.getEndDate())
@@ -49,7 +52,7 @@ public class Schedule {
     }
 
     public ResSchedule toDto(){
-        return new ResSchedule(this.id, this.title, this.startDate, this.endDate, this.dayCount);
+        return new ResSchedule(this.id, this.title, this.scheduleImgUrl, this.startDate, this.endDate, this.dayCount);
     }
 
 }

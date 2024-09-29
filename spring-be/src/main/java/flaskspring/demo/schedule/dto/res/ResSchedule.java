@@ -17,6 +17,9 @@ public class ResSchedule {
     @Schema(description = "스케줄 명", example = "강릉 여행 스케줄")
     private String title;
 
+    @Schema(description = "스케줄 이미지", example = "www.example.com")
+    private String scheduleImgUrl;
+
     @Schema(description = "시작 일자", example = "2024-09-16")
     private LocalDate startDate;
 

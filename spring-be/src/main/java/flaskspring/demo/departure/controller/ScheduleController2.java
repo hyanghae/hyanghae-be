@@ -5,7 +5,7 @@ import flaskspring.demo.departure.dto.req.ReqDeparture;
 import flaskspring.demo.departure.dto.res.ResDeparture;
 import flaskspring.demo.departure.dto.res.ResSchedule;
 import flaskspring.demo.departure.service.PathService;
-import flaskspring.demo.departure.service.ScheduleService;
+import flaskspring.demo.schedule.service.ScheduleService;
 import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
@@ -19,7 +19,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;

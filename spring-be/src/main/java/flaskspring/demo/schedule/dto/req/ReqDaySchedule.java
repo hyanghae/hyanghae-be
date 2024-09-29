@@ -11,6 +11,9 @@ import java.util.List;
 @NoArgsConstructor
 public class ReqDaySchedule {
 
+    @Schema(description = "출발지 정보")
+    ReqDeparture reqDeparture;
+
     @Schema(description = "n번째 날", example = "1")
     int dayNumber;
 
