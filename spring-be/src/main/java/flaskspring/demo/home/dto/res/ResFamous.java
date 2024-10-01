@@ -26,13 +26,13 @@ public class ResFamous implements Serializable {
     String touristSpotName;
 
     @Schema(description = "이미지 url", example = "www.example.com")
-    String imgUrl;
+    String placeImgUrl;
 
     public ResFamous(FamousPlace famousPlace) {
         this.famousPlaceId = famousPlace.getId();
         this.region = famousPlace.getCity() + " " + famousPlace.getRegion();
         this.cityParamName = famousPlace.getEnCityName();
         this.touristSpotName = famousPlace.getTouristSpotName();
-        this.imgUrl = famousPlace.getImgUrl();
+        this.placeImgUrl = famousPlace.getImgUrl();
     }
 }
