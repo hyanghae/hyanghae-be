@@ -51,6 +51,14 @@ public class Schedule {
         return schedule;
     }
 
+    public void update(ReqSchedule reqSchedule, String scheduleImgUrl){
+        this.scheduleImgUrl = scheduleImgUrl;
+        this.title = reqSchedule.getTitle();
+        this.startDate = reqSchedule.getStartDate();
+        this.endDate = reqSchedule.getEndDate();
+        this.dayCount = reqSchedule.getDayCount();
+    }
+
     public ResSchedule toDto(){
         return new ResSchedule(this.id, this.title, this.scheduleImgUrl, this.startDate, this.endDate, this.dayCount);
     }

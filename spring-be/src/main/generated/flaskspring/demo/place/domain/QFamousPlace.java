@@ -27,6 +27,8 @@ public class QFamousPlace extends EntityPathBase<FamousPlace> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final StringPath imgUrl = createString("imgUrl");
+
     public final StringPath majorCategory = createString("majorCategory");
 
     public final StringPath region = createString("region");

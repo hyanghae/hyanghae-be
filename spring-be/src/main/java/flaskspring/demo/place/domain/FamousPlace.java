@@ -24,6 +24,8 @@ public class FamousPlace {
     @Column(name = "en_city_name")
     private String enCityName;
 
+    private String imgUrl;
+
     private int hashTagCount;
     private int searchCount;
 

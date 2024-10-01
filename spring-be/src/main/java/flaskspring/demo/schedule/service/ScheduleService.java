@@ -24,6 +24,7 @@ import flaskspring.demo.schedule.dto.res.ResScheduleDto;
 import flaskspring.demo.schedule.repository.DaySchedulePlaceTagRepository;
 import flaskspring.demo.schedule.repository.DayScheduleRepository;
 import flaskspring.demo.schedule.repository.ScheduleRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -152,5 +153,53 @@ public class ScheduleService {
                     });
                 });
     }
+
+    @Transactional
+    public void updateSchedule(Member member, ReqSchedule reqSchedule, Long scheduleId) {
+        //유효성 확인
+        validate(reqSchedule);
+        //기존 데이터는 제거
+        deleteScheduleData(member, scheduleId);
+        // 스케줄 조회
+        Schedule schedule = scheduleRepository.findByMemberAndId(member, scheduleId)
+                .orElseThrow(() -> new BaseException(BaseResponseCode.INVALID_SCHEDULE));
+
+        // 사진 조회
+        Long firstPlaceId = reqSchedule.getDaySchedules().get(0).getPlaceIds().get(0);
+        String firstPlaceImgUrl = placeService.findPlaceById(firstPlaceId).getImagePath();
+
+        //업데이트
+        schedule.update(reqSchedule, firstPlaceImgUrl);
+
+        reqSchedule.getDaySchedules()
+                .stream()
+                .forEach(reqDaySchedule -> {
+                    DaySchedule daySchedule = DaySchedule.create(schedule, reqDaySchedule);
+                    dayScheduleRepository.save(daySchedule);
+
+                    reqDaySchedule.getPlaceIds().stream().forEach(placeId -> {
+                        Place place = placeService.findPlaceById(placeId);
+                        daySchedulePlaceTagRepository.save(DaySchedulePlaceTag.create(daySchedule, place));
+                    });
+                });
+    }
+
+    @Transactional
+    private void deleteScheduleData(Member member, Long scheduleId) {
+        // 스케줄 조회
+        Schedule schedule = scheduleRepository.findByMemberAndId(member, scheduleId)
+                .orElseThrow(() -> new BaseException(BaseResponseCode.INVALID_SCHEDULE));
+
+        // 스케줄에 관련된 DaySchedule 삭제
+        List<DaySchedule> daySchedules = dayScheduleRepository.findBySchedule(schedule);
+
+        daySchedules.forEach(daySchedule -> {
+            // 각 DaySchedule에 관련된 DaySchedulePlaceTag 삭제
+            daySchedulePlaceTagRepository.deleteByDaySchedule(daySchedule.getId());
+        });
+        dayScheduleRepository.deleteBySchedule(schedule.getId());
+
+    }
+
 
 }

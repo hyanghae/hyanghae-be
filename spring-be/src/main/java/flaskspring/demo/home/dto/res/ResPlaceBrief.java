@@ -47,7 +47,7 @@ public class ResPlaceBrief {
         String tagNamesString = tuple.get(2, String.class); // 두 번째 항목인 String을 가져옵니다.
         Boolean isRegistered = tuple.get(3, Boolean.class); // Boolean으로 가져옵니다.
 
-        if (place == null || tagIdsString == null || tagNamesString == null) {
+        if (place == null) {
             throw new BaseException(BaseResponseCode.DATABASE_ERROR);
         }
 
@@ -82,9 +82,19 @@ public class ResPlaceBrief {
 
 
     private List<ResTag> createResTags(String tagIdsString, String tagNamesString) {
+        // null 체크: 둘 중 하나가 null이면 빈 리스트 반환
+        if (tagIdsString == null || tagNamesString == null) {
+            return new ArrayList<>();
+        }
+
         List<ResTag> resTags = new ArrayList<>();
         String[] tagIds = tagIdsString.split(",");
         String[] tagNames = tagNamesString.split(",");
+
+        // tagIds와 tagNames의 길이가 동일한지 확인
+        if (tagIds.length != tagNames.length) {
+            throw new BaseException(BaseResponseCode.TAG_MAPPING_ERROR);
+        }
 
         for (int i = 0; i < tagIds.length; i++) {
             Long tagId = Long.parseLong(tagIds[i]);
@@ -94,6 +104,7 @@ public class ResPlaceBrief {
 
         return resTags;
     }
+
 
     private String createRegionString(Place place) {
         String city = place.getCity();

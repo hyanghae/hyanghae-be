@@ -113,7 +113,7 @@ public class ScheduleController {
                     content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
     })
     @Operation(summary = "스케쥴 등록 API", description = "스케쥴 등록 API" +
-            "<br> dayCount랑 daySchedules 리스트 길이랑 같아야 합니다.")
+            "<br> 선택 일자랑 dayCount, 리스트 길이 모두 같아야 합니다.")
     @PostMapping("/schedule")
     public ResponseEntity<BaseResponse<Object>> schedulePost(@AuthenticationPrincipal MemberDetails memberDetails,
                                                              @RequestBody ReqSchedule reqSchedule) {
@@ -123,6 +123,28 @@ public class ScheduleController {
         Member member = memberService.findMemberById(memberId);
 
         scheduleService.saveSchedule(member, reqSchedule);
+
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>()));
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = MessageUtils.SUCCESS),
+            @ApiResponse(responseCode = "400", description = MessageUtils.ERROR,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
+            @ApiResponse(responseCode = "401", description = MessageUtils.UNAUTHORIZED,
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class)))
+    })
+    @Operation(summary = "스케쥴 수정 API", description = "스케쥴 수정 API" +
+            "<br> 선택 일자랑 dayCount, 리스트 길이 모두 같아야 합니다.")
+    @PutMapping("/schedule/{scheduleId}")
+    public ResponseEntity<BaseResponse<Object>> schedulePut(@AuthenticationPrincipal MemberDetails memberDetails,
+                                                             @PathVariable("scheduleId") Long scheduleId,
+                                                             @RequestBody ReqSchedule reqSchedule) {
+        log.info("PUT /api/schedule/{scheduleId}");
+
+        Long memberId = memberDetails.getMemberId();
+        Member member = memberService.findMemberById(memberId);
+        scheduleService.updateSchedule(member, reqSchedule, scheduleId);
 
         return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new HashMap<>()));
     }
