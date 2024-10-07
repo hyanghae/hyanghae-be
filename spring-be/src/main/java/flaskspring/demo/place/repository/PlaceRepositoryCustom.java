@@ -17,6 +17,8 @@ public interface PlaceRepositoryCustom {
 
     Tuple findPlaceDetail(Member member, Long placeId);
 
+    List<Tuple> findByIds(Member member, List<Long> ids);
+
     List<Tuple> findSimilarPlaces(Member member, List<Long> placeIds);
 
     List<Tuple> findNearbyPlaces(Member member, Place place);

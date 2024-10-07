@@ -75,6 +75,26 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom {
     }
 
     @Override
+    public List<Tuple> findByIds(Member member, List<Long> ids) {
+        return jpaQueryFactory
+                .select(
+                        place,
+                        Expressions.stringTemplate("group_concat({0})", tag.id).as("tagIds"),
+                        Expressions.stringTemplate("group_concat({0})", tag.tagName).as("tagNames"),
+                        placeRegister.place.isNotNull().as("isRegistered")
+                )
+                .from(place)
+                .leftJoin(placeTagLog).on(placeTagLog.place.eq(place).and(placeTagLog.tagScore.ne(0)))
+                .leftJoin(placeTagLog.tag, tag)
+                .leftJoin(placeRegister).on(placeRegister.place.eq(place).and(placeRegister.member.eq(member)))
+                .where(
+                        place.id.in(ids)
+                )
+                .groupBy(place.id) //그루핑
+                .fetch();
+    }
+
+    @Override
     public List<Tuple> findNearbyPlaces(Member member, Place targetPlace) {
 
         double mapX = targetPlace.getLocation().getMapX();

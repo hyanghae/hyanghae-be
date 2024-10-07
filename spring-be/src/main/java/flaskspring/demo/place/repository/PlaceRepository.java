@@ -1,5 +1,6 @@
 package flaskspring.demo.place.repository;
 
+import com.querydsl.core.Tuple;
 import flaskspring.demo.place.domain.FamousPlace;
 import flaskspring.demo.place.domain.Place;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +13,8 @@ import java.util.Optional;
 public interface PlaceRepository extends JpaRepository<Place, Long>, PlaceRepositoryCustom {
 
     List<Place> findByIdIn(List<Long> ids);
+
+
 
     @Query("SELECT p, " +
             "(6371 * acos(cos(radians(:givenMapY)) * cos(radians(p.location.mapY)) * cos(radians(p.location.mapX) - radians(:givenMapX)) + " +

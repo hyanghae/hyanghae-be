@@ -48,6 +48,10 @@ public class PlaceService {
     private final SearchUtil searchUtil;
 
 
+    public List<ResPlaceBrief> findByPlaceIds(Member member, List<Long> placeIds){
+        List<Tuple> places = placeRepository.findByIds(member, placeIds);
+        return convertToPlaceBriefList(places);
+    }
 
     public ResPlaceSearchPaging getPlacesBySearching(Member member, String searchQuery, ExploreCursor cursor, ExploreFilter filter, int size) {
         List<Tuple> places = new ArrayList<>();

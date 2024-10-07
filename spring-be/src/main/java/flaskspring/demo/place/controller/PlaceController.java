@@ -6,8 +6,10 @@ import flaskspring.demo.exception.BaseObject;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.home.dto.res.ResFamous;
+import flaskspring.demo.home.dto.res.ResPlaceBrief;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.service.MemberService;
+import flaskspring.demo.place.dto.req.ReqPlaceGet;
 import flaskspring.demo.place.dto.req.ReqPlaceRegister;
 import flaskspring.demo.place.register.service.PlaceRegisterService;
 import flaskspring.demo.place.domain.CityCode;
@@ -15,6 +17,7 @@ import flaskspring.demo.place.dto.res.ResPlaceDetail;
 import flaskspring.demo.place.dto.res.ResPlaceRegister;
 import flaskspring.demo.place.dto.res.ResSimilarity;
 import flaskspring.demo.place.service.PlaceService;
+import flaskspring.demo.tag.dto.req.ReqTagIndexes;
 import flaskspring.demo.utils.MessageUtils;
 import flaskspring.demo.utils.filter.ExploreFilter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +28,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +45,29 @@ public class PlaceController {
     private final PlaceRegisterService placeRegisterService;
     private final MemberService memberService;
     private final PlaceService placeService;
+
+    @Operation(summary = "여행지 조회", description = "여행지 인덱스로 여행지를 조회합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "등록 : true, 해제 : false"),
+            @ApiResponse(responseCode = "400", description = "여행지 등록 개수 초과",
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content(schema = @Schema(implementation = BaseExceptionResponse.class))),
+    })
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseResponse<BaseObject<ResPlaceBrief>>> placeGet(
+            @AuthenticationPrincipal MemberDetails memberDetails,
+            @RequestBody ReqPlaceGet reqPlaceGet) {
+
+        log.info("POST /api/place");
+
+        Long myMemberId = memberDetails.getMemberId();
+        Member member = memberService.findMemberById(myMemberId);
+        List<ResPlaceBrief> placeBriefs = placeService.findByPlaceIds(member, reqPlaceGet.getPlaceIds());
+
+        return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, new BaseObject<>(placeBriefs)));
+    }
+
 
     @Operation(summary = "여행지 등록", description = "여행지를 등록합니다" +
             "<br> 200 : 여행지 등록/해제, 등록 : true, 해제 : false" +
