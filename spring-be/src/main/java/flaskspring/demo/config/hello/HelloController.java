@@ -3,6 +3,7 @@ package flaskspring.demo.config.hello;
 
 import flaskspring.demo.config.auth.MemberDetails;
 import flaskspring.demo.config.hello.dto.req.ReqAgreement;
+
 import flaskspring.demo.config.hello.dto.res.ResHello;
 import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseResponse;
@@ -54,16 +55,16 @@ public class HelloController {
             Long myMemberId = memberDetails.getMemberId();
             Member member = memberService.findMemberById(myMemberId);
             ResHello resHello = ResHello.builder()
-                    .updateVersion(1.1)
-                    .forceUpdateVersion(1.1)
+                    .updateVersion("1.1")
+                    .forceUpdateVersion("1.1.0")
                     .needToOnboarding(!member.isOnboarded())
                     .needToAgreement(!member.isRequiredTermsAgreed())
                     .build();
             return ResponseEntity.ok(new BaseResponse<>(BaseResponseCode.OK, resHello));
         } else {
             ResHello resHello = ResHello.builder()
-                    .updateVersion(1.1)
-                    .forceUpdateVersion(1.1)
+                    .updateVersion("1.1")
+                    .forceUpdateVersion("1.1.0")
                     .needToOnboarding(true)
                     .needToAgreement(true)
                     .build();
