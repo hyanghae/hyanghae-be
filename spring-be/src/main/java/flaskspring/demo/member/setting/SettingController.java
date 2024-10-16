@@ -5,7 +5,6 @@ import flaskspring.demo.exception.BaseExceptionResponse;
 import flaskspring.demo.exception.BaseResponse;
 import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.image.service.UploadImageService;
-import flaskspring.demo.image.util.ImageUploadUtil;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.service.MemberService;
 import flaskspring.demo.recommend.dto.res.ResConfigInfo;
