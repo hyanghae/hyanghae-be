@@ -68,8 +68,9 @@ public class UploadImageService {
         return uploadImageRepository.findByMemberAndIsSetting(member, true).isPresent();
     }
 
-    @RedisCacheable(cacheName = "settingImageURL", expireTime = 30)
-    public String getSettingImageURL(@RedisCachedKeyParam(key = "member", fields = "memberId") Member member) {
+    //@RedisCacheable(cacheName = "settingImageURL", expireTime = 30)
+    //@RedisCachedKeyParam(key = "member", fields = "memberId")
+    public String getSettingImageURL( Member member) {
         Optional<UploadImage> uploadImage = uploadImageRepository.findByMemberAndIsSetting(member, true);
         return uploadImage.map(UploadImage::getSavedImageUrl).orElse(null);
     }

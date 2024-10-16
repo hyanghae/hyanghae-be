@@ -18,8 +18,8 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         servers = {@Server(url = "/", description = "Default Server URL")},
         info = @Info(
-                title = "레모아 API 명세서",
-                description = "레모아 API 명세서입니다",
+                title = "향해 API 명세서",
+                description = "향해 API 명세서입니다",
                 version = "v1"))
 @Configuration
 public class SwaggerConfig {
