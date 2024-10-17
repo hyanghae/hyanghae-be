@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Getter
@@ -38,18 +39,27 @@ public class Schedule {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    public static Schedule create(Member member, ReqSchedule reqSchedule, String scheduleImgUrl){
+    private long dDay;
+
+
+    public static Schedule create(Member member, ReqSchedule reqSchedule, String scheduleImgUrl) {
+        // 현재 날짜와 startDate 간의 차이를 계산
+        LocalDate startDate = reqSchedule.getStartDate();
+        long dDay = ChronoUnit.DAYS.between(LocalDate.now(), startDate);
+
         Schedule schedule = Schedule.builder()
                 .member(member)
                 .scheduleImgUrl(scheduleImgUrl)
                 .title(reqSchedule.getTitle())
-                .startDate(reqSchedule.getStartDate())
+                .startDate(startDate)
                 .endDate(reqSchedule.getEndDate())
                 .dayCount(reqSchedule.getDayCount())
+                .dDay(dDay)  // 계산된 dDay 설정
                 .build();
 
         return schedule;
     }
+
 
     public void update(ReqSchedule reqSchedule, String scheduleImgUrl){
         this.scheduleImgUrl = scheduleImgUrl;
