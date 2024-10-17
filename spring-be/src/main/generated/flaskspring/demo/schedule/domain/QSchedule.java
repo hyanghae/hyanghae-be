@@ -24,6 +24,8 @@ public class QSchedule extends EntityPathBase<Schedule> {
 
     public final NumberPath<Integer> dayCount = createNumber("dayCount", Integer.class);
 
+    public final NumberPath<Long> dDay = createNumber("dDay", Long.class);
+
     public final DatePath<java.time.LocalDate> endDate = createDate("endDate", java.time.LocalDate.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);

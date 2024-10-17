@@ -11,11 +11,13 @@ import flaskspring.demo.exception.BaseResponseCode;
 import flaskspring.demo.home.dto.res.ResPlaceBrief;
 import flaskspring.demo.member.domain.Member;
 import flaskspring.demo.member.repository.MemberRepository;
+import flaskspring.demo.place.domain.Location;
 import flaskspring.demo.place.domain.Place;
 import flaskspring.demo.place.register.repository.PlaceRegisterRepository;
 import flaskspring.demo.place.service.PlaceService;
 import flaskspring.demo.schedule.domain.DaySchedule;
 import flaskspring.demo.schedule.domain.DaySchedulePlaceTag;
+import flaskspring.demo.schedule.domain.Departure;
 import flaskspring.demo.schedule.domain.Schedule;
 import flaskspring.demo.schedule.dto.req.ReqSchedule;
 import flaskspring.demo.schedule.dto.res.ResDaySchedule;
@@ -59,22 +61,87 @@ public class ScheduleService {
         departureRepository.save(departurePoint);
     }
 
-    public ResScheduleDto getScheduleDetail(Member member, Long scheduleId) {
 
+    public ResScheduleDto getScheduleDetail(Member member, Long scheduleId) {
         Schedule schedule = scheduleRepository.findByMemberAndId(member, scheduleId)
                 .orElseThrow(() -> new BaseException(BaseResponseCode.INVALID_SCHEDULE));
         List<DaySchedule> daySchedules = dayScheduleRepository.findBySchedule(schedule);
 
-        List<ResDaySchedule> resDaySchedules = daySchedules.stream()
-                .map(daySchedule -> {
-                    List<Tuple> placeDetail = dayScheduleRepository.getScheduleDetail(member, daySchedule.getId());
-                    List<ResPlaceBrief> resPlaceBriefs = convertToPlaceBriefList(placeDetail);
-                    return new ResDaySchedule(daySchedule, resPlaceBriefs);
-                })
-                .collect(Collectors.toList());// 반환된 리스트를 컬렉션으로 변환하여 반환
+        List<ResDaySchedule> resDaySchedules = new ArrayList<>();
+
+        // 매 DaySchedule마다 출발지 혹은 이전 여행지 좌표를 추적
+        double prevMapX = 0;
+        double prevMapY = 0;
+        boolean isFirstPlace = true;  // 첫 장소 여부 확인
+
+        for (DaySchedule daySchedule : daySchedules) {
+            // DaySchedule의 출발지가 있으면 그 좌표를 사용하고, 없으면 이전 여행지 좌표 사용
+            if (daySchedule.getDeparture() != null && daySchedule.getDeparture().getLocation() != null) {
+                prevMapX = daySchedule.getDeparture().getLocation().getMapX();
+                prevMapY = daySchedule.getDeparture().getLocation().getMapY();
+                isFirstPlace = false;  // 출발지를 사용했으므로 첫 장소 아님
+            }
+
+            List<Tuple> placeDetail = dayScheduleRepository.getScheduleDetail(member, daySchedule.getId());
+            List<ResPlaceBrief> resPlaceBriefs = new ArrayList<>();
+
+            for (Tuple tuple : placeDetail) {
+                ResPlaceBrief resPlaceBrief = new ResPlaceBrief(tuple);
+
+                double currentMapX = resPlaceBrief.getMapX();
+                double currentMapY = resPlaceBrief.getMapY();
+
+                double distance = 0;
+                if (!isFirstPlace) {
+                    // 첫 장소가 아닌 경우에만 거리 계산
+                    distance = calculateDistance(prevMapY, prevMapX, currentMapY, currentMapX);
+                }
+
+                // 거리를 포맷팅하고 이전 좌표를 갱신
+                resPlaceBrief.setDistFromPrev(formatDistance(distance));
+                prevMapX = currentMapX;
+                prevMapY = currentMapY;
+
+                resPlaceBriefs.add(resPlaceBrief);
+                isFirstPlace = false;  // 첫 장소가 지나면 이후는 거리를 계산
+            }
+
+            resDaySchedules.add(new ResDaySchedule(daySchedule, resPlaceBriefs));
+        }
 
         return new ResScheduleDto(schedule, resDaySchedules);
     }
+
+    public static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371; // 지구의 반경 (킬로미터)
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c;
+
+        // 소수점 한 자리로 반올림
+        return Math.round(distance * 10) / 10.0;
+    }
+
+    public static double formatDistance(double distance) {
+        if (distance < 0.1) {
+            return 0.1; // 0.1km 미만은 0.1로 고정하여 반환
+        } else if (distance < 1) {
+            // 소수점 첫째 자리에서 반올림하여 double로 변환
+            return Math.round(distance * 10.0) / 10.0; // 1km 미만은 소수점 첫 자리까지 나타내기
+        } else {
+            // 1km 이상은 정수로 반올림하여 반환
+            return Math.round(distance);
+        }
+    }
+
+
+
+
+
 
 
     public ResDeparture getRecentDeparture(Long memberId) {

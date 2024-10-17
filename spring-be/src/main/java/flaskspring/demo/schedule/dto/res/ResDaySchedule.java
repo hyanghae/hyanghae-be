@@ -21,10 +21,12 @@ public class ResDaySchedule {
     @Schema(description = "일정 여행지 목록", example = "")
     List<ResPlaceBrief> places;
 
-    public ResDaySchedule(DaySchedule daySchedule, List<ResPlaceBrief> placeBriefs){
-        this.departure = daySchedule.getDeparture().toDto();
+    public ResDaySchedule(DaySchedule daySchedule, List<ResPlaceBrief> placeBriefs) {
+        // Departure가 null인 경우 null을 그대로 설정
+        this.departure = (daySchedule.getDeparture() != null) ? daySchedule.getDeparture().toDto() : null;
         this.date = daySchedule.getDate();
-        places = placeBriefs;
+        this.places = placeBriefs;
     }
+
 
 }

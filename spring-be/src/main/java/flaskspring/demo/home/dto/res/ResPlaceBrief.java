@@ -41,6 +41,9 @@ public class ResPlaceBrief {
     @Schema(description = "y좌표", example = "38.12313")
     private double mapY;
 
+    @Schema(description = "이전 여행지와의 거리", example = "12.5")
+    private double distFromPrev;
+
     public ResPlaceBrief(Tuple tuple) {
         Place place = tuple.get(0, Place.class);
         String tagIdsString = tuple.get(1, String.class);
