@@ -37,14 +37,19 @@ public class DaySchedule {
 
 
     public static DaySchedule create(Schedule schedule, ReqDaySchedule reqDaySchedule) {
+        Departure departure = (reqDaySchedule.getReqDeparture() != null)
+                ? Departure.create(reqDaySchedule.getReqDeparture())
+                : null;
+
         DaySchedule daySchedule = DaySchedule.builder()
-                .departure(Departure.create(reqDaySchedule.getReqDeparture()))
+                .departure(departure)
                 .schedule(schedule)
                 .date(reqDaySchedule.getDate())
                 .build();
 
         return daySchedule;
     }
+
 
 
 }

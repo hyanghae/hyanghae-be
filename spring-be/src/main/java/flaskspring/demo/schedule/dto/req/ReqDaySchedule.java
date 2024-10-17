@@ -23,3 +23,4 @@ public class ReqDaySchedule {
     @Schema(description = "여행지 ID 리스트" , example = "[1, 2, 3]")
     List<Long> placeIds;
 }
+

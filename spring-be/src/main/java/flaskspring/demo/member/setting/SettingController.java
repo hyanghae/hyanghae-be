@@ -53,15 +53,15 @@ public class SettingController {
     })
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BaseResponse<Object>> recommendSetting(@AuthenticationPrincipal MemberDetails memberDetails,
-                                                                 @RequestPart(value = "isImgChanged", required = true) Boolean isImgChanged,
-                                                                 @RequestPart(value = "tagIndexes", required = true) ReqTagIndexes tagRequest,
+                                                                 @RequestPart(value = "data", required = true) ReqTagIndexes tagRequest,
                                                                  @RequestPart(value = "image", required = false) MultipartFile image) {
         log.info("POST /api/recommend/setting");
 
         Long myMemberId = memberDetails.getMemberId();
         System.out.println("tagRequest = " + tagRequest);
         System.out.println("image = " + image);
-        System.out.println(" boolean isImgChanged = "  + isImgChanged);
+        System.out.println(" boolean isImgChanged = "  + tagRequest.getIsImgChanged());
+        Boolean isImgChanged =  tagRequest.getIsImgChanged();
         Member member = memberService.findMemberById(myMemberId);
         tagService.saveMemberTags(member, tagRequest.getTagIndexes()); //무조건 진입 (tagRequest 있어야 NullPointerException 안 남)
         if (isImgChanged) { // 파일 변경 사항 있는 지 여부 (처음 설정 시에도 true, 삭제 시에도 true)

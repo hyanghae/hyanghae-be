@@ -21,14 +21,20 @@ public class Departure {
 
     private Location location;
 
-    public static Departure create(ReqDeparture reqDeparture){
-
+    public static Departure create(ReqDeparture reqDeparture) {
         Departure departure = new Departure();
-        departure.placeName = reqDeparture.getPlaceName();
+
+        // placeName 널 체크
+        departure.placeName = (reqDeparture.getPlaceName() != null)
+                ? reqDeparture.getPlaceName()
+                : "Unknown Place";  // 기본값 설정
+
         departure.roadAddress = reqDeparture.getRoadAddress();
         departure.location = new Location(reqDeparture.getMapX(), reqDeparture.getMapY());
+
         return departure;
     }
+
 
     public ResDepartureDto toDto(){
         return ResDepartureDto.builder()

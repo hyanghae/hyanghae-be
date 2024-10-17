@@ -9,6 +9,9 @@ import java.util.List;
 @Data
 public class ReqTagIndexes {
 
+    @Schema(description = "사진 교체 여부", example = "true")
+    Boolean isImgChanged;
+
     @Schema(description = "태그 인덱스 목록", example = "[1, 2, 3]")
     private List<Long> tagIndexes;
 }
