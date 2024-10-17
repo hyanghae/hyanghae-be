@@ -29,5 +29,8 @@ public class ResSchedule {
     @Schema(description = "여행일 수", example = "3")
     private int dayCount;
 
+    @Schema(description = "디데이", example = "12")
+    private int dDay;
+
 
 }
